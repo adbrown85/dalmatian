@@ -5,7 +5,9 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -16,43 +18,62 @@ import java.sql.SQLException;
  */
 public class Spot {
 	
+	private static PreparedStatement insertStatement, selectStatement;
 	private int id, year;
-	private String name, filename, description;
-	private Sponsor sponsor;
+	private String name, filename, description, sponsor;
 	
+	
+	/**
+	 * Static constructor.
+	 */
+	static {
+		
+		String message;
+		
+		try {
+			initSelectStatement();
+			initInsertStatement();
+		} catch (SQLException e) {
+			message = "[Spot] Could not prepare statements.\n" + 
+			          "[Spot] Check database connection.";
+			throw new ExceptionInInitializerError(message);
+		}
+	}
+	
+	
+	public Spot() {
+		
+		// Initialize
+		id = 0;
+		description = null;
+		filename = null;
+		name = null;
+		sponsor = null;
+		year = 0;
+	}
 	
 	
 	/**
 	 * Creates a new %Spot from its ID in the database.
 	 */
 	public Spot(int id) 
-	            throws IOException {
+	            throws SQLException {
 		
-		ResultSet rs;
-		String query;
+		ResultSet results;
 		
-		try {
-			
-			// Execute query
-			query = String.format("SELECT * FROM spot WHERE id=%d", id);
-			rs = Database.executeQuery(query);
-			if (!rs.next())
-				throw new IOException("[Spot] Spot not in database.");
-			
-			// Process results
-			this.id = rs.getInt("id");
-			this.sponsor = new Sponsor(rs.getInt("sponsor"));
-			this.name = rs.getString("name");
-			this.filename = rs.getString("filename");
-			this.description = rs.getString("description");
-			this.year = rs.getInt("year");
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		// Execute query
+		selectStatement.setInt(1, id);
+		results = selectStatement.executeQuery();
+		
+		// Process results
+		results.next();
+		this.id = results.getInt("id");
+		this.sponsor = results.getString("sponsor");
+		this.name = results.getString("name");
+		this.filename = results.getString("filename");
+		this.description = results.getString("description");
+		this.year = results.getInt("year");
 	}
-	
 	
 	
 	public String getDescription() {
@@ -61,12 +82,16 @@ public class Spot {
 	}
 	
 	
-	
 	public String getFilename() {
 		
 		return filename;
 	}
 	
+	
+	public int getId() {
+		
+		return id;
+	}
 	
 	
 	public String getName() {
@@ -75,12 +100,10 @@ public class Spot {
 	}
 	
 	
-	
-	public Sponsor getSponsor() {
+	public String getSponsor() {
 		
-		return new Sponsor(sponsor);
+		return sponsor;
 	}
-	
 	
 	
 	public int getYear() {
@@ -89,25 +112,93 @@ public class Spot {
 	}
 	
 	
+	public void insert()
+	                   throws SQLException {
+		
+		// Execute statement
+		insertStatement.setString(1, sponsor);
+		insertStatement.setString(2, name);
+		insertStatement.setInt(3, year);
+		insertStatement.setString(4, filename);
+		insertStatement.setString(5, description);
+		insertStatement.executeUpdate();
+	}
+	
+	
+	public void setDescription(String description) {
+		
+		this.description = description;
+	}
+	
+	
+	public void setFilename(String filename) {
+		
+		this.filename = filename;
+	}
+	
+	
+	public void setName(String name) {
+		
+		this.name = name;
+	}
+	
+	
+	public void setSponsor(String sponsor) {
+		
+		this.sponsor = sponsor;
+	}
+	
+	
+	public void setYear(int year) {
+		
+		this.year = year;
+	}
+	
 	
 	/**
-	 * Prints the %Spot.
+	 * Initializes the select statement used to retrieve a spot.
 	 */
+	private static void initSelectStatement()
+	                                        throws SQLException {
+		
+		Connection connection;
+		String sql;
+		
+		// Prepare statement
+		sql = "SELECT * FROM spot WHERE id = ?";
+		connection = Database.getConnection();
+		selectStatement = connection.prepareStatement(sql);
+	}
+	
+	
+	/**
+	 * Initializes the insert statement for adding a spot to the database.
+	 */
+	private static void initInsertStatement()
+	                                        throws SQLException {
+		
+		Connection connection;
+		String sql;
+		
+		// Prepare statement
+		connection = Database.getConnection();
+		sql = "INSERT INTO spot(sponsor, name, year, filename, description) " +
+		      "VALUES(?, ?, ?, ?, ?)";
+		insertStatement = connection.prepareStatement(sql);
+	}
+	
+	
 	public void print() {
 		
 		System.out.println(toString());
 	}
 	
 	
-	
-	/**
-	 * Formats the %Spot's attributes as a string.
-	 */
 	public String toString() {
 		
-		return String.format("\"%s\" %d \"%s\"", sponsor.getName(), year, name);
+		return String.format("\"%s\", %d, \"%s\", \"%s\"",
+		                     sponsor, year, name, filename);
 	}
-	
 	
 	
 	/**
@@ -128,7 +219,7 @@ public class Spot {
 		try {
 			spot = new Spot(1);
 			spot.print();
-		} catch (IOException e) {
+		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
 		

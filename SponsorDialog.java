@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.sql.SQLException;
+import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -28,10 +30,11 @@ import javax.swing.JTextField;
 public class SponsorDialog extends JDialog
                            implements ActionListener {
 	
+	Sponsor sponsor;
 	JPanel contentPane;
 	JPanel buttonPanel, inputPanel;
-	Vector<JTextField> fields;
-	
+	TreeMap<String,JTextField> textFields;
+	Vector<ActionListener> listeners;
 	
 	
 	/**
@@ -45,16 +48,16 @@ public class SponsorDialog extends JDialog
 		contentPane = new JPanel();
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
 		setContentPane(contentPane);
+		listeners = new Vector<ActionListener>();
 		
 		// Add components
-		addInputPanel();
-		addButtonPanel();
+		initInputPanel();
+		initButtonPanel();
 		
 		// Pack
 		setResizable(false);
 		pack();
 	}
-	
 	
 	
 	/**
@@ -64,25 +67,54 @@ public class SponsorDialog extends JDialog
 		
 		String command;
 		
-		// Get command
+		// Handle command
 		command = event.getActionCommand();
-		
-		// Cancel
 		if (command.equals("Cancel")) {
 			reset();
-			// setVisible(false);
+			setVisible(false);
+		} else if (command.equals("Insert")) {
+			try {
+				insertSponsor();
+				System.out.printf("[SponsorDialog] Inserted \"%s\".\n",
+				                  sponsor.getName());
+				fireActionEvent("Refresh");
+				setVisible(false);
+			} catch (SQLException e) {
+				System.err.println("[SponsorDialog] Error inserting sponsor.");
+				System.err.println("[SponsorDialog] Check missing fields.");
+			}
 		}
 	}
 	
+	
+	public void addActionListener(ActionListener listener) {
+		
+		listeners.add(listener);
+	}
+	
+	
+	/**
+	 * Signals a change was made to all listeners registered.
+	 */
+	private void fireActionEvent(String command) {
+		
+		ActionEvent event;
+		
+		// Send to each listener
+		event = new ActionEvent(this, 0, command);
+		for (ActionListener listener : listeners) {
+			listener.actionPerformed(event);
+		}
+	}
 	
 	
 	/**
 	 * Initializes the button panel.
 	 */
-	private void addButtonPanel() {
+	private void initButtonPanel() {
 		
 		JButton button;
-		String[] buttonNames={"Add", "Cancel"};
+		String[] buttonNames={"Insert", "Cancel"};
 		
 		// Create and add to content pane
 		buttonPanel = new JPanel();
@@ -98,34 +130,32 @@ public class SponsorDialog extends JDialog
 	}
 	
 	
-	
 	/**
 	 * Initializes the panel with all the input fields.
 	 */
-	private void addInputPanel() {
+	private void initInputPanel() {
 		
-		JTextField field;
-		String fieldNames[]={"Name", "Street", "City", "State", "Zip"};
+		Vector<String> textFieldNames;
 		
 		// Create and add to content pane
 		inputPanel = new JPanel(new GridBagLayout());
 		contentPane.add(inputPanel);
 		
 		// Add labels and text fields
-		fields = new Vector<JTextField>();
-		for (int i=0; i<fieldNames.length; ++i) {
-			addInputPanelLabel(i, fieldNames[i]);
-			addInputPanelTextField(i, fieldNames[i]);
+		textFieldNames = Sponsor.getFieldNames();
+		textFields = new TreeMap<String,JTextField>();
+		for (int i=0; i<textFieldNames.size(); ++i) {
+			initInputPanelLabel(i, textFieldNames.get(i));
+			initInputPanelTextField(i, textFieldNames.get(i));
 		}
 	}
-	
 	
 	
 	/**
 	 * Adds a label to the input panel.
 	 */
-	private void addInputPanelLabel(int row,
-	                                String labelName) {
+	private void initInputPanelLabel(int row,
+	                                 String labelName) {
 		
 		GridBagConstraints gbc;
 		JLabel label;
@@ -144,12 +174,11 @@ public class SponsorDialog extends JDialog
 	}
 	
 	
-	
 	/**
 	 * Adds a text field to the input panel.
 	 */
-	private void addInputPanelTextField(int row,
-	                                    String textFieldName) {
+	private void initInputPanelTextField(int row,
+	                                     String textFieldName) {
 		
 		GridBagConstraints gbc;
 		JTextField textField;
@@ -164,10 +193,27 @@ public class SponsorDialog extends JDialog
 		
 		// Make text field and add
 		textField = new JTextField(20);
-		fields.add(textField);
 		inputPanel.add(textField, gbc);
+		textFields.put(textFieldName, textField);
 	}
 	
+	
+	/**
+	 * Inserts the sponsor into the database.
+	 */
+	private void insertSponsor()
+	                           throws SQLException {
+		
+		// Create sponsor
+		sponsor = new Sponsor();
+		sponsor.setName(textFields.get("Name").getText());
+		sponsor.setStreet(textFields.get("Street").getText());
+		sponsor.setCity(textFields.get("City").getText());
+		sponsor.setState(textFields.get("State").getText());
+		sponsor.setZip(textFields.get("Zip").getText());
+		sponsor.setPhone(textFields.get("Phone").getText());
+		sponsor.insert();
+	}
 	
 	
 	/**
@@ -175,11 +221,9 @@ public class SponsorDialog extends JDialog
 	 */
 	private void reset() {
 		
-		for (int i=0; i<fields.size(); ++i) {
-			fields.get(i).setText(null);
-		}
+		for (JTextField textField : textFields.values())
+			textField.setText(null);
 	}
-	
 	
 	
 	/**

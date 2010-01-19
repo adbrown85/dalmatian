@@ -17,10 +17,8 @@ import java.sql.SQLException;
  */
 public class Manager {
 	
-	
 	JTabbedPane tabbedPane;
 	JFrame frame;
-	
 	
 	
 	/**
@@ -41,7 +39,6 @@ public class Manager {
 	}
 	
 	
-	
 	/**
 	 * Initializes all the tabs.
 	 */
@@ -51,7 +48,7 @@ public class Manager {
 		JPanel breaksPanel, sponsorsPanel, spotsPanel;
 		
 		// Sponsors
-		sponsorsPanel = new SponsorManager();
+		sponsorsPanel = new SponsorManager(frame);
 		tabbedPane.addTab("Sponsors", sponsorsPanel);
 		
 		// Spots
@@ -64,7 +61,6 @@ public class Manager {
 	}
 	
 	
-	
 	/**
 	 * Starts the %Manager.
 	 */
@@ -74,7 +70,6 @@ public class Manager {
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
 	
 	
 	/**

@@ -5,6 +5,7 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
@@ -16,10 +17,8 @@ import javax.swing.table.AbstractTableModel;
  */
 public class SponsorTableModel extends AbstractTableModel {
 	
-	
 	private Object[][] data;
 	private Vector<String> columnNames;
-	
 	
 	
 	public SponsorTableModel()
@@ -32,46 +31,23 @@ public class SponsorTableModel extends AbstractTableModel {
 	}
 	
 	
-	
-	/**
-	 * Returns the number of rows in the table.
-	 */
 	public int getRowCount() {
-		
 		return data.length;
 	}
 	
-	
-	
-	/**
-	 * Returns the number of columns in the table.
-	 */
 	public int getColumnCount() {
-		
 		return columnNames.size();
 	}
 	
-	
-	
-	/**
-	 * Returns the number of columns in the table.
-	 */
 	public String getColumnName(int columnIndex) {
-		
 		return columnNames.get(columnIndex);
 	}
 	
-	
-	
-	/**
-	 * Gets the value of a cell.
-	 */
 	public Object getValueAt(int row,
 	                         int column) {
 		
 		return data[row][column];
 	}
-	
 	
 	
 	/**
@@ -88,7 +64,6 @@ public class SponsorTableModel extends AbstractTableModel {
 	}
 	
 	
-	
 	/**
 	 * Initializes all the data.
 	 */
@@ -97,21 +72,22 @@ public class SponsorTableModel extends AbstractTableModel {
 		
 		int row, numberOfColumns, numberOfRows;
 		ResultSet results;
-		String query;
+		ResultSetMetaData resultsMetaData;
+		String sql;
 		
 		// Execute query
-		query = "SELECT s.name, a.street, a.city, a.state, a.zip " +
-		        "FROM sponsor AS s JOIN address AS a " +
-		        "ON s.address = a.id";
-		results = Database.executeQuery(query);
+		sql = "SELECT * FROM sponsor ORDER BY name";
+		results = Database.executeQuery(sql);
 		
 		// Count rows and columns
-		numberOfColumns = columnNames.size();
+		resultsMetaData = results.getMetaData();
+		numberOfColumns = resultsMetaData.getColumnCount();
 		numberOfRows = 0;
 		while (results.next())
 			++numberOfRows;
 		
 		// Allocate
+		ids = new int[numberOfRows];
 		data = new Object[numberOfRows][];
 		for (int i=0; i<numberOfRows; ++i)
 			data[i] = new String[numberOfColumns];
@@ -129,6 +105,17 @@ public class SponsorTableModel extends AbstractTableModel {
 		}
 	}
 	
+	
+	/**
+	 * Refreshes the data.
+	 */
+	public void refresh()
+	                    throws SQLException {
+		
+		// Reinitialize data
+		initData();
+		fireTableDataChanged();
+	}
 	
 	
 	/**

@@ -21,9 +21,18 @@ import org.xml.sax.SAXException;
 public class Configuration {
 	
 	
-	private static final String filename="configuration.xml";
+	private static String filename;
 	private static Document document=null;
 	
+	
+	/**
+	 * Initialize attributes.
+	 */
+	static {
+		
+		initFilename();
+		initDocument();
+	}
 	
 	
 	/**
@@ -40,10 +49,6 @@ public class Configuration {
 		
 		NodeList nodeList;
 		Element categoryElement, optionElement;
-		
-		// Check if document hasn't been parsed
-		if (document == null)
-			initDocument();
 		
 		// Get the section
 		nodeList = document.getElementsByTagName(category);
@@ -64,11 +69,12 @@ public class Configuration {
 	/**
 	 * Initializes and parses the document.
 	 */
-	public static void initDocument() {
+	private static void initDocument() {
 		
 		DocumentBuilder builder;
 		DocumentBuilderFactory factory;
 		NodeList list;
+		String message;
 		
 		try {
 			
@@ -76,16 +82,26 @@ public class Configuration {
 			factory = DocumentBuilderFactory.newInstance();
 			builder = factory.newDocumentBuilder();
 			document = builder.parse(filename);
-		} catch (ParserConfigurationException pce) {
-			System.err.println("[DatabaseHelper] Cannot create XML parser.");
-			System.exit(1);
-		} catch (SAXException se) {
-			System.err.println("[DatabaseHelper] Cannot parse config file.");
-			System.exit(1);
-		} catch (IOException ie) {
-			System.err.println("[DatabaseHelper] Cannot open config file.");
-			System.exit(1);
 		}
+		catch (ParserConfigurationException pce) {
+			message = "[Configuration] Cannot create XML parser.";
+			throw new ExceptionInInitializerError(message);
+		} catch (SAXException se) {
+			message = "[Configuration] Cannot parse configuration file.";
+			throw new ExceptionInInitializerError(message);
+		} catch (IOException ie) {
+			message = "[Configuration] Cannot open configuration file.";
+			throw new ExceptionInInitializerError(message);
+		}
+	}
+	
+	
+	private static void initFilename() {
+		
+		String home;
+		
+		home = System.getProperty("user.home");
+		filename = home + "/.config/dalmatian/configuration.xml";
 	}
 	
 	

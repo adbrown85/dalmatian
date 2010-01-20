@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 
@@ -18,7 +19,7 @@ import java.sql.Statement;
  */
 public class Database {
 	
-	private static Connection connection;
+	private static Connection connection=null;
 	
 	
 	/**
@@ -109,6 +110,15 @@ public class Database {
 		} catch (ClassNotFoundException e) {
 			throw new SQLException(e.getMessage());
 		}
+	}
+	
+	
+	public static PreparedStatement prepareStatement(String sql)
+	                                                 throws SQLException {
+		
+		// Prepare statement
+		initConnection();
+		return connection.prepareStatement(sql);
 	}
 	
 	

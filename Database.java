@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
 
 
 
@@ -75,6 +76,18 @@ public class Database {
 		// Check connection
 		initConnection();
 		return connection;
+	}
+	
+	
+	public static Timestamp getCurrentTimestamp()
+	                                            throws SQLException {
+		
+		ResultSet results;
+		
+		// Execute query and process results
+		results = Database.executeQuery("SELECT CURRENT_TIMESTAMP");
+		results.next();
+		return results.getTimestamp(1);
 	}
 	
 	
@@ -149,6 +162,7 @@ public class Database {
 				System.out.println(rs.getString("phone"));
 				System.out.println();
 			}
+			System.out.println(Database.getCurrentTimestamp());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

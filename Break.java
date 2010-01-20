@@ -76,7 +76,7 @@ public class Break {
 	}
 	
 	
-	public int getID() {
+	public int getId() {
 		
 		return id;
 	}
@@ -202,7 +202,7 @@ public class Break {
 			_break.setStart(Timestamp.valueOf("2010-01-20 22:00:00"));
 			_break.setEnd(Timestamp.valueOf("2010-01-20 22:04:00"));
 			_break.insert();
-			id = _break.getID();
+			id = _break.getId();
 			System.out.printf("Inserted id: %d\n", id);
 			
 			// Test retrieval

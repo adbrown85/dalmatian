@@ -20,7 +20,7 @@ public class Spot {
 	
 	private static PreparedStatement insertStatement, selectStatement;
 	private int id, year;
-	private String name, filename, description, sponsor;
+	private String title, filename, description, sponsor;
 	
 	
 	/**
@@ -47,7 +47,7 @@ public class Spot {
 		id = 0;
 		description = null;
 		filename = null;
-		name = null;
+		title = null;
 		sponsor = null;
 		year = 0;
 	}
@@ -69,7 +69,7 @@ public class Spot {
 		results.next();
 		this.id = results.getInt("id");
 		this.sponsor = results.getString("sponsor");
-		this.name = results.getString("name");
+		this.title = results.getString("title");
 		this.filename = results.getString("filename");
 		this.description = results.getString("description");
 		this.year = results.getInt("year");
@@ -96,7 +96,7 @@ public class Spot {
 	
 	public String getName() {
 		
-		return name;
+		return title;
 	}
 	
 	
@@ -117,7 +117,7 @@ public class Spot {
 		
 		// Execute statement
 		insertStatement.setString(1, sponsor);
-		insertStatement.setString(2, name);
+		insertStatement.setString(2, title);
 		insertStatement.setInt(3, year);
 		insertStatement.setString(4, filename);
 		insertStatement.setString(5, description);
@@ -137,15 +137,15 @@ public class Spot {
 	}
 	
 	
-	public void setName(String name) {
-		
-		this.name = name;
-	}
-	
-	
 	public void setSponsor(String sponsor) {
 		
 		this.sponsor = sponsor;
+	}
+	
+	
+	public void setTitle(String title) {
+		
+		this.title = title;
 	}
 	
 	
@@ -182,7 +182,7 @@ public class Spot {
 		
 		// Prepare statement
 		connection = Database.getConnection();
-		sql = "INSERT INTO spot(sponsor, name, year, filename, description) " +
+		sql = "INSERT INTO spot(sponsor, title, year, filename, description) " +
 		      "VALUES(?, ?, ?, ?, ?)";
 		insertStatement = connection.prepareStatement(sql);
 	}
@@ -197,7 +197,7 @@ public class Spot {
 	public String toString() {
 		
 		return String.format("\"%s\", %d, \"%s\", \"%s\"",
-		                     sponsor, year, name, filename);
+		                     sponsor, year, title, filename);
 	}
 	
 	

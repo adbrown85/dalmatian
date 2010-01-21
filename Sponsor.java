@@ -132,6 +132,26 @@ public class Sponsor {
 	}
 	
 	
+	public static Vector<String> getAllNames() 
+	                                         throws SQLException {
+		
+		ResultSet results;
+		String sql;
+		Vector<String> names;
+		
+		// Execute query
+		sql = "SELECT name FROM sponsor ORDER BY name";
+		results = Database.executeQuery(sql);
+		
+		// Process results
+		names = new Vector<String>();
+		while (results.next()) {
+			names.add(results.getString(1));
+		}
+		return names;
+	}
+	
+	
 	public String getName() {return name;}
 	
 	public String getStreet() {return street;}
@@ -216,26 +236,6 @@ public class Sponsor {
 	}
 	
 	
-	public static Vector<String> retrieveAllNames() 
-	                                              throws SQLException {
-		
-		ResultSet results;
-		String sql;
-		Vector<String> names;
-		
-		// Execute query
-		sql = "SELECT name FROM sponsor";
-		results = Database.executeQuery(sql);
-		
-		// Process results
-		names = new Vector<String>();
-		while (results.next()) {
-			names.add(results.getString(1));
-		}
-		return names;
-	}
-	
-	
 	public void setName(String name) {this.name = name;}
 	
 	public void setStreet(String street) {this.street = street;}
@@ -301,7 +301,7 @@ public class Sponsor {
 		
 		// Test retrieval
 		try {
-			Vector<String> names = Sponsor.retrieveAllNames();
+			Vector<String> names = Sponsor.getAllNames();
 			for (String name : names) {
 				System.out.println(name);
 			}

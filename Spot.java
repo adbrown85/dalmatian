@@ -53,6 +53,19 @@ public class Spot {
 	}
 	
 	
+	public Spot(ResultSet resultSet)
+	            throws SQLException {
+		
+		// Initialize
+		id = resultSet.getInt("id");
+		description = resultSet.getString("description");
+		filename = resultSet.getString("filename");
+		title = resultSet.getString("title");
+		sponsor = resultSet.getString("sponsor");
+		year = resultSet.getInt("year");
+	}
+	
+	
 	/**
 	 * Creates a new %Spot from its ID in the database.
 	 */

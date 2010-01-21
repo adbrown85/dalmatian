@@ -18,6 +18,7 @@ import javax.swing.*;
 public class BreakEditor extends JDialog
                          implements ActionListener {
 	
+	JFrame frame;
 	JPanel contentPane;
 	JPanel buttonPanel, dateTimePanel, spotsPanel;
 	TreeMap<String,TimestampEditor> timestampEditors;
@@ -32,6 +33,7 @@ public class BreakEditor extends JDialog
 		
 		// Initialize
 		super(frame, title);
+		this.frame = frame;
 		initContentPane();
 		initDateTimePanel();
 		initSpotsPanel();
@@ -41,7 +43,46 @@ public class BreakEditor extends JDialog
 	
 	public void actionPerformed(ActionEvent event) {
 		
-		System.out.println(event.getActionCommand());
+		String command;
+		
+		// Handle command
+		command = event.getActionCommand();
+		if (command.equals("Update")) {
+			handleUpdate();
+		} else if (command.equals("Cancel")) {
+			handleCancel();
+		}
+	}
+	
+	
+	private void handleCancel() {
+		
+		setVisible(false);
+	}
+	
+	
+	private void handleUpdate() {
+		
+		Break _break;
+		String message;
+		
+		try {
+			
+			// Insert break
+			_break = new Break();
+			_break.setStart(timestampEditors.get("Start").getTimestamp());
+			_break.setEnd(timestampEditors.get("End").getTimestamp());
+			_break.insert();
+			
+			// Hide
+			message = "Inserted break.";
+			JOptionPane.showMessageDialog(frame, message);
+			setVisible(false);
+		}
+		catch (SQLException e) {
+			message = "Could not insert break.";
+			JOptionPane.showMessageDialog(frame, message);
+		}
 	}
 	
 	

@@ -4,6 +4,7 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import java.awt.event.*;
 import java.io.File;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.*;
@@ -11,28 +12,62 @@ import java.util.Vector;
 
 
 
-public class AudioPlayer {
+public class AudioPlayer extends Thread {
 	
-	
+	boolean shouldStop=false;
 	byte buffer[];
-	
+	String filename;
+	Vector<ActionListener> listeners;
 	
 	
 	/**
 	 * Creates a new %AudioPlayer.
 	 */
-	public AudioPlayer() {
+	public AudioPlayer(String filename) {
 		
-		buffer = new byte[10000];
+		buffer = new byte[256];
+		this.filename = filename;
+		listeners = new Vector<ActionListener>();
 	}
 	
+	
+	public void addActionListener(ActionListener listener) {
+		
+		listeners.add(listener);
+	}
+	
+	
+	public void fireActionEvent(String command) {
+		
+		ActionEvent event;
+		
+		if (listeners.size() == 0)
+			return;
+		
+		event = new ActionEvent(this, 0, command);
+		for (ActionListener listener : listeners) {
+			listener.actionPerformed(event);
+		}
+	}
 	
 	
 	/**
 	 * Plays a file.
 	 */
-	public void play(File file)
-	                 throws Exception {
+	public void run() {
+		
+		try {
+			fireActionEvent("AUDIOPLAYER_PLAYING");
+			play(filename);
+			fireActionEvent("AUDIOPLAYER_STOPPED");
+		} catch (Exception e) {
+			System.err.println("[AudioPlayer] " + e.getMessage());
+		}
+	}
+	
+	
+	private void play(String filename) 
+	                  throws Exception {
 		
 		AudioFormat format;
 		AudioInputStream stream;
@@ -41,7 +76,7 @@ public class AudioPlayer {
 		SourceDataLine line;
 		
 		// Open file as stream
-		stream = AudioSystem.getAudioInputStream(file);
+		stream = AudioSystem.getAudioInputStream(new File(filename));
 		format = stream.getFormat();
 		
 		// Open line
@@ -51,26 +86,29 @@ public class AudioPlayer {
 		
 		// Play stream into line
 		line.start();
-		while ((count = stream.read(buffer, 0, buffer.length)) != -1)
-			if (count > 0)
+		while ((count = stream.read(buffer, 0, buffer.length)) != -1) {
+			if (count > 0) {
 				line.write(buffer, 0, count);
+			}
+			if (shouldStop) {
+				break;
+			}
+		}
 		
 		// Close line
-		line.drain();
+		if (shouldStop) {
+			line.flush();
+		} else {
+			line.drain();
+		}
 		line.close();
 	}
 	
 	
-	
-	/**
-	 * Plays a file.
-	 */
-	public void play(String filename)
-	                 throws Exception {
+	public void stopPlaying() {
 		
-		play(new File(filename));
+		shouldStop = true;
 	}
-	
 	
 	
 	/**
@@ -79,7 +117,7 @@ public class AudioPlayer {
 	public static void main(String[] args) {
 		
 		AudioPlayer audioPlayer;
-		String filename;
+		String folder, filename;
 		
 		// Start
 		System.out.println();
@@ -89,10 +127,12 @@ public class AudioPlayer {
 		System.out.println();
 		
 		// Test
-		filename = "/home/andy/computing/programs/dalmatian/audio/welcome.wav";
+		folder = "/home/andy/computing/programs/dalmatian/audio/";
+		filename = "that-word.wav";
 		try {
-			audioPlayer = new AudioPlayer();
-			audioPlayer.play(filename);
+			audioPlayer = new AudioPlayer(folder + filename);
+			audioPlayer.start();
+			audioPlayer.join();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -7,6 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.TreeMap;
+import java.util.Vector;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
@@ -15,10 +16,12 @@ import javax.swing.text.JTextComponent;
 /**
  * Panel containing input fields with labels.
  */
-public class InputPanel extends JPanel {
+public class InputPanel extends JPanel
+                        implements ActionListener {
 	
 	protected int row=-1;
 	protected TreeMap<String,JComponent> inputs;
+	protected Vector<ActionListener> listeners;
 	
 	
 	/**
@@ -33,6 +36,21 @@ public class InputPanel extends JPanel {
 		super(new GridBagLayout());
 		setBorder(BorderFactory.createTitledBorder(title));
 		inputs = new TreeMap<String,JComponent>();
+		listeners = new Vector<ActionListener>();
+	}
+	
+	
+	public void actionPerformed(ActionEvent event) {
+		
+		for (ActionListener listener : listeners) {
+			listener.actionPerformed(event);
+		}
+	}
+	
+	
+	public void addActionListener(ActionListener listener) {
+		
+		listeners.add(listener);
 	}
 	
 	
@@ -64,7 +82,8 @@ public class InputPanel extends JPanel {
 	 * 
 	 * If the input is an instance of %JTextArea, it will be wrapped in an 
 	 * instance of %JScrollPane for display.  Note that getInput will still 
-	 * return the %JTextArea.
+	 * return the %JTextArea.  Also, it will automatically enable word 
+	 * wrapping at word breaks on the text area.
 	 * 
 	 * @param name
 	 *     Text for the label.
@@ -104,14 +123,25 @@ public class InputPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridx = 1;
 		gbc.gridy = row;
+		if (input instanceof JTextArea) {
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+		}
 		gbc.insets = new Insets(2, 4, 2, 4);
 		
 		// Add and store component
 		inputs.put(name, input);
 		if (input instanceof JTextArea) {
+			((JTextArea)input).setLineWrap(true);
+			((JTextArea)input).setWrapStyleWord(true);
 			input = new JScrollPane(input);
 		}
 		add(input, gbc);
+		
+		// Add listener
+		if (input instanceof JComboBox) {
+			((JComboBox)input).setActionCommand(name);
+			((JComboBox)input).addActionListener(this);
+		}
 	}
 	
 	
@@ -125,6 +155,8 @@ public class InputPanel extends JPanel {
 				((JTextComponent)input).setText(null);
 			} else if (input instanceof JComboBox) {
 				((JComboBox)input).setSelectedIndex(0);
+			} else if (input instanceof FilenameInput) {
+				((FilenameInput)input).setText(null);
 			}
 		}
 	}

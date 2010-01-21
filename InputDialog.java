@@ -10,9 +10,12 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.text.JTextComponent;
 
 
 
@@ -55,6 +58,19 @@ public class InputDialog extends JDialog
 	}
 	
 	
+	protected void addButton(String name) {
+		
+		buttonPanel.addButton(name);
+	}
+	
+	
+	protected void addInput(String name,
+	                        JComponent input) {
+		
+		inputPanel.addInput(name, input);
+	}
+	
+	
 	protected void fireActionEvent(String command) {
 		
 		ActionEvent event;
@@ -63,6 +79,50 @@ public class InputDialog extends JDialog
 		event = new ActionEvent(this, 0, command);
 		for (ActionListener listener : listeners) {
 			listener.actionPerformed(event);
+		}
+	}
+	
+	
+	public void clear() {
+		
+		inputPanel.clear();
+	}
+	
+	
+	public String getFilenameFrom(String input) {
+		
+		String text;
+		
+		text = ((FilenameInput)inputPanel.getInput(input)).getText();
+		if (text.isEmpty()) {
+			return null;
+		} else {
+			return text;
+		}
+	}
+	
+	
+	public JComponent getInput(String input) {
+		
+		return inputPanel.getInput(input);
+	}
+	
+	
+	public Object getItemFrom(String input) {
+		
+		return ((JComboBox)inputPanel.getInput(input)).getSelectedItem();
+	}
+	
+	
+	public String getTextFrom(String input) {
+		
+		String text;
+		
+		text = ((JTextComponent)inputPanel.getInput(input)).getText();
+		if (text.isEmpty()) {
+			return null;
+		} else {
+			return text;
 		}
 	}
 	
@@ -103,6 +163,7 @@ public class InputDialog extends JDialog
 		
 		// Create and add to content pane
 		inputPanel = new InputPanel("Input");
+		inputPanel.addActionListener(this);
 		contentPane.add(inputPanel);
 	}
 	
@@ -111,6 +172,7 @@ public class InputDialog extends JDialog
 		
 		JFrame frame;
 		InputDialog dialog;
+		String[] options={"Option 1","Option 2"};
 		
 		// Start
 		System.out.println();
@@ -128,6 +190,7 @@ public class InputDialog extends JDialog
 		
 		// Create dialog
 		dialog = new InputDialog(frame, "New Spot");
+		dialog.addInput("Combo Box", new JComboBox(options));
 		dialog.pack();
 		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);

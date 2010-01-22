@@ -7,53 +7,54 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
-import java.util.TreeMap;
-import java.util.Vector;
 import javax.swing.*;
 
 
 
 
 /**
- * Dialog window for editing a %Sponsor.
+ * Dialog window with inputs for a Sponsor.
+ * 
+ * Can get and set with getSponsor() and setSponsor().  Also has basic 
+ * implementations of handleCancel(), handleClear(), and handleReset().
  */
 public class SponsorDialog extends InputDialog {
+	
+	private Sponsor original=null;
 	
 	
 	public SponsorDialog(JFrame frame,
 	                     String title) {
 		
-		// Initialize
 		super(frame, title, "Input");
-		initInputs();
-		initButtons();
+		
+		// Inputs
+		addInput("Name", new JTextField(20));
+		addInput("Street", new JTextField(20));
+		addInput("City", new JTextField(16));
+		addInput("State", new JComboBox(State.getCodes()));
+		addInput("Zip", new JTextField(5));
+		addInput("Phone", new JTextField(10));
 	}
 	
 	
-	public void actionPerformed(ActionEvent event) {
+	public void clear() {
 		
-		String command;
-		
-		// Handle command
-		command = event.getActionCommand();
-		if (command.equals("Cancel")) {
-			handleCancel();
-		} else if (command.equals("Clear")) {
-			handleClear();
-		} else if (command.equals("Insert")) {
-			handleInsert();
-		}
+		super.clear();
+		getInput("Name").requestFocus();
 	}
 	
 	
-	/**
-	 * Makes a sponsor from the input fields and returns it.
-	 */
+	public Sponsor getOriginal() {
+		
+		return original;
+	}
+	
+	
 	public Sponsor getSponsor() {
 		
 		Sponsor sponsor;
 		
-		// Create new sponsor
 		sponsor = new Sponsor();
 		sponsor.setName(getTextFrom("Name"));
 		sponsor.setStreet(getTextFrom("Street"));
@@ -65,55 +66,35 @@ public class SponsorDialog extends InputDialog {
 	}
 	
 	
-	private void handleCancel() {
+	protected void handleCancel() {
 		
 		clear();
 		setVisible(false);
 	}
 	
 	
-	private void handleClear() {
+	protected void handleClear() {
 		
+		original = null;
 		clear();
 	}
 	
 	
-	private void handleInsert() {
+	protected void handleReset() {
 		
-		Sponsor sponsor;
-		
-		try {
-			
-			// Get sponsor and insert it into database
-			sponsor = getSponsor();
-			sponsor.insert();
-			JOptionPane.showMessageDialog(frame, "Inserted sponsor.");
-			fireActionEvent("Refresh");
-			setVisible(false);
-		}
-		catch (SQLException e) {
-			System.err.println("[SponsorDialog] Error inserting sponsor.");
-			System.err.println("[SponsorDialog] Check missing fields.");
-		}
+		setSponsor(original);
 	}
 	
 	
-	private void initButtons() {
+	public void setSponsor(Sponsor sponsor) {
 		
-		buttonPanel.addButton("Insert");
-		buttonPanel.addButton("Cancel");
-		buttonPanel.addButton("Clear");
-	}
-	
-	
-	private void initInputs() {
-		
-		inputPanel.addInput("Name", new JTextField(20));
-		inputPanel.addInput("Street", new JTextField(20));
-		inputPanel.addInput("City", new JTextField(16));
-		inputPanel.addInput("State", new JComboBox(State.getCodes()));
-		inputPanel.addInput("Zip", new JTextField(5));
-		inputPanel.addInput("Phone", new JTextField(10));
+		original = new Sponsor(sponsor);
+		setTextIn("Name", sponsor.getName());
+		setTextIn("Street", sponsor.getStreet());
+		setTextIn("City", sponsor.getCity());
+		setItemIn("State", sponsor.getState());
+		setTextIn("Zip", sponsor.getZip());
+		setTextIn("Phone", sponsor.getPhone());
 	}
 	
 	

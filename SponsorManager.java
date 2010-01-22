@@ -16,7 +16,8 @@ import java.sql.SQLException;
  */
 public class SponsorManager extends DatabaseTableManager  {
 	
-	private SponsorDialog sponsorDialog;
+	private SponsorInsertDialog insertDialog;
+	private SponsorUpdateDialog updateDialog;
 	private static final String sql;
 	
 	
@@ -26,32 +27,38 @@ public class SponsorManager extends DatabaseTableManager  {
 	}
 	
 	
-	/**
-	 * Creates a new %SponsorsManager.
-	 */
 	public SponsorManager(JFrame frame)
 	                      throws SQLException {
 		
 		super(frame, sql);
-		init();
+		
+		// Buttons
+		addButton("Insert");
+		addButton("Update");
+		addButton("Delete");
+		addButton("Refresh");
+		
+		// Dialogs
+		insertDialog = new SponsorInsertDialog(frame, "New Sponsor");
+		insertDialog.pack();
+		insertDialog.addActionListener(this);
+		updateDialog = new SponsorUpdateDialog(frame, "Update Sponsor");
+		updateDialog.pack();
+		insertDialog.addActionListener(this);
 	}
 	
 	
-	/**
-	 * Triggered when an action is fired.
-	 */
 	public void actionPerformed(ActionEvent event) {
 		
 		String command;
 		
-		// Handle command
 		command = event.getActionCommand();
 		if (command.equals("Delete")) {
 			handleDelete();
-		} else if (command.equals("Edit")) {
-			handleEdit();
-		} else if (command.equals("New")) {
-			handleNew();
+		} else if (command.equals("Insert")) {
+			handleInsert();
+		} else if (command.equals("Update")) {
+			handleUpdate();
 		} else if (command.equals("Refresh")) {
 			refresh();
 		}
@@ -77,8 +84,8 @@ public class SponsorManager extends DatabaseTableManager  {
 		if (key != null && showConfirmDelete(key)) {
 			try {
 				Sponsor.delete(key);
-				showSuccessfulDelete(key);
 				refresh();
+				showSuccessfulDelete(key);
 			} catch (SQLException e) {
 				showUnsuccessfulDelete(key);
 			}
@@ -86,58 +93,36 @@ public class SponsorManager extends DatabaseTableManager  {
 	}
 	
 	
-	private void handleEdit() {
+	private void handleInsert() {
+		
+		// Show insert dialog
+		insertDialog.pack();
+		insertDialog.setLocationRelativeTo(this);
+		insertDialog.setVisible(true);
+	}
+	
+	
+	private void handleUpdate() {
 		
 		String key;
 		
-		key = getKey();
-		System.out.printf("[SponsorManager] Should edit \"%s\"\n", key);
-	}
-	
-	
-	/**
-	 * Action for the "New" command.
-	 */
-	private void handleNew() {
-		
-		// Show sponsor dialog
-		sponsorDialog.setLocationRelativeTo(this);
-		sponsorDialog.setVisible(true);
-	}
-	
-	
-	private void init() {
-		
-		initButtons();
-		initSponsorDialog();
-	}
-	
-	
-	/**
-	 * Initializes the buttons.
-	 */
-	private void initButtons() {
-		
-		String[] names={"New","Edit","Delete","Refresh"};
-		
-		// Add buttons to panel
-		for (String name : names) {
-			buttonPanel.addButton(name);
+		// Show update dialog
+		try {
+			key = getKey();
+			if (key == null) {
+				GUI.showMessage(this, "Please select a sponsor.");
+				return;
+			}
+			updateDialog.setSponsor(new Sponsor(key));
+			updateDialog.pack();
+			updateDialog.setLocationRelativeTo(this);
+			updateDialog.setVisible(true);
+		} catch (SQLException e) {
+			GUI.showError(this, "Could not retrieve sponsor!");
 		}
 	}
 	
 	
-	private void initSponsorDialog() {
-		
-		sponsorDialog = new SponsorDialog(frame, "New Sponsor");
-		sponsorDialog.addActionListener(this);
-		sponsorDialog.pack();
-	}
-	
-	
-	/**
-	 * Test for %SponsorManager.
-	 */
 	public static void main(String[] args) {
 		
 		JFrame frame;

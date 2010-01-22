@@ -18,7 +18,8 @@ public class SpotManager extends DatabaseTableManager  {
 	
 	private static final String sql;
 	private Retriever retriever;
-	private SpotDialog spotDialog;
+	private SpotDialog spotInsertDialog;
+	private SpotDialog spotUpdateDialog;
 	
 	
 	static {
@@ -34,7 +35,23 @@ public class SpotManager extends DatabaseTableManager  {
 	                   throws SQLException {
 		
 		super(frame, sql);
-		init();
+		
+		// Retriever
+		retriever = new Retriever();
+		
+		// Buttons
+		addButton("Insert");
+		addButton("Update");
+		addButton("Delete");
+		addButton("Refresh");
+		
+		// Dialogs
+		spotInsertDialog = new SpotInsertDialog(frame);
+		spotInsertDialog.addActionListener(this);
+		spotInsertDialog.pack();
+		spotUpdateDialog = new SpotUpdateDialog(frame);
+		spotUpdateDialog.addActionListener(this);
+		spotUpdateDialog.pack();
 	}
 	
 	
@@ -49,10 +66,10 @@ public class SpotManager extends DatabaseTableManager  {
 		command = event.getActionCommand();
 		if (command.equals("Delete")) {
 			handleDelete();
-		} else if (command.equals("Edit")) {
-			handleEdit();
-		} else if (command.equals("New")) {
-			handleNew();
+		} else if (command.equals("Insert")) {
+			handleInsert();
+		} else if (command.equals("Update")) {
+			handleUpdate();
 		} else if (command.equals("Refresh")) {
 			refresh();
 		}
@@ -119,55 +136,36 @@ public class SpotManager extends DatabaseTableManager  {
 	}
 	
 	
-	private void handleEdit() {
+	private void handleUpdate() {
 		
 		int key;
 		
-		key = getKey();
-		System.out.printf("[SpotManager] Should edit \"%s\"\n", key);
+		// Show sponsor dialog
+		try {
+			key = getKey();
+			if (key == -1) {
+				GUI.showMessage(this, "Please select a spot.");
+				return;
+			}
+			spotUpdateDialog.setSpot(new Spot(key));
+			spotUpdateDialog.pack();
+			spotUpdateDialog.setLocationRelativeTo(this);
+			spotUpdateDialog.setVisible(true);
+		} catch (SQLException e) {
+			GUI.showError(this, "Could not update spot.");
+		}
 	}
 	
 	
 	/**
 	 * Action for the "New" command.
 	 */
-	private void handleNew() {
+	private void handleInsert() {
 		
 		// Show sponsor dialog
-		spotDialog.setLocationRelativeTo(this);
-		spotDialog.setVisible(true);
-	}
-	
-	
-	private void init()
-	                  throws SQLException {
-		
-		retriever = new Retriever();
-		initButtons();
-		initSpotDialog();
-	}
-	
-	
-	/**
-	 * Initializes the buttons.
-	 */
-	private void initButtons() {
-		
-		String[] names={"New","Edit","Delete","Refresh"};
-		
-		// Add buttons to panel
-		for (String name : names) {
-			buttonPanel.addButton(name);
-		}
-	}
-	
-	
-	private void initSpotDialog()
-	                            throws SQLException {
-		
-		spotDialog = new SpotDialog(frame, "New Spot");
-		spotDialog.addActionListener(this);
-		spotDialog.pack();
+		spotInsertDialog.pack();
+		spotInsertDialog.setLocationRelativeTo(this);
+		spotInsertDialog.setVisible(true);
 	}
 	
 	

@@ -15,73 +15,31 @@ import javax.swing.*;
 
 
 /**
- * Dialog for adding a Spot.
+ * Dialog for working with spots.
  */
 public class SpotDialog extends InputDialog {
 	
+	private Spot original=null;
 	
-	/**
-	 * Creates a new %SpotDialog.
-	 */
+	
 	public SpotDialog(JFrame frame,
 	                  String title)
 	                  throws SQLException {
 		
 		super(frame, title, "Input");
 		
-		// Initialize
-		initInputs();
-		initButtons();
+		// Inputs
+		addInput("Sponsor", new JComboBox(Sponsor.getAllNames()));
+		addInput("Title", new JTextField(20));
+		addInput("Year", new JComboBox(Year.getAllYears()));
+		addInput("Filename", new FilenameInput(24, this));
+		addInput("Description", new JTextArea(4,30));
 	}
 	
 	
-	public void actionPerformed(ActionEvent event) {
+	public Spot getOriginal() {
 		
-		String command;
-		
-		command = event.getActionCommand();
-		if (command.equals("Add")) {
-			handleAdd();
-		} else if (command.equals("Cancel")) {
-			handleCancel();
-		} else if (command.equals("Reset")) {
-			handleReset();
-		}
-	}
-	
-	
-	private void handleAdd() {
-		
-		int type;
-		String message, title;
-		
-		// Get and insert
-		try {
-			getSpot().insert();
-			fireActionEvent("Refresh");
-			JOptionPane.showMessageDialog(this, "Inserted spot.");
-			clear();
-			setVisible(false);
-		} catch (SQLException e) {
-			System.err.println("[SpotDialog] " + e.getMessage());
-			title = "Error";
-			type = JOptionPane.ERROR_MESSAGE;
-			message = "Could not insert spot.\n\n" + e.getMessage();
-			JOptionPane.showMessageDialog(this, message, title, type);
-		}
-	}
-	
-	
-	private void handleCancel() {
-		
-		clear();
-		setVisible(false);
-	}
-	
-	
-	private void handleReset() {
-		
-		clear();
+		return original;
 	}
 	
 	
@@ -100,24 +58,20 @@ public class SpotDialog extends InputDialog {
 	}
 	
 	
-	private void initButtons() {
+	public void setSpot(Spot spot) {
 		
-		String[] names={"Add","Cancel","Reset"};
-		
-		for (String name : names) {
-			buttonPanel.addButton(name);
-		}
+		original = new Spot(spot);
+		setItemIn("Sponsor", spot.getSponsor());
+		setTextIn("Title", spot.getTitle());
+		setItemIn("Year", spot.getYear());
+		setTextIn("Filename", spot.getFilename());
+		setTextIn("Description", spot.getDescription());
 	}
 	
 	
-	private void initInputs() 
-	                        throws SQLException {
+	protected void handleReset() {
 		
-		addInput("Sponsor", new JComboBox(Sponsor.getAllNames()));
-		addInput("Title", new JTextField(20));
-		addInput("Year", new JComboBox(Year.getAllYears()));
-		addInput("Filename", new FilenameInput(24, this));
-		addInput("Description", new JTextArea(4,30));
+		setSpot(original);
 	}
 	
 	

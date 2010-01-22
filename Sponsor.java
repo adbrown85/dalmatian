@@ -21,7 +21,8 @@ public class Sponsor {
 	
 	private static PreparedStatement deleteStatement,
 	                                 insertStatement,
-	                                 selectStatement;
+	                                 selectStatement,
+	                                 updateStatement;
 	private String name;
 	private String street, city, state, zip;
 	private String phone;
@@ -38,6 +39,7 @@ public class Sponsor {
 			initDeleteStatement();
 			initInsertStatement();
 			initSelectStatement();
+			initUpdateStatement();
 		} catch (SQLException e) {
 			message = "[Sponsor] Could not prepare statements.\n" +
 			          "[Sponsor] Check database connection.";
@@ -168,40 +170,44 @@ public class Sponsor {
 	private static void initDeleteStatement()
 	                                        throws SQLException {
 		
-		Connection connection;
 		String sql;
 		
-		// Form and prepare statement
-		connection = Database.getConnection();
 		sql = "DELETE FROM sponsor WHERE name = ? LIMIT 1";
-		deleteStatement = connection.prepareStatement(sql);
+		deleteStatement = Database.prepareStatement(sql);
 	}
 	
 	
 	private static void initInsertStatement()
 	                                        throws SQLException {
 		
-		Connection connection;
 		String sql;
 		
 		// Form and prepare statement
-		connection = Database.getConnection();
 		sql = "INSERT INTO sponsor(name, street, city, state, zip, phone)"
 		      + " VALUES(?, ?, ?, ?, ?, ?)";
-		insertStatement = connection.prepareStatement(sql);
+		insertStatement = Database.prepareStatement(sql);
 	}
 	
 	
 	private static void initSelectStatement()
 	                                        throws SQLException {
 		
-		Connection connection;
 		String sql;
 		
-		// Form and prepare statement
-		connection = Database.getConnection();
 		sql = "SELECT * FROM sponsor WHERE name = ?";
-		selectStatement = connection.prepareStatement(sql);
+		selectStatement = Database.prepareStatement(sql);
+	}
+	
+	
+	private static void initUpdateStatement()
+	                                        throws SQLException {
+		
+		String sql;
+
+		sql = "UPDATE sponsor " + 
+		      "SET name=?, street=?, city=?, state=?, zip=?, phone=?" + 
+		      "WHERE name=?";
+		updateStatement = Database.prepareStatement(sql);
 	}
 	
 	
@@ -253,6 +259,21 @@ public class Sponsor {
 		
 		return String.format("%s, %s, %s, %s, %s, %s",
 		                     name, street, city, state, zip, phone);
+	}
+	
+	
+	public static void update(Sponsor original,
+	                          Sponsor updated)
+	                          throws SQLException {
+		
+		updateStatement.setString(1, updated.getName());
+		updateStatement.setString(2, updated.getStreet());
+		updateStatement.setString(3, updated.getCity());
+		updateStatement.setString(4, updated.getState());
+		updateStatement.setString(5, updated.getZip());
+		updateStatement.setString(6, updated.getPhone());
+		updateStatement.setString(7, original.getName());
+		updateStatement.executeUpdate();
 	}
 	
 	

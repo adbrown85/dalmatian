@@ -48,6 +48,13 @@ public class InputDialog extends ButtonDialog {
 	}
 	
 	
+	public void close() {
+		
+		clear();
+		setVisible(false);
+	}
+	
+	
 	public final JComponent getInput(String input) {
 		
 		return inputPanel.getInput(input);

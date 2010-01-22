@@ -18,6 +18,7 @@ public class Retriever {
 	private static PreparedStatement sponsorsWithSpots=null;
 	private static PreparedStatement yearsForSponsorTitle=null;
 	private static PreparedStatement spotForSponsorTitleYear=null;
+	private static PreparedStatement spotIdForSponsorTitleYear=null;
 	
 	
 	public Retriever()
@@ -27,6 +28,7 @@ public class Retriever {
 		initTitlesForSponsor();
 		initSponsorsWithSpots();
 		initSpotForSponsorTitleYear();
+		initSpotIdForSponsorTitleYear();
 		initYearsForSponsorTitle();
 	}
 	
@@ -84,6 +86,24 @@ public class Retriever {
 	}
 	
 	
+	public int getSpotIdFor(String sponsor,
+	                        String title,
+	                        Integer year)
+	                        throws SQLException {
+		
+		ResultSet results;
+		Vector<String> sponsors;
+		
+		// Execute query and process results
+		spotIdForSponsorTitleYear.setString(1, sponsor);
+		spotIdForSponsorTitleYear.setString(2, title);
+		spotIdForSponsorTitleYear.setInt(3, year);
+		results = spotIdForSponsorTitleYear.executeQuery();
+		results.next();
+		return (results.getInt(1));
+	}
+	
+	
 	public Vector<Integer> getYearsForSponsorTitle(String sponsor,
 	                                               String title)
 	                                               throws SQLException {
@@ -132,6 +152,20 @@ public class Retriever {
 	}
 	
 	
+	private void initSpotIdForSponsorTitleYear()
+	                                           throws SQLException {
+		
+		String sql;
+		
+		if (spotIdForSponsorTitleYear != null)
+			return;
+		
+		sql = "SELECT id FROM spot " +
+		      "WHERE sponsor=? AND title=? AND year=?";
+		spotIdForSponsorTitleYear = Database.prepareStatement(sql);
+	}
+	
+	
 	private void initTitlesForSponsor()
 	                                  throws SQLException {
 		
@@ -167,6 +201,7 @@ public class Retriever {
 	 */
 	public static void main(String[] args) {
 		
+		int id, year;
 		Retriever retriever;
 		Spot spot;
 		Vector<String> strings;
@@ -210,9 +245,17 @@ public class Retriever {
 			System.out.println("\nSpot for sponsor, title, year:");
 			sponsor = "Tire Land USA";
 			title = "Christmas Buy Three Get Fourth Free";
-			int year = 2009;
+			year = 2009;
 			spot = retriever.getSpotForSponsorTitleYear(sponsor, title, year);
 			spot.print();
+			
+			// Spot id for sponsor, title, year
+			System.out.println("\nSpot Id for sponsor, title, year:");
+			sponsor = "Tire Land USA";
+			title = "Christmas Buy Three Get Fourth Free";
+			year = 2009;
+			id = retriever.getSpotIdFor(sponsor, title, year);
+			System.out.println("  " + id);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

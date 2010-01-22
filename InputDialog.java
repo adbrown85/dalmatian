@@ -72,6 +72,19 @@ public class InputDialog extends ButtonDialog {
 	}
 	
 	
+	protected void handleCancel() {
+		
+		clear();
+		setVisible(false);
+	}
+	
+	
+	protected void handleClear() {
+		
+		clear();
+	}
+	
+	
 	public final void setItemIn(String input,
 	                            Object item) {
 		

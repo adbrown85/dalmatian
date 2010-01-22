@@ -66,13 +66,6 @@ public class SponsorDialog extends InputDialog {
 	}
 	
 	
-	protected void handleCancel() {
-		
-		clear();
-		setVisible(false);
-	}
-	
-	
 	protected void handleClear() {
 		
 		original = null;

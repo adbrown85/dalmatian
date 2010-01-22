@@ -131,15 +131,15 @@ public class Spot {
 	}
 	
 	
-	public String getName() {
-		
-		return title;
-	}
-	
-	
 	public String getSponsor() {
 		
 		return sponsor;
+	}
+	
+	
+	public String getTitle() {
+		
+		return title;
 	}
 	
 	

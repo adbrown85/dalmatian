@@ -17,25 +17,19 @@ import javax.swing.*;
 /**
  * Dialog window for editing a %Sponsor.
  */
-public class SponsorDialog extends InputDialog
-                           implements ActionListener {
+public class SponsorDialog extends InputDialog {
 	
 	
-	/**
-	 * Creates a new %SponsorDialog.
-	 */
 	public SponsorDialog(JFrame frame,
 	                     String title) {
 		
 		// Initialize
-		super(frame, title);
-		init();
+		super(frame, title, "Input");
+		initInputs();
+		initButtons();
 	}
 	
 	
-	/**
-	 * Handles events.
-	 */
 	public void actionPerformed(ActionEvent event) {
 		
 		String command;
@@ -58,38 +52,29 @@ public class SponsorDialog extends InputDialog
 	public Sponsor getSponsor() {
 		
 		Sponsor sponsor;
-		String name, street, city, state, zip, phone;
 		
-		// Get input
-		name = ((JTextField)inputPanel.getInput("Name")).getText();
-		street = ((JTextField)inputPanel.getInput("Street")).getText();
-		city = ((JTextField)inputPanel.getInput("City")).getText();
-		state = ((JComboBox)inputPanel.getInput("State")).getSelectedItem();
-		zip = ((JTextField)inputPanel.getInput("Zip")).getText();
-		phone = ((JTextField)inputPanel.getInput("Phone")).getText();
-		
-		// Set fields
+		// Create new sponsor
 		sponsor = new Sponsor();
-		sponsor.setName(name);
-		sponsor.setStreet(street);
-		sponsor.setCity(city);
-		sponsor.setState(state);
-		sponsor.setZip(zip);
-		sponsor.setPhone(phone);
+		sponsor.setName(getTextFrom("Name"));
+		sponsor.setStreet(getTextFrom("Street"));
+		sponsor.setCity(getTextFrom("City"));
+		sponsor.setState((String)getItemFrom("State"));
+		sponsor.setZip(getTextFrom("Zip"));
+		sponsor.setPhone(getTextFrom("Phone"));
 		return sponsor;
 	}
 	
 	
 	private void handleCancel() {
 		
-		inputPanel.clear();
+		clear();
 		setVisible(false);
 	}
 	
 	
 	private void handleClear() {
 		
-		inputPanel.clear();
+		clear();
 	}
 	
 	
@@ -113,17 +98,8 @@ public class SponsorDialog extends InputDialog
 	}
 	
 	
-	private void init() {
-		
-		// Components
-		initInputs();
-		initButtons();
-	}
-	
-	
 	private void initButtons() {
 		
-		// Create and add buttons
 		buttonPanel.addButton("Insert");
 		buttonPanel.addButton("Cancel");
 		buttonPanel.addButton("Clear");
@@ -132,7 +108,6 @@ public class SponsorDialog extends InputDialog
 	
 	private void initInputs() {
 		
-		// Create and add inputs
 		inputPanel.addInput("Name", new JTextField(20));
 		inputPanel.addInput("Street", new JTextField(20));
 		inputPanel.addInput("City", new JTextField(16));

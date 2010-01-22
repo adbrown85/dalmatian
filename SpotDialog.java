@@ -27,9 +27,11 @@ public class SpotDialog extends InputDialog {
 	                  String title)
 	                  throws SQLException {
 		
+		super(frame, title, "Input");
+		
 		// Initialize
-		super(frame, title);
-		init();
+		initInputs();
+		initButtons();
 	}
 	
 	
@@ -37,7 +39,6 @@ public class SpotDialog extends InputDialog {
 		
 		String command;
 		
-		// Handle command
 		command = event.getActionCommand();
 		if (command.equals("Add")) {
 			handleAdd();
@@ -52,15 +53,13 @@ public class SpotDialog extends InputDialog {
 	private void handleAdd() {
 		
 		int type;
-		Spot spot;
 		String message, title;
 		
 		// Get and insert
 		try {
-			spot = getSpot();
-			spot.insert();
-			message = "Inserted spot.";
-			JOptionPane.showMessageDialog(this, message);
+			getSpot().insert();
+			fireActionEvent("Refresh");
+			JOptionPane.showMessageDialog(this, "Inserted spot.");
 			clear();
 			setVisible(false);
 		} catch (SQLException e) {
@@ -95,21 +94,9 @@ public class SpotDialog extends InputDialog {
 		spot.setSponsor((String)getItemFrom("Sponsor"));
 		spot.setTitle(getTextFrom("Title"));
 		spot.setYear((Integer)getItemFrom("Year"));
-		spot.setFilename(getFilenameFrom("Filename"));
+		spot.setFilename(getTextFrom("Filename"));
 		spot.setDescription(getTextFrom("Description"));
 		return spot;
-	}
-	
-	
-	private void init()
-	                  throws SQLException {
-		
-		// Miscellaneous
-		setResizable(false);
-		
-		// Panels
-		initInputs();
-		initButtons();
 	}
 	
 	
@@ -117,7 +104,6 @@ public class SpotDialog extends InputDialog {
 		
 		String[] names={"Add","Cancel","Reset"};
 		
-		// Add buttons
 		for (String name : names) {
 			buttonPanel.addButton(name);
 		}
@@ -127,17 +113,14 @@ public class SpotDialog extends InputDialog {
 	private void initInputs() 
 	                        throws SQLException {
 		
-		inputPanel.addInput("Sponsor", new JComboBox(Sponsor.getAllNames()));
-		inputPanel.addInput("Title", new JTextField(20));
-		inputPanel.addInput("Year", new JComboBox(Year.getAllYears()));
-		inputPanel.addInput("Filename", new FilenameInput(24, this));
-		inputPanel.addInput("Description", new JTextArea(4,30));
+		addInput("Sponsor", new JComboBox(Sponsor.getAllNames()));
+		addInput("Title", new JTextField(20));
+		addInput("Year", new JComboBox(Year.getAllYears()));
+		addInput("Filename", new FilenameInput(24, this));
+		addInput("Description", new JTextArea(4,30));
 	}
 	
 	
-	/**
-	 * Test for %SpotDialog.
-	 */
 	public static void main(String[] args) {
 		
 		JFrame frame;

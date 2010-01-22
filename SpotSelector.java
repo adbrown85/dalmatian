@@ -20,21 +20,21 @@ import javax.swing.*;
 public class SpotSelector extends InputDialog {
 	
 	private static Retriever retriever=null;
-	private boolean pausedEvents=false;
 	private boolean playingAudio=false;
 	private AudioPlayer audioPlayer=null;
 	
 	
-	/**
-	 * Creates a new %SpotSelector.
-	 */
 	public SpotSelector(JFrame frame,
 	                    String title)
 	                    throws SQLException {
 		
+		super(frame, title, "Input");
+		
 		// Initialize
-		super(frame, title);
-		init();
+		setResizable(false);
+		initRetriever();
+		initInputs();
+		initButtons();
 	}
 	
 	
@@ -43,7 +43,7 @@ public class SpotSelector extends InputDialog {
 		String command;
 		
 		// Check pause
-		if (pausedEvents) {
+		if (eventsArePaused()) {
 			return;
 		}
 		
@@ -77,6 +77,19 @@ public class SpotSelector extends InputDialog {
 	                                           throws SQLException {
 		
 		return retriever.getSponsorsWithSpots();
+	}
+	
+	
+	public Spot getSpot()
+	                    throws SQLException {
+		
+		String sponsor, title;
+		Integer year;
+		
+		sponsor = (String)getItemFrom("Sponsor");
+		title = (String)getItemFrom("Title");
+		year = (Integer)getItemFrom("Year");
+		return retriever.getSpotForSponsorTitleYear(sponsor, title, year);
 	}
 	
 	
@@ -206,35 +219,9 @@ public class SpotSelector extends InputDialog {
 	private void handleYear() {
 		
 		try {
-			setDetails();
+			setFilenameDescription();
 		} catch (SQLException e) {
 		}
-	}
-	
-	
-	public Spot getSpot()
-	                    throws SQLException {
-		
-		String sponsor, title;
-		Integer year;
-		
-		sponsor = (String)getItemFrom("Sponsor");
-		title = (String)getItemFrom("Title");
-		year = (Integer)getItemFrom("Year");
-		return retriever.getSpotForSponsorTitleYear(sponsor, title, year);
-	}
-	
-	
-	private void init()
-	                  throws SQLException {
-		
-		// Miscellaneous
-		if (retriever == null)
-			retriever = new Retriever();
-		
-		// Panels
-		initInputs();
-		initButtons();
 	}
 	
 	
@@ -270,26 +257,21 @@ public class SpotSelector extends InputDialog {
 		textArea.setEditable(false);
 		textArea.setBackground(color);
 		addInput("Description", textArea);
-		
-		// Initialize
-		setDetails();
+		setFilenameDescription();
 	}
 	
 	
-	private void pauseEvents() {
+	private void initRetriever()
+	                           throws SQLException {
 		
-		pausedEvents = true;
+		// Miscellaneous
+		if (retriever == null)
+			retriever = new Retriever();
 	}
 	
 	
-	private void restartEvents() {
-		
-		pausedEvents = false;
-	}
-	
-	
-	private void setDetails()
-	                        throws SQLException {
+	private void setFilenameDescription()
+	                                    throws SQLException {
 		
 		Spot spot;
 		
@@ -300,9 +282,6 @@ public class SpotSelector extends InputDialog {
 	}
 	
 	
-	/**
-	 * Test for %SpotSelector.
-	 */
 	public static void main(String[] args) {
 		
 		JFrame frame;

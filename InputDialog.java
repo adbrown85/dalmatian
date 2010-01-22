@@ -4,82 +4,41 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.Timestamp;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.text.JTextComponent;
+import javax.swing.*;
 
 
 
 /**
  * Dialog for taking input from the user.
+ * 
+ * Basically a ButtonDialog with an InputPanel attached.
  */
-public class InputDialog extends JDialog
-                         implements ActionListener {
+public class InputDialog extends ButtonDialog {
 	
-	protected ButtonPanel buttonPanel;
-	protected InputPanel inputPanel;
-	protected final JFrame frame;
-	private JPanel contentPane;
-	private Vector<ActionListener> listeners;
+	protected final InputPanel inputPanel;
 	
 	
-	/**
-	 * Creates a new %SpotDialog.
-	 */
 	public InputDialog(JFrame frame,
-	                   String title) {
+	                   String frameTitle,
+	                   String inputTitle) {
 		
-		// Initialize
-		super(frame, title);
-		this.frame = frame;
-		init();
+		super(frame, frameTitle);
+		
+		// Input panel
+		inputPanel = new InputPanel(inputTitle);
+		inputPanel.addActionListener(this);
+		add(inputPanel, BorderLayout.CENTER);
 	}
 	
 	
-	public void actionPerformed(ActionEvent event) {
-		
-		System.err.printf("[InputDialog] Received \"%s\" event.\n",
-		                  event.getActionCommand());
-	}
-	
-	
-	public void addActionListener(ActionListener listener) {
-		
-		listeners.add(listener);
-	}
-	
-	
-	protected void addButton(String name) {
-		
-		buttonPanel.addButton(name);
-	}
-	
-	
-	protected void addInput(String name,
-	                        JComponent input) {
+	protected final void addInput(String name,
+	                              JComponent input) {
 		
 		inputPanel.addInput(name, input);
-	}
-	
-	
-	protected void fireActionEvent(String command) {
-		
-		ActionEvent event;
-		
-		// Send to each listener
-		event = new ActionEvent(this, 0, command);
-		for (ActionListener listener : listeners) {
-			listener.actionPerformed(event);
-		}
 	}
 	
 	
@@ -89,82 +48,27 @@ public class InputDialog extends JDialog
 	}
 	
 	
-	public String getFilenameFrom(String input) {
-		
-		String text;
-		
-		text = ((FilenameInput)inputPanel.getInput(input)).getText();
-		if (text.isEmpty()) {
-			return null;
-		} else {
-			return text;
-		}
-	}
-	
-	
-	public JComponent getInput(String input) {
+	public final JComponent getInput(String input) {
 		
 		return inputPanel.getInput(input);
 	}
 	
 	
-	public Object getItemFrom(String input) {
+	public final Object getItemFrom(String input) {
 		
-		return ((JComboBox)inputPanel.getInput(input)).getSelectedItem();
+		return inputPanel.getItemFrom(input);
 	}
 	
 	
-	public String getTextFrom(String input) {
+	public final String getTextFrom(String input) {
 		
-		String text;
-		
-		text = ((JTextComponent)inputPanel.getInput(input)).getText();
-		if (text.isEmpty()) {
-			return null;
-		} else {
-			return text;
-		}
+		return inputPanel.getTextFrom(input);
 	}
 	
 	
-	private void init() {
+	public final Timestamp getTimestampFrom(String input) {
 		
-		// Miscellaneous
-		setResizable(false);
-		listeners = new Vector<ActionListener>();
-		
-		// Panels
-		initContentPane();
-		initInputPanel();
-		initButtonPanel();
-	}
-	
-	
-	private void initButtonPanel() {
-		
-		// Create and add panel
-		buttonPanel = new ButtonPanel();
-		buttonPanel.addActionListener(this);
-		contentPane.add(buttonPanel);
-	}
-	
-	
-	private void initContentPane() {
-		
-		// Change content pane layout
-		contentPane = new JPanel();
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.PAGE_AXIS));
-		contentPane.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-		setContentPane(contentPane);
-	}
-	
-	
-	private void initInputPanel() {
-		
-		// Create and add to content pane
-		inputPanel = new InputPanel("Input");
-		inputPanel.addActionListener(this);
-		contentPane.add(inputPanel);
+		return inputPanel.getTimestampFrom(input);
 	}
 	
 	
@@ -189,8 +93,9 @@ public class InputDialog extends JDialog
 		frame.setVisible(true);
 		
 		// Create dialog
-		dialog = new InputDialog(frame, "New Spot");
+		dialog = new InputDialog(frame, "Input Dialog", "Input Section");
 		dialog.addInput("Combo Box", new JComboBox(options));
+		dialog.addButton("Button!");
 		dialog.pack();
 		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);

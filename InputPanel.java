@@ -6,6 +6,7 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Timestamp;
 import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.*;
@@ -168,6 +169,56 @@ public class InputPanel extends JPanel
 	public JComponent getInput(String name) {
 		
 		return inputs.get(name);
+	}
+	
+	
+	public Object getItemFrom(String inputName) {
+		
+		JComponent input;
+		
+		input = getInput(inputName);
+		if (input instanceof JComboBox) {
+			return ((JComboBox)input).getSelectedItem();
+		} else {
+			return null;
+		}
+	}
+	
+	
+	public String getTextFrom(String inputName) {
+		
+		JComponent input;
+		String text;
+		
+		// Get text
+		input = getInput(inputName);
+		if (input instanceof FilenameInput) {
+			text = ((FilenameInput)input).getText();
+		} else if (input instanceof JTextComponent) {
+			text = ((JTextComponent)input).getText();
+		} else {
+			return null;
+		}
+		
+		// Return null if it's empty
+		if (text.isEmpty()) {
+			return null;
+		} else {
+			return text;
+		}
+	}
+	
+	
+	public Timestamp getTimestampFrom(String inputName) {
+		
+		JComponent input;
+		
+		input = getInput(inputName);
+		if (input instanceof TimestampEditor) {
+			return ((TimestampEditor)input).getTimestamp();
+		} else {
+			return null;
+		}
 	}
 	
 	

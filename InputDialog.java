@@ -19,7 +19,7 @@ import javax.swing.*;
  */
 public class InputDialog extends ButtonDialog {
 	
-	protected final InputPanel inputPanel;
+	private final InputPanel inputPanel;
 	
 	
 	public InputDialog(JFrame frame,
@@ -69,6 +69,20 @@ public class InputDialog extends ButtonDialog {
 	public final Timestamp getTimestampFrom(String input) {
 		
 		return inputPanel.getTimestampFrom(input);
+	}
+	
+	
+	public final void setItemIn(String input,
+	                            Object item) {
+		
+		inputPanel.setItemIn(input, item);
+	}
+	
+	
+	public final void setTextIn(String input,
+	                            String text) {
+		
+		inputPanel.setTextIn(input, text);
 	}
 	
 	

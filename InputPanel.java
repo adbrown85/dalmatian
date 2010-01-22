@@ -222,6 +222,32 @@ public class InputPanel extends JPanel
 	}
 	
 	
+	public void setTextIn(String inputName,
+	                      String text) {
+		
+		JComponent input;
+		
+		input = getInput(inputName);
+		if (input instanceof FilenameInput) {
+			((FilenameInput)input).setText(text);
+		} else if (input instanceof JTextComponent) {
+			((JTextComponent)input).setText(text);
+		}
+	}
+	
+	
+	public void setItemIn(String inputName,
+	                      Object item) {
+		
+		JComponent input;
+		
+		input = getInput(inputName);
+		if (input instanceof JComboBox) {
+			((JComboBox)input).setSelectedItem(item);
+		}
+	}
+	
+	
 	public static void main(String[] args) {
 		
 		final InputPanel panel;

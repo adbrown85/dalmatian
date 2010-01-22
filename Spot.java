@@ -18,7 +18,9 @@ import java.sql.SQLException;
  */
 public class Spot {
 	
-	private static PreparedStatement insertStatement, selectStatement;
+	private static PreparedStatement deleteStatement,
+	                                 insertStatement,
+	                                 selectStatement;
 	private int id, year;
 	private String title, filename, description, sponsor;
 	
@@ -31,8 +33,9 @@ public class Spot {
 		String message;
 		
 		try {
-			initSelectStatement();
+			initDeleteStatement();
 			initInsertStatement();
+			initSelectStatement();
 		} catch (SQLException e) {
 			message = "[Spot] Could not prepare statements.\n" + 
 			          "[Spot] Check database connection.";
@@ -89,6 +92,15 @@ public class Spot {
 	}
 	
 	
+	public static void delete(int id)
+	                          throws SQLException {
+		
+		// Execute update
+		deleteStatement.setInt(1, id);
+		deleteStatement.executeUpdate();
+	}
+	
+	
 	public String getDescription() {
 		
 		return description;
@@ -125,6 +137,53 @@ public class Spot {
 	}
 	
 	
+	/**
+	 * Initializes the sql statement for delete a spot to the database.
+	 */
+	private static void initDeleteStatement()
+	                                        throws SQLException {
+		
+		String sql;
+		
+		// Prepare statement
+		sql = "DELETE FROM spot WHERE id=?";
+		deleteStatement = Database.prepareStatement(sql);
+	}
+	
+	
+	/**
+	 * Initializes the sql statement for adding a spot to the database.
+	 */
+	private static void initInsertStatement()
+	                                        throws SQLException {
+		
+		Connection connection;
+		String sql;
+		
+		// Prepare statement
+		connection = Database.getConnection();
+		sql = "INSERT INTO spot(sponsor, title, year, filename, description) " +
+		      "VALUES(?, ?, ?, ?, ?)";
+		insertStatement = connection.prepareStatement(sql);
+	}
+	
+	
+	/**
+	 * Initializes the select statement used to retrieve a spot.
+	 */
+	private static void initSelectStatement()
+	                                        throws SQLException {
+		
+		Connection connection;
+		String sql;
+		
+		// Prepare statement
+		sql = "SELECT * FROM spot WHERE id = ?";
+		connection = Database.getConnection();
+		selectStatement = connection.prepareStatement(sql);
+	}
+	
+	
 	public void insert()
 	                   throws SQLException {
 		
@@ -135,6 +194,12 @@ public class Spot {
 		insertStatement.setString(4, filename);
 		insertStatement.setString(5, description);
 		insertStatement.executeUpdate();
+	}
+	
+	
+	public void print() {
+		
+		System.out.println(toString());
 	}
 	
 	
@@ -165,45 +230,6 @@ public class Spot {
 	public void setYear(int year) {
 		
 		this.year = year;
-	}
-	
-	
-	/**
-	 * Initializes the select statement used to retrieve a spot.
-	 */
-	private static void initSelectStatement()
-	                                        throws SQLException {
-		
-		Connection connection;
-		String sql;
-		
-		// Prepare statement
-		sql = "SELECT * FROM spot WHERE id = ?";
-		connection = Database.getConnection();
-		selectStatement = connection.prepareStatement(sql);
-	}
-	
-	
-	/**
-	 * Initializes the insert statement for adding a spot to the database.
-	 */
-	private static void initInsertStatement()
-	                                        throws SQLException {
-		
-		Connection connection;
-		String sql;
-		
-		// Prepare statement
-		connection = Database.getConnection();
-		sql = "INSERT INTO spot(sponsor, title, year, filename, description) " +
-		      "VALUES(?, ?, ?, ?, ?)";
-		insertStatement = connection.prepareStatement(sql);
-	}
-	
-	
-	public void print() {
-		
-		System.out.println(toString());
 	}
 	
 	

@@ -131,6 +131,9 @@ public class InputPanel extends JPanel
 		
 		// Add and store component
 		inputs.put(name, input);
+		if (input instanceof JTextComponent) {
+			((JTextComponent)input).setMargin(new Insets(0,2,0,2));
+		}
 		if (input instanceof JTextArea) {
 			((JTextArea)input).setLineWrap(true);
 			((JTextArea)input).setWrapStyleWord(true);

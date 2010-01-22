@@ -20,7 +20,8 @@ public class Spot {
 	
 	private static PreparedStatement deleteStatement,
 	                                 insertStatement,
-	                                 selectStatement;
+	                                 selectStatement,
+	                                 updateStatement;
 	private int id, year;
 	private String title, filename, description, sponsor;
 	
@@ -36,6 +37,7 @@ public class Spot {
 			initDeleteStatement();
 			initInsertStatement();
 			initSelectStatement();
+			initUpdateStatement();
 		} catch (SQLException e) {
 			message = "[Spot] Could not prepare statements.\n" + 
 			          "[Spot] Check database connection.";
@@ -157,7 +159,6 @@ public class Spot {
 		
 		String sql;
 		
-		// Prepare statement
 		sql = "DELETE FROM spot WHERE id=?";
 		deleteStatement = Database.prepareStatement(sql);
 	}
@@ -169,14 +170,11 @@ public class Spot {
 	private static void initInsertStatement()
 	                                        throws SQLException {
 		
-		Connection connection;
 		String sql;
 		
-		// Prepare statement
-		connection = Database.getConnection();
 		sql = "INSERT INTO spot(sponsor, title, year, filename, description) " +
 		      "VALUES(?, ?, ?, ?, ?)";
-		insertStatement = connection.prepareStatement(sql);
+		insertStatement = Database.prepareStatement(sql);
 	}
 	
 	
@@ -186,13 +184,25 @@ public class Spot {
 	private static void initSelectStatement()
 	                                        throws SQLException {
 		
-		Connection connection;
 		String sql;
 		
-		// Prepare statement
 		sql = "SELECT * FROM spot WHERE id = ?";
-		connection = Database.getConnection();
-		selectStatement = connection.prepareStatement(sql);
+		selectStatement = Database.prepareStatement(sql);
+	}
+	
+	
+	/**
+	 * Initializes the SQL statement used to update a spot.
+	 */
+	private static void initUpdateStatement()
+	                                        throws SQLException {
+		
+		String sql;
+		
+		sql = "UPDATE spot " +
+		      "SET sponsor=?, title=?, year=?, filename=?, description=? " + 
+		      "WHERE id=?";
+		updateStatement = Database.prepareStatement(sql);
 	}
 	
 	
@@ -249,6 +259,20 @@ public class Spot {
 		
 		return String.format("\"%s\", %d, \"%s\", \"%s\"",
 		                     sponsor, year, title, filename);
+	}
+	
+	
+	public static void update(Spot original,
+	                          Spot updated)
+	                          throws SQLException {
+		
+		updateStatement.setString(1, updated.sponsor);
+		updateStatement.setString(2, updated.title);
+		updateStatement.setInt(3, updated.year);
+		updateStatement.setString(4, updated.filename);
+		updateStatement.setString(5, updated.description);
+		updateStatement.setInt(6, original.id);
+		updateStatement.executeUpdate();
 	}
 	
 	

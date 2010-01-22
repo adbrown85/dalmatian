@@ -23,7 +23,7 @@ public class SpotManager extends DatabaseTableManager  {
 	
 	static {
 		sql = "SELECT sponsor,title,year,filename FROM spot " + 
-		      "ORDER BY sponsor";
+		      "ORDER BY sponsor, title, year";
 	}
 	
 	

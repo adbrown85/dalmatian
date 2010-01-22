@@ -56,6 +56,18 @@ public class Spot {
 	}
 	
 	
+	public Spot(Spot other) {
+		
+		// Initialize
+		id = other.id;
+		sponsor = other.sponsor;
+		title = other.title;
+		year = other.year;
+		filename = other.filename;
+		description = other.description;
+	}
+	
+	
 	public Spot(ResultSet resultSet)
 	            throws SQLException {
 		

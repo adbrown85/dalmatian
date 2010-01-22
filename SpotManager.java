@@ -1,5 +1,5 @@
 /*
- * SponsorManager.java
+ * SpotManager.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
@@ -14,23 +14,24 @@ import java.sql.SQLException;
 /**
  * Manages sponsors.
  */
-public class SponsorManager extends DatabaseTableManager  {
+public class SpotManager extends DatabaseTableManager  {
 	
-	private SponsorDialog sponsorDialog;
 	private static final String sql;
+	private Retriever retriever;
+	private SpotDialog spotDialog;
 	
 	
 	static {
-		sql = "SELECT * FROM sponsor " + 
-		      "ORDER BY name";
+		sql = "SELECT sponsor,title,year,filename FROM spot " + 
+		      "ORDER BY sponsor";
 	}
 	
 	
 	/**
 	 * Creates a new %SponsorsManager.
 	 */
-	public SponsorManager(JFrame frame)
-	                      throws SQLException {
+	public SpotManager(JFrame frame)
+	                   throws SQLException {
 		
 		super(frame, sql);
 		init();
@@ -58,29 +59,61 @@ public class SponsorManager extends DatabaseTableManager  {
 	}
 	
 	
-	public String getKey() {
+	public int getKey() {
 		
 		if (hasSelected()) {
-			return (String)getValueAt(getSelectedRow(), 0);
-		} else {
-			return null;
+			try {
+				return retriever.getSpotIdFor(getSponsor(),
+				                              getTitle(),
+				                              getYear());
+			} catch (SQLException e) {
+			}
 		}
+		return -1;
+	}
+	
+	
+	public String getDescriptor() {
+		
+		if (hasSelected())
+			return getSponsor() + ", " + getTitle() + ", " + getYear();
+		return null;
+	}
+	
+	
+	public String getSponsor() {
+		
+		return (String)getValueAt(getSelectedRow(), 0);
+	}
+	
+	
+	public String getTitle() {
+		
+		return (String)getValueAt(getSelectedRow(), 1);
+	}
+	
+	
+	public int getYear() {
+		
+		return (Integer)getValueAt(getSelectedRow(), 2);
 	}
 	
 	
 	private void handleDelete() {
 		
-		String key;
+		int key;
+		String item;
 		
 		// Confirm
 		key = getKey();
-		if (key != null && showConfirmDelete(key)) {
+		item = getDescriptor();
+		if (key != -1 && showConfirmDelete(item)) {
 			try {
-				Sponsor.delete(key);
-				showSuccessfulDelete(key);
+				Spot.delete(key);
+				showSuccessfulDelete(item);
 				refresh();
 			} catch (SQLException e) {
-				showUnsuccessfulDelete(key);
+				showUnsuccessfulDelete(item);
 			}
 		}
 	}
@@ -88,10 +121,10 @@ public class SponsorManager extends DatabaseTableManager  {
 	
 	private void handleEdit() {
 		
-		String key;
+		int key;
 		
 		key = getKey();
-		System.out.printf("[SponsorManager] Should edit \"%s\"\n", key);
+		System.out.printf("[SpotManager] Should edit \"%s\"\n", key);
 	}
 	
 	
@@ -101,15 +134,17 @@ public class SponsorManager extends DatabaseTableManager  {
 	private void handleNew() {
 		
 		// Show sponsor dialog
-		sponsorDialog.setLocationRelativeTo(this);
-		sponsorDialog.setVisible(true);
+		spotDialog.setLocationRelativeTo(this);
+		spotDialog.setVisible(true);
 	}
 	
 	
-	private void init() {
+	private void init()
+	                  throws SQLException {
 		
+		retriever = new Retriever();
 		initButtons();
-		initSponsorDialog();
+		initSpotDialog();
 	}
 	
 	
@@ -127,11 +162,12 @@ public class SponsorManager extends DatabaseTableManager  {
 	}
 	
 	
-	private void initSponsorDialog() {
+	private void initSpotDialog()
+	                            throws SQLException {
 		
-		sponsorDialog = new SponsorDialog(frame, "New Sponsor");
-		sponsorDialog.addActionListener(this);
-		sponsorDialog.pack();
+		spotDialog = new SpotDialog(frame, "New Spot");
+		spotDialog.addActionListener(this);
+		spotDialog.pack();
 	}
 	
 	
@@ -145,15 +181,15 @@ public class SponsorManager extends DatabaseTableManager  {
 		// Start
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("SponsorManager");
+		System.out.println("SpotManager");
 		System.out.println("****************************************");
 		System.out.println();
 		
 		// Create frame
 		try {
-			frame = new JFrame("SponsorManager");
+			frame = new JFrame("Spot Manager");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setContentPane(new SponsorManager(frame));
+			frame.setContentPane(new SpotManager(frame));
 			frame.pack();
 			frame.setVisible(true);
 		} catch (SQLException e) {
@@ -163,7 +199,7 @@ public class SponsorManager extends DatabaseTableManager  {
 		// Finish
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("SponsorManager");
+		System.out.println("SpotManager");
 		System.out.println("****************************************");
 		System.out.println();
 	}

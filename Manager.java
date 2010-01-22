@@ -21,9 +21,6 @@ public class Manager {
 	JFrame frame;
 	
 	
-	/**
-	 * Creates a new %Manager.
-	 */
 	public Manager()
 	               throws SQLException {
 		
@@ -39,9 +36,6 @@ public class Manager {
 	}
 	
 	
-	/**
-	 * Initializes all the tabs.
-	 */
 	public void initTabs()
 	                     throws SQLException {
 		
@@ -52,18 +46,15 @@ public class Manager {
 		tabbedPane.addTab("Sponsors", sponsorsPanel);
 		
 		// Spots
-		spotsPanel = new JPanel();
+		spotsPanel = new SpotManager(frame);
 		tabbedPane.addTab("Spots", spotsPanel);
 		
 		// Breaks
-		breaksPanel = new JPanel();
+		breaksPanel = new BreakManager(frame);
 		tabbedPane.addTab("Breaks", breaksPanel);
 	}
 	
 	
-	/**
-	 * Starts the %Manager.
-	 */
 	public void run() {
 		
 		// Pack and show frame
@@ -72,9 +63,6 @@ public class Manager {
 	}
 	
 	
-	/**
-	 * Entry point for %Manager.
-	 */
 	public static void main(String[] args) {
 		
 		Manager manager;
@@ -86,11 +74,13 @@ public class Manager {
 		System.out.println("****************************************");
 		System.out.println();
 		
-		// Run
 		try {
+			
+			// Run
 			manager = new Manager();
 			manager.run();
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 		

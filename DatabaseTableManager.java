@@ -88,6 +88,7 @@ public class DatabaseTableManager extends JPanel
 		// Appearance
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		setMaximumSize(GUI.getInfiniteSize());
 		
 		// Initialize components
 		initTable(tableModel);
@@ -114,6 +115,7 @@ public class DatabaseTableManager extends JPanel
 		table = new DatabaseTable(tableModel);
 		scrollPane = new JScrollPane(table);
 		scrollPane.setVerticalScrollBarPolicy(scrollBarPolicy);
+		scrollPane.setMaximumSize(GUI.getInfiniteSize());
 		add(scrollPane);
 	}
 	

@@ -41,7 +41,7 @@ public class FilenameInput extends JPanel
 		// Initialize
 		super(new GridBagLayout());
 		init(size, dialogParent, true);
-		setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+		setMaximumSize(GUI.getInfiniteSize());
 	}
 	
 	
@@ -106,6 +106,7 @@ public class FilenameInput extends JPanel
 		gbc = new GridBagConstraints();
 		gbc.gridx = 1;
 		gbc.gridy = 0;
+		gbc.weightx = 0;
 		gbc.insets = new Insets(0, 4, 0, 0);
 		
 		// Add it
@@ -129,11 +130,13 @@ public class FilenameInput extends JPanel
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 		// Add it
 		textField = new JTextField(size);
-		add(textField);
+		textField.setMaximumSize(GUI.getInfiniteSize());
+		add(textField, gbc);
 	}
 	
 	

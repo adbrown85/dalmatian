@@ -35,6 +35,20 @@ public class GUI {
 	}
 	
 	
+	public static boolean showConfirmDelete(Component parent) {
+		
+		int option, style;
+		String message, title;
+		
+		// Show confirm dialog
+		title = "Confirm Delete";
+		message = "Are you sure you want to delete this item?";
+		style = JOptionPane.YES_NO_OPTION;
+		option = JOptionPane.showConfirmDialog(parent, message, title, style);
+		return option == JOptionPane.YES_OPTION;
+	}
+	
+	
 	/**
 	 * Shows an error dialog.
 	 */

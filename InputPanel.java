@@ -70,6 +70,7 @@ public class InputPanel extends JPanel
 		gbc.anchor = anchor;
 		gbc.gridx = 0;
 		gbc.gridy = row;
+		gbc.weightx = 0;
 		gbc.insets = new Insets(2, 4, 2, 4);
 		
 		// Add component
@@ -124,6 +125,7 @@ public class InputPanel extends JPanel
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridx = 1;
 		gbc.gridy = row;
+		gbc.weightx = 1;
 		if (input instanceof JTextArea) {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 		}

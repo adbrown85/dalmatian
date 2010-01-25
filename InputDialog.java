@@ -19,7 +19,7 @@ import javax.swing.*;
  */
 public class InputDialog extends ButtonDialog {
 	
-	private final InputPanel inputPanel;
+	protected final InputPanel inputPanel;
 	
 	
 	public InputDialog(JFrame frame,
@@ -31,7 +31,7 @@ public class InputDialog extends ButtonDialog {
 		// Input panel
 		inputPanel = new InputPanel(inputTitle);
 		inputPanel.addActionListener(this);
-		add(inputPanel, BorderLayout.CENTER);
+		add(inputPanel);
 	}
 	
 	

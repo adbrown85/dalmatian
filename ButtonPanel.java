@@ -4,6 +4,7 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -28,7 +29,18 @@ public class ButtonPanel extends JPanel
 	public ButtonPanel() {
 		
 		// Initialize
-		super();
+		super(new FlowLayout(FlowLayout.CENTER));
+		listeners = new Vector<ActionListener>();
+	}
+	
+	
+	/**
+	 * Creates a new panel of buttons.
+	 */
+	public ButtonPanel(int align) {
+		
+		// Initialize
+		super(new FlowLayout(align));
 		listeners = new Vector<ActionListener>();
 	}
 	

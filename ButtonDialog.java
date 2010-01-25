@@ -25,7 +25,7 @@ import javax.swing.*;
 public class ButtonDialog extends ActionDialog {
 	
 	protected final ButtonPanel buttonPanel;
-	protected final JPanel contentPane;
+	protected final JPanel centerPanel, contentPane;
 	
 	
 	public ButtonDialog(JFrame frame,
@@ -39,15 +39,20 @@ public class ButtonDialog extends ActionDialog {
 		setContentPane(contentPane);
 		
 		// Button panel
-		buttonPanel = new ButtonPanel();
+		buttonPanel = new ButtonPanel(FlowLayout.RIGHT);
 		buttonPanel.addActionListener(this);
 		contentPane.add(buttonPanel, BorderLayout.PAGE_END);
+		
+		// Center panel
+		centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.PAGE_AXIS));
+		contentPane.add(centerPanel, BorderLayout.CENTER);
 	}
 	
 	
 	public Component add(Component component) {
 		
-		contentPane.add(component, BorderLayout.CENTER);
+		centerPanel.add(component);
 		return component;
 	}
 	
@@ -80,6 +85,8 @@ public class ButtonDialog extends ActionDialog {
 		// Create dialog
 		dialog = new ButtonDialog(frame, "Button Dialog");
 		dialog.addButton("Button!");
+		dialog.add(new JLabel("First label"));
+		dialog.add(new JLabel("Second label"));
 		dialog.pack();
 		dialog.setLocationRelativeTo(frame);
 		dialog.setVisible(true);

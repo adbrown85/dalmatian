@@ -34,10 +34,10 @@ public class TimestampEditor extends JPanel {
 		
 		// Initialize
 		super(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		initTimestamp(timestamp);
-		initCalendar();
 		initDatePanel();
 		initTimePanel();
+		initTimestamp(timestamp);
+		initCalendar();
 	}
 	
 	
@@ -76,8 +76,7 @@ public class TimestampEditor extends JPanel {
 	}
 	
 	
-	private JComboBox initComboBoxWith(int start,
-	                                   int end) {
+	private void initDate() {
 		
 		JComboBox comboBox;
 		Integer[] range;
@@ -97,25 +96,23 @@ public class TimestampEditor extends JPanel {
 		add(datePanel);
 		
 		// Add months
-		monthCombo = initComboBoxWith(1, 12);
+		monthCombo = GUI.getComboBoxFor(1, 12);
 		datePanel.add(monthCombo);
 		monthCombo.setSelectedItem(calendar.get(Calendar.MONTH) + 1);
 		
 		// Add days
-		dayCombo = initComboBoxWith(1, 31);
+		dayCombo = GUI.getComboBoxFor(1, 31);
 		datePanel.add(dayCombo);
 		dayCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 		
 		// Add years
-		yearCombo = initComboBoxWith(2010, 2035);
+		yearCombo = GUI.getComboBoxFor(2010, 2035);
 		datePanel.add(yearCombo);
 		yearCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	
-	private void initTimePanel() {
 		
-		int hour;
 		
 		// Create and add panel
 		timePanel = new JPanel();
@@ -130,12 +127,11 @@ public class TimestampEditor extends JPanel {
 		hourCombo.setSelectedIndex(calendar.get(Calendar.HOUR));
 		
 		// Add minute
-		minuteCombo = initComboBoxWith(0, 59);
+		minuteCombo = GUI.getComboBoxFor(0, 59);
 		timePanel.add(minuteCombo);
-		minuteCombo.setSelectedItem(calendar.get(Calendar.MINUTE));
 		
 		// Add second
-		secondCombo = initComboBoxWith(0, 59);
+		secondCombo = GUI.getComboBoxFor(0, 59);
 		timePanel.add(secondCombo);
 		// secondCombo.setSelectedItem(calendar.get(Calendar.SECOND));
 		

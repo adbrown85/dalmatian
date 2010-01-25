@@ -22,6 +22,19 @@ public class GUI {
 	}
 	
 	
+	public static JComboBox getComboBoxFor(int start,
+	                                       int end) {
+		
+		JComboBox comboBox;
+		
+		// Make range
+		comboBox = new JComboBox();
+		for (int i=start; i<=end; ++i)
+			comboBox.addItem(i);
+		return comboBox;
+	}
+	
+	
 	/**
 	 * Shows an error dialog.
 	 */

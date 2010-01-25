@@ -6,6 +6,7 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Vector;
 import javax.swing.*;
@@ -103,6 +104,14 @@ public class InputDialog extends ButtonDialog {
 	                            String text) {
 		
 		inputPanel.setTextIn(input, text);
+	}
+	
+	
+	public final void setTimestampIn(String input,
+	                                 Timestamp timestamp)
+	                                 throws SQLException {
+		
+		inputPanel.setTimestampIn(input, timestamp);
 	}
 	
 	

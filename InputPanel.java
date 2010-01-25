@@ -6,6 +6,7 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -249,6 +250,19 @@ public class InputPanel extends JPanel
 		input = getInput(inputName);
 		if (input instanceof JComboBox) {
 			((JComboBox)input).setSelectedItem(item);
+		}
+	}
+	
+	
+	public void setTimestampIn(String inputName,
+	                           Timestamp timestamp)
+	                           throws SQLException {
+		
+		JComponent input;
+		
+		input = getInput(inputName);
+		if (input instanceof TimestampEditor) {
+			((TimestampEditor)input).setTimestamp(timestamp);
 		}
 	}
 	

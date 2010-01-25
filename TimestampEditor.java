@@ -38,6 +38,8 @@ public class TimestampEditor extends JPanel {
 		initTimePanel();
 		initTimestamp(timestamp);
 		initCalendar();
+		initDate();
+		initTime();
 	}
 	
 	
@@ -78,14 +80,10 @@ public class TimestampEditor extends JPanel {
 	
 	private void initDate() {
 		
-		JComboBox comboBox;
-		Integer[] range;
-		
-		// Make range
-		comboBox = new JComboBox();
-		for (int i=start; i<=end; ++i)
-			comboBox.addItem(i);
-		return comboBox;
+		// Initialize to calendar
+		monthCombo.setSelectedItem(calendar.get(Calendar.MONTH) + 1);
+		dayCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
+		yearCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	
@@ -98,21 +96,31 @@ public class TimestampEditor extends JPanel {
 		// Add months
 		monthCombo = GUI.getComboBoxFor(1, 12);
 		datePanel.add(monthCombo);
-		monthCombo.setSelectedItem(calendar.get(Calendar.MONTH) + 1);
 		
 		// Add days
 		dayCombo = GUI.getComboBoxFor(1, 31);
 		datePanel.add(dayCombo);
-		dayCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 		
 		// Add years
 		yearCombo = GUI.getComboBoxFor(2010, 2035);
 		datePanel.add(yearCombo);
-		yearCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	
+	private void initTime() {
 		
+		// Initialize to calendar
+		hourCombo.setSelectedIndex(calendar.get(Calendar.HOUR));
+		minuteCombo.setSelectedItem(calendar.get(Calendar.MINUTE));
+		// secondCombo.setSelectedItem(calendar.get(Calendar.SECOND));
+		if (calendar.get(Calendar.AM_PM) == Calendar.AM)
+			amPmCombo.setSelectedItem("AM");
+		else
+			amPmCombo.setSelectedItem("PM");
+	}
+	
+	
+	private void initTimePanel() {
 		
 		// Create and add panel
 		timePanel = new JPanel();
@@ -124,7 +132,6 @@ public class TimestampEditor extends JPanel {
 		for (int i=1; i<=11; ++i)
 			hourCombo.addItem(i);
 		timePanel.add(hourCombo);
-		hourCombo.setSelectedIndex(calendar.get(Calendar.HOUR));
 		
 		// Add minute
 		minuteCombo = GUI.getComboBoxFor(0, 59);
@@ -133,15 +140,12 @@ public class TimestampEditor extends JPanel {
 		// Add second
 		secondCombo = GUI.getComboBoxFor(0, 59);
 		timePanel.add(secondCombo);
-		// secondCombo.setSelectedItem(calendar.get(Calendar.SECOND));
 		
 		// Add AM/PM
 		amPmCombo = new JComboBox();
 		amPmCombo.addItem("AM");
 		amPmCombo.addItem("PM");
 		timePanel.add(amPmCombo);
-		if (calendar.get(Calendar.AM_PM) == Calendar.PM)
-			amPmCombo.setSelectedItem("PM");
 	}
 	
 	
@@ -153,6 +157,16 @@ public class TimestampEditor extends JPanel {
 			this.timestamp = Database.getCurrentTimestamp();
 		else
 			this.timestamp = timestamp;
+	}
+	
+	
+	public void setTimestamp(Timestamp timestamp)
+	                         throws SQLException {
+		
+		initTimestamp(timestamp);
+		initCalendar();
+		initDate();
+		initTime();
 	}
 	
 	

@@ -16,7 +16,8 @@ public class Break {
 	
 	private static PreparedStatement deleteStatement,
 	                                 insertStatement,
-	                                 selectStatement;
+	                                 selectStatement,
+	                                 updateStatement;
 	private static SimpleDateFormat dateFormat;
 	private int id;
 	private Timestamp start, end;
@@ -34,6 +35,7 @@ public class Break {
 			initDeleteStatement();
 			initInsertStatement();
 			initSelectStatement();
+			initUpdateStatement();
 		} catch (SQLException e) {
 			message = "[Break] Could not prepare SQL statements.\n" + 
 			          "[Break] Check database connection.";
@@ -50,6 +52,14 @@ public class Break {
 		this.id = 0;
 		this.start = null;
 		this.end = null;
+	}
+	
+	
+	public Break(Break other) {
+		
+		this.id = other.id;
+		this.start = other.start;
+		this.end = other.end;
 	}
 	
 	
@@ -137,6 +147,19 @@ public class Break {
 	}
 	
 	
+	private static void initUpdateStatement()
+	                                        throws SQLException {
+		
+		String sql;
+		
+		// Prepare statement
+		sql = "UPDATE break " + 
+		      "SET id=?, start=?, end=? " +
+		      "WHERE id=?";
+		updateStatement = Database.prepareStatement(sql);
+	}
+	
+	
 	public void insert()
 	                   throws SQLException {
 		
@@ -166,6 +189,12 @@ public class Break {
 	}
 	
 	
+	public void setId(int id) {
+		
+		this.id = id;
+	}
+	
+	
 	public void setStart(Timestamp start) {
 		
 		this.start = start;
@@ -177,6 +206,18 @@ public class Break {
 		return String.format("%d: %s, %s", id,
 		                     dateFormat.format(start),
 		                     dateFormat.format(end));
+	}
+	
+	
+	public static void update(Break original,
+	                          Break updated) 
+	                          throws SQLException {
+		
+		updateStatement.setInt(1, updated.id);
+		updateStatement.setTimestamp(2, updated.start);
+		updateStatement.setTimestamp(3, updated.end);
+		updateStatement.setInt(4, original.id);
+		updateStatement.executeUpdate();
 	}
 	
 	

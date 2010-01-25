@@ -7,6 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 import java.sql.SQLException;
 
 
@@ -19,17 +20,25 @@ public class DatabaseTableManager extends JPanel
 	
 	private final int HEIGHT=480, WIDTH=640;
 	protected ButtonPanel buttonPanel;
-	protected DatabaseTable databaseTable;
+	protected DatabaseTable table;
+	protected DatabaseTableModel tableModel;
 	protected JFrame frame;
+	protected JScrollPane scrollPane;
 	
 	
-	public DatabaseTableManager(JFrame frame,
-	                            String sql)
+	public DatabaseTableManager(String sql)
 	                            throws SQLException {
 		
-		// Create as panel with a box layout
 		super();
-		init(frame, sql);
+		init(new DatabaseTableModel(sql));
+	}
+	
+	
+	public DatabaseTableManager(DatabaseTableModel tableModel)
+	                            throws SQLException {
+		
+		super();
+		init(tableModel);
 	}
 	
 	
@@ -39,7 +48,7 @@ public class DatabaseTableManager extends JPanel
 		String command;
 		
 		// Get row and key
-		row = databaseTable.getSelectedRow();
+		row = table.getSelectedRow();
 		System.out.printf("[DatabaseTableManager] Row %d selected.\n", row);
 		
 		// Handle command
@@ -56,14 +65,14 @@ public class DatabaseTableManager extends JPanel
 	
 	public int getSelectedRow() {
 		
-		return databaseTable.getSelectedRow();
+		return table.getSelectedRow();
 	}
 	
 	
 	public Object getValueAt(int row,
 	                         int column) {
 		
-		return databaseTable.getValueAt(row, column);
+		return table.getValueAt(row, column);
 	}
 	
 	
@@ -73,17 +82,15 @@ public class DatabaseTableManager extends JPanel
 	}
 	
 	
-	private void init(JFrame frame,
-	                  String sql) 
+	private void init(DatabaseTableModel tableModel)
 	                  throws SQLException {
 		
-		// Miscellaneous
+		// Appearance
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-		this.frame = frame;
 		
 		// Initialize components
-		initDatabaseTable(sql);
+		initTable(tableModel);
 		initButtonPanel();
 	}
 	
@@ -97,18 +104,15 @@ public class DatabaseTableManager extends JPanel
 	}
 	
 	
-	private void initDatabaseTable(String sql)
-	                               throws SQLException {
+	private void initTable(DatabaseTableModel tableModel)
+	                       throws SQLException {
 		
 		int scrollBarPolicy=ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
-		JScrollPane scrollPane;
 		
 		// Create table and add it with a scroll pane
-		databaseTable = new DatabaseTable(sql);
-		scrollPane = new JScrollPane(databaseTable);
-		scrollPane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE,
-		                                        Integer.MAX_VALUE));
+		this.tableModel = tableModel;
+		table = new DatabaseTable(tableModel);
+		scrollPane = new JScrollPane(table);
 		scrollPane.setVerticalScrollBarPolicy(scrollBarPolicy);
 		add(scrollPane);
 	}
@@ -118,10 +122,20 @@ public class DatabaseTableManager extends JPanel
 		
 		// Refresh data
 		try {
-			databaseTable.refresh();
+			table.refresh();
 		} catch (SQLException e) {
 			System.err.println("[DatabaseTableManager] Could not refresh.");
 		}
+	}
+	
+	
+	protected void setTableBorder(Border border) {
+		
+		Border compound, inside;
+		
+		inside = scrollPane.getBorder();
+		compound = BorderFactory.createCompoundBorder(border, inside);
+		scrollPane.setBorder(compound);
 	}
 	
 	
@@ -134,7 +148,7 @@ public class DatabaseTableManager extends JPanel
 		message = "Are you sure you want to delete \"" + item + "\"?";
 		title = "Confirm Delete";
 		style = JOptionPane.YES_NO_OPTION;
-		option = JOptionPane.showConfirmDialog(frame, message, title, style);
+		option = JOptionPane.showConfirmDialog(this, message, title, style);
 		return option == JOptionPane.YES_OPTION;
 	}
 	
@@ -148,7 +162,7 @@ public class DatabaseTableManager extends JPanel
 		message = "Successfully deleted \"" + item + "\".";
 		title = "Successful Delete";
 		type = JOptionPane.INFORMATION_MESSAGE;
-		JOptionPane.showMessageDialog(frame, message, title, type);
+		JOptionPane.showMessageDialog(this, message, title, type);
 	}
 	
 	
@@ -161,7 +175,7 @@ public class DatabaseTableManager extends JPanel
 		message = "Could not delete \"" + item + "\".";
 		title = "Unsuccessful Delete";
 		type = JOptionPane.ERROR_MESSAGE;
-		JOptionPane.showMessageDialog(frame, message, title, type);
+		JOptionPane.showMessageDialog(this, message, title, type);
 	}
 	
 	
@@ -186,7 +200,7 @@ public class DatabaseTableManager extends JPanel
 			
 			// Create manager and add it to the frame
 			sql = "SELECT * FROM sponsor ORDER BY name";
-			databaseTableManager = new DatabaseTableManager(frame, sql);
+			databaseTableManager = new DatabaseTableManager(sql);
 			databaseTableManager.addButton("New");
 			databaseTableManager.addButton("Edit");
 			databaseTableManager.addButton("Delete");

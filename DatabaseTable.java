@@ -21,23 +21,32 @@ import javax.swing.table.TableColumnModel;
 public class DatabaseTable extends JTable {
 	
 	private static final int PADDING=35;
-	private String tableName;
-	private DatabaseTableModel tableModel;
+	protected DatabaseTableModel tableModel;
+	protected Object[] longestValues;
 	
 	
-	/**
-	 * Creates a new %DatabaseTable.
-	 */
-	public DatabaseTable(String tableName)
+	public DatabaseTable(String sql)
 	                     throws SQLException {
 		
+		super(new DatabaseTableModel(sql));
+		
 		// Initialize
-		super(new DatabaseTableModel(tableName));
 		this.tableModel = (DatabaseTableModel)dataModel;
-		this.tableName = tableName;
+		initLongestValues();
 		initWidths();
 	}
 	
+	
+	public DatabaseTable(DatabaseTableModel tableModel)
+	                     throws SQLException {
+		
+		super(tableModel);
+		
+		// Initialize
+		this.tableModel = tableModel;
+		initLongestValues();
+		initWidths();
+	}
 	
 	
 	private int calculateWidthOfColumn(int index) {
@@ -49,7 +58,7 @@ public class DatabaseTable extends JTable {
 		// Get width of cells
 		renderer = getDefaultRenderer(tableModel.getColumnClass(index));
 		component = renderer.getTableCellRendererComponent(
-		      this, tableModel.longestValues[index], false, false, 0, index);
+		      this, longestValues[index], false, false, 0, index);
 		cellWidth = PADDING + component.getPreferredSize().width;
 		
 		// Get width of header
@@ -63,12 +72,28 @@ public class DatabaseTable extends JTable {
 	}
 	
 	
-/*
-	public Dimension getPreferredScrollableViewportSize() {
+	private void initLongestValues() {
 		
-		return getPreferredSize();
+		Object value;
+		int length;
+		int[] lengths;
+		
+		// Initialize
+		longestValues = new Object[getColumnCount()];
+		lengths = new int[getColumnCount()];
+		
+		// Store longest values
+		for (int r=0; r<getRowCount(); ++r) {
+			for (int c=0; c<getColumnCount(); ++c) {
+				value = getValueAt(r, c);
+				length = value.toString().length();
+				if (length > lengths[c]) {
+					lengths[c] = length;
+					longestValues[c] = value;
+				}
+			}
+		}
 	}
-*/
 	
 	
 	private void initWidths() {
@@ -85,20 +110,15 @@ public class DatabaseTable extends JTable {
 	}
 	
 	
-	/**
-	 * Refreshes the data in the table.
-	 */
 	public void refresh()
 	                    throws SQLException {
 		
 		tableModel.refresh();
+		initLongestValues();
 		initWidths();
 	}
 	
 	
-	/**
-	 * Test for %DatabaseTable.
-	 */
 	public static void main(String[] args) {
 		
 		JFrame frame;
@@ -114,7 +134,7 @@ public class DatabaseTable extends JTable {
 		// Test
 		try {
 			frame = new JFrame("DatabaseTable");
-			sql = "SELECT id, sponsor, name, year FROM spot";
+			sql = "SELECT id,sponsor,title,year FROM spot";
 			frame.setContentPane(new DatabaseTable(sql));
 			frame.pack();
 			frame.setVisible(true);

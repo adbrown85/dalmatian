@@ -8,38 +8,47 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 
 
 /**
- * TableModel for viewing sponsors.
+ * TableModel for viewing data from a database.
  */
 public class DatabaseTableModel extends AbstractTableModel {
 	
-	private int columnCount, rowCount;
-	private int[] columnWidths;
-	private ResultSet results;
-	private ResultSetMetaData metaData;
-	private String sql;
-	private String[] columnNames;
-	private Vector<Object[]> data;
-	public Object[] longestValues;
+	protected int columnCount, rowCount;
+	protected TreeMap<String,Integer> columnNameToIndex;
+	protected ResultSet results;
+	protected ResultSetMetaData metaData;
+	protected String sql;
+	protected String[] columnNames;
+	protected Vector<Object[]> data;
 	
 	
-	/**
-	 * Creates a new %DatabaseTableModel.
-	 */
 	public DatabaseTableModel(String sql)
 	                          throws SQLException {
 		
-		// Initialize
 		super();
-		this.sql = sql;
-		init();
+		
+		// Initialize
+		initResultsMetaData(sql);
+		initColumnCount();
+		initColumnNames();
+		initData();
+	}
+	
+	
+	public void add(Object[] row) {
+		
+		data.add(row);
+		fireTableRowsInserted(rowCount, rowCount);
 	}
 	
 	
@@ -51,19 +60,19 @@ public class DatabaseTableModel extends AbstractTableModel {
 	
 	public int getColumnCount() {
 		
-		return columnNames.length;
+		return columnCount;
+	}
+	
+	
+	protected int getColumnIndex(String columnName) {
+		
+		return columnNameToIndex.get(columnName);
 	}
 	
 	
 	public String getColumnName(int columnIndex) {
 		
 		return columnNames[columnIndex];
-	}
-	
-	
-	public int getColumnWidth(int columnIndex) {
-		
-		return columnWidths[columnIndex];
 	}
 	
 	
@@ -74,20 +83,23 @@ public class DatabaseTableModel extends AbstractTableModel {
 	}
 	
 	
-	private void init()
-	                  throws SQLException {
+	public Object getValueAt(int row,
+	                         String columnName) {
 		
-		initResults();
-		initData();
-		initColumnNames();
-		initColumnWidths();
-		initLongestValues();
+		int columnIndex;
+		
+		columnIndex = columnNameToIndex.get(columnName);
+		return data.get(row)[columnIndex];
 	}
 	
 	
-	/**
-	 * Initializes the column names and number of columns.
-	 */
+	private void initColumnCount()
+	                             throws SQLException {
+		
+		columnCount = metaData.getColumnCount();
+	}
+	
+	
 	private void initColumnNames()
 	                             throws SQLException {
 		
@@ -95,27 +107,15 @@ public class DatabaseTableModel extends AbstractTableModel {
 		
 		// Store names from metadata
 		columnNames = new String[columnCount];
+		columnNameToIndex = new TreeMap<String,Integer>();
 		for (int i=0; i<columnCount; ++i) {
 			columnName = metaData.getColumnName(i+1);
-			columnNames[i] = Formatter.toTitleCase(columnName);
+			columnNames[i] = columnName;
+			columnNameToIndex.put(columnName, i);
 		}
 	}
 	
 	
-	private void initColumnWidths()
-	                             throws SQLException {
-		
-		// Store widths from metadata
-		columnWidths = new int[columnCount];
-		for (int i=0; i<columnCount; ++i) {
-			columnWidths[i] = metaData.getColumnDisplaySize(i+1);
-		}
-	}
-	
-	
-	/**
-	 * Initializes all the data.
-	 */
 	private void initData()
 	                      throws SQLException {
 		
@@ -139,61 +139,39 @@ public class DatabaseTableModel extends AbstractTableModel {
 	}
 	
 	
-	private void initLongestValues() {
-		
-		Object[] row;
-		int length;
-		int[] lengths;
-		
-		// Initialize
-		longestValues = new Object[columnCount];
-		lengths = new int[columnCount];
-		for (int c=0; c<columnCount; ++c) {
-			lengths[c] = 0;
-		}
-		
-		// Store longest values
-		for (int r=0; r<rowCount; ++r) {
-			for (int c=0; c<columnCount; ++c) {
-				row = data.get(r);
-				length = row[c].toString().length();
-				if (length > lengths[c]) {
-					lengths[c] = length;
-					longestValues[c] = row[c];
-				}
-			}
-		}
-	}
 	
-	
-	private void initResults()
-	                         throws SQLException {
+	private void initResultsMetaData(String sql)
+	                                 throws SQLException {
 		
-		// Execute query
+		this.sql = sql;
 		results = Database.executeQuery(sql);
 		metaData = results.getMetaData();
-		columnCount = metaData.getColumnCount();
 	}
 	
 	
-	/**
-	 * Refreshes the data.
-	 */
 	public void refresh()
 	                    throws SQLException {
 		
 		// Reinitialize data
-		init();
+		initResultsMetaData(this.sql);
+		initData();
 		fireTableDataChanged();
 	}
 	
 	
-	/**
-	 * Tests the %DatabaseTableModel.
-	 */
+	public void remove(int rowIndex) {
+		
+		data.removeElementAt(rowIndex);
+		--rowCount;
+		fireTableRowsDeleted(rowIndex, rowIndex);
+	}
+	
+	
 	public static void main(String[] args) {
 		
+		DatabaseTableModel tableModel;
 		JFrame frame;
+		JScrollPane scrollPane;
 		JTable table;
 		String sql;
 		
@@ -209,10 +187,20 @@ public class DatabaseTableModel extends AbstractTableModel {
 			// Create frame and add table
 			frame = new JFrame("DatabaseTableModel");
 			sql = "SELECT * FROM sponsor";
-			table = new JTable(new DatabaseTableModel(sql));
-			frame.setContentPane(table);
+			tableModel = new DatabaseTableModel(sql);
+			table = new JTable(tableModel);
+			scrollPane = new JScrollPane(table);
+			frame.setContentPane(scrollPane);
 			frame.pack();
 			frame.setVisible(true);
+			
+			// Check actual values
+			System.out.println(tableModel.getValueAt(0, "name"));
+			System.out.println(tableModel.getValueAt(0, "street"));
+			System.out.println(tableModel.getValueAt(0, "city"));
+			System.out.println(tableModel.getValueAt(0, "state"));
+			System.out.println(tableModel.getValueAt(0, "zip"));
+			System.out.println(tableModel.getValueAt(0, "phone"));
 		
 		} catch (SQLException e) {
 			e.printStackTrace();

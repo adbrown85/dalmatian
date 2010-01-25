@@ -37,8 +37,9 @@ public class ActionDialog extends JDialog
 	public ActionDialog(JFrame frame,
 	                    String title) {
 		
+		super(frame, title, true);
+		
 		// Initialize
-		super(frame, title);
 		this.frame = frame;
 		listeners = new Vector<ActionListener>();
 	}

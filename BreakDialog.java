@@ -18,7 +18,7 @@ import javax.swing.*;
 public class BreakDialog extends InputDialog
                          implements ActionListener {
 	
-	Break original;
+	Break original=null;
 	SlotManager slotManager;
 	
 	
@@ -34,6 +34,7 @@ public class BreakDialog extends InputDialog
 		initInputPanelSize();
 		
 		// Slots
+		original = new Break();
 		initSlotManager(new Break());
 	}
 	

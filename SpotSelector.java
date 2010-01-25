@@ -120,7 +120,7 @@ public class SpotSelector extends InputDialog {
 	}
 	
 	
-	private void handleCancel() {
+	protected void handleCancel() {
 		
 		pauseEvents();
 		clear();
@@ -161,11 +161,8 @@ public class SpotSelector extends InputDialog {
 	
 	private void handleSelect() {
 		
-		try {
-			getSpot().print();
-		} catch (SQLException e) {
-			System.err.println("[SpotSelector] Unexpected error in getSpot.");
-		}
+		fireActionEvent("Selected");
+		setVisible(false);
 	}
 	
 	

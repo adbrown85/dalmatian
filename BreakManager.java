@@ -17,28 +17,33 @@ import javax.swing.*;
 public class BreakManager extends DatabaseTableManager {
 	
 	private static final String sql;
-	private BreakEditor breakEditor;
+	private BreakInsertDialog insertDialog;
+	private BreakUpdateDialog updateDialog;
 	
 	
 	static {
-		sql = "SELECT start,end FROM break ORDER BY start";
+		sql = "SELECT id,start,end FROM break ORDER BY start";
 	}
 	
 	
 	public BreakManager(JFrame frame)
 	                    throws SQLException {
 		
-		super(frame, sql);
+		super(new HidableDatabaseTableModel(sql, getHiddenColumns()));
 		
 		// Buttons
-		addButton("New");
+		addButton("Insert");
+		addButton("Update");
 		addButton("Delete");
 		addButton("Refresh");
 		
-		// Break editor
-		breakEditor = new BreakEditor(frame, "Break Editor");
-		breakEditor.pack();
-		breakEditor.addActionListener(this);
+		// Dialogs
+		insertDialog = new BreakInsertDialog(frame);
+		insertDialog.pack();
+		insertDialog.addActionListener(this);
+		updateDialog = new BreakUpdateDialog(frame);
+		updateDialog.pack();
+		updateDialog.addActionListener(this);
 	}
 	
 	
@@ -48,30 +53,80 @@ public class BreakManager extends DatabaseTableManager {
 		
 		// Handle command
 		command = event.getActionCommand();
-		if (command.equals("New")) {
-			handleNew();
+		if (command.equals("Insert")) {
+			handleInsert();
+		} else if (command.equals("Update")) {
+			handleUpdate();
+		} else if (command.equals("Delete")) {
+			handleDelete();
 		} else if (command.equals("Refresh")) {
 			handleRefresh();
 		}
 	}
 	
 	
-	private void handleDelete() {
+	private static String[] getHiddenColumns() {
 		
-		System.out.println("Delete");
+		String[] names=null;
+		// String[] names={"id"};
+		return names;
 	}
 	
 	
-	private void handleNew() {
+	private void handleDelete() {
 		
-		breakEditor.setLocationRelativeTo(this);
-		breakEditor.setVisible(true);
+		int id, row;
+		
+		row = getSelectedRow();
+		if (row == -1) {
+			GUI.showMessage(this, "Please select a break.");
+			return;
+		}
+		
+		try {
+			if (!GUI.showConfirmDelete(this))
+				return;
+			Break.delete((Integer)tableModel.getValueAt(row, "id"));
+			refresh();
+			GUI.showMessage(this, "Deleted break.");
+		} catch (SQLException e) {
+			GUI.showError(this, "Could not select break.");
+		}
+	}
+	
+	
+	private void handleInsert() {
+		
+		insertDialog.setLocationRelativeTo(this);
+		insertDialog.setVisible(true);
 	}
 	
 	
 	private void handleRefresh() {
 		
 		refresh();
+	}
+	
+	
+	private void handleUpdate() {
+		
+		int id, row;
+		
+		row = getSelectedRow();
+		if (row == -1) {
+			GUI.showMessage(this, "Please select a break.");
+			return;
+		}
+		
+		try {
+			id = (Integer)tableModel.getValueAt(row, "id");
+			updateDialog.setBreak(new Break(id));
+			updateDialog.setLocationRelativeTo(this);
+			updateDialog.pack();
+			updateDialog.setVisible(true);
+		} catch (SQLException e) {
+			GUI.showError(this, "Could not update break.");
+		}
 	}
 	
 	

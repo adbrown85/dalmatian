@@ -16,6 +16,12 @@ import javax.swing.*;
 public class GUI {
 	
 	
+	public static Dimension getInfiniteSize() {
+		
+		return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+	}
+	
+	
 	/**
 	 * Shows an error dialog.
 	 */

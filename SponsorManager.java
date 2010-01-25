@@ -30,7 +30,7 @@ public class SponsorManager extends DatabaseTableManager  {
 	public SponsorManager(JFrame frame)
 	                      throws SQLException {
 		
-		super(frame, sql);
+		super(sql);
 		
 		// Buttons
 		addButton("Insert");

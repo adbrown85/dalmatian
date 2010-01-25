@@ -34,7 +34,7 @@ public class SpotManager extends DatabaseTableManager  {
 	public SpotManager(JFrame frame)
 	                   throws SQLException {
 		
-		super(frame, sql);
+		super(sql);
 		
 		// Retriever
 		retriever = new Retriever();

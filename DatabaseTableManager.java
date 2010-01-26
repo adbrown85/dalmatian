@@ -90,33 +90,14 @@ public class DatabaseTableManager extends JPanel
 		setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 		setMaximumSize(GUI.getInfiniteSize());
 		
-		// Initialize components
-		initTable(tableModel);
-		initButtonPanel();
-	}
-	
-	
-	private void initButtonPanel() {
+		// Table
+		scrollPane = GUI.getScrollPaneFor(table);
+		add(scrollPane);
 		
-		// Create the panel
+		// Button Panel
 		buttonPanel = new ButtonPanel();
 		buttonPanel.addActionListener(this);
 		add(buttonPanel);
-	}
-	
-	
-	private void initTable(DatabaseTableModel tableModel)
-	                       throws SQLException {
-		
-		int scrollBarPolicy=ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
-		
-		// Create table and add it with a scroll pane
-		this.tableModel = tableModel;
-		table = new DatabaseTable(tableModel);
-		scrollPane = new JScrollPane(table);
-		scrollPane.setVerticalScrollBarPolicy(scrollBarPolicy);
-		scrollPane.setMaximumSize(GUI.getInfiniteSize());
-		add(scrollPane);
 	}
 	
 	
@@ -133,11 +114,7 @@ public class DatabaseTableManager extends JPanel
 	
 	protected void setTableBorder(Border border) {
 		
-		Border compound, inside;
-		
-		inside = scrollPane.getBorder();
-		compound = BorderFactory.createCompoundBorder(border, inside);
-		scrollPane.setBorder(compound);
+		GUI.setScrollPaneBorder(scrollPane, border);
 	}
 	
 	

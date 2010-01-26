@@ -7,6 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
 
 
 
@@ -44,6 +45,17 @@ public class GUI {
 		scrollPane.setMaximumSize(getInfiniteSize());
 		scrollPane.setVerticalScrollBarPolicy(policy);
 		return scrollPane;
+	}
+	
+	
+	protected static void setScrollPaneBorder(JScrollPane scrollPane,
+	                                          Border border) {
+		
+		Border compound, inside;
+		
+		inside = scrollPane.getBorder();
+		compound = BorderFactory.createCompoundBorder(border, inside);
+		scrollPane.setBorder(compound);
 	}
 	
 	

@@ -12,7 +12,7 @@ import javax.swing.*;
 
 
 /**
- * 
+ * Manages slots in a break.
  */
 public class SlotManager extends DatabaseTableManager {
 	
@@ -24,7 +24,7 @@ public class SlotManager extends DatabaseTableManager {
 	                   Break _break)
 	                   throws SQLException {
 		
-		super(new SlotTableModel(_break));
+		super(new SlotTable(_break));
 		
 		// Dialogs
 		spotSelector = new SpotSelector(frame, "Select Spot");
@@ -55,7 +55,7 @@ public class SlotManager extends DatabaseTableManager {
 	public void commit()
 	                   throws SQLException {
 		
-		((SlotTableModel)tableModel).commit();
+		((SlotTable)table).commit();
 	}
 	
 	
@@ -73,7 +73,7 @@ public class SlotManager extends DatabaseTableManager {
 		
 		row = getSelectedRow();
 		if (row != -1) {
-			((SlotTableModel)tableModel).remove(getSelectedRow());
+			((SlotTable)table).remove(getSelectedRow());
 		} else {
 			GUI.showMessage(spotSelectorParent, "Please select a slot.");
 		}
@@ -86,22 +86,22 @@ public class SlotManager extends DatabaseTableManager {
 		
 		try {
 			spot = spotSelector.getSpot();
-			((SlotTableModel)tableModel).add(spot);
+			((SlotTable)table).add(spot);
 		} catch (SQLException e) {
 			GUI.showError(spotSelectorParent, "Could not add spot.");
 		}
 	}
 	
 	
-	public void setSpotSelectorParent(Component component) {
+	public void setBreak(Break _break) {
 		
-		this.spotSelectorParent = component;
+		((SlotTable)table).setBreak(_break);
 	}
 	
 	
-	public void setBreak(Break _break) {
+	public void setSpotSelectorParent(Component component) {
 		
-		((SlotTableModel)tableModel).setBreak(_break);
+		this.spotSelectorParent = component;
 	}
 	
 	

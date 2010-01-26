@@ -48,6 +48,7 @@ public class DatabaseTableModel extends AbstractTableModel {
 	public void add(Object[] row) {
 		
 		data.add(row);
+		++rowCount;
 		fireTableRowsInserted(rowCount, rowCount);
 	}
 	
@@ -159,11 +160,26 @@ public class DatabaseTableModel extends AbstractTableModel {
 	}
 	
 	
-	public void remove(int rowIndex) {
+	public void remove(int row) {
 		
-		data.removeElementAt(rowIndex);
+		data.removeElementAt(row);
 		--rowCount;
-		fireTableRowsDeleted(rowIndex, rowIndex);
+		fireTableRowsDeleted(row, row);
+	}
+	
+	
+	public void setSQL(String sql) {
+		
+		this.sql = sql;
+	}
+	
+	
+	public void setValueAt(Object value,
+	                       int row,
+	                       int column) {
+		
+		data.get(row)[column] = value;
+		fireTableCellUpdated(row, column);
 	}
 	
 	

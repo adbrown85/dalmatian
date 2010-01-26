@@ -1,5 +1,5 @@
 /*
- * SlotTableModel.java
+ * SlotTable.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
@@ -16,17 +16,19 @@ import javax.swing.table.AbstractTableModel;
 
 
 /**
- * TableModel for viewing sponsors.
+ * Table for viewing sponsors.
  */
-public class SlotTableModel extends HidableDatabaseTableModel {
+public class SlotTable extends DatabaseTable {
 	
 	Break _break;
 	
 	
-	public SlotTableModel(Break _break)
-	                      throws SQLException {
+	public SlotTable(Break _break)
+	                 throws SQLException {
 		
 		super(getSQL(_break), getHiddenColumnNames());
+		
+		// Initialize
 		this._break = _break;
 	}
 	
@@ -35,14 +37,14 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 		
 		Object[] row;
 		
-		// Position, sponsor, title, year
+		// Add row with position, id, sponsor, title, year
 		row = new Object[5];
-		row[0] = ++rowCount;
+		row[0] = getRowCount() + 1;
 		row[1] = spot.getId();
 		row[2] = spot.getSponsor();
 		row[3] = spot.getTitle();
 		row[4] = spot.getYear();
-		add(row);
+		super.add(row);
 	}
 	
 	
@@ -92,14 +94,17 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 	
 	private String getValues() {
 		
-		int breakId;
+		int breakId, rowCount;
 		String values="";
 		
 		breakId = _break.getId();
-		for (int i=0; i<data.size(); ++i) {
+		rowCount = getRowCount();
+		for (int i=0; i<rowCount; ++i) {
 			values += String.format("(%d, %d, %d)",
-			                        breakId, i+1, getValueAt(i,"spot"));
-			if (i < data.size()-1) {
+			                        breakId,
+			                        i+1,
+			                        getValueAt(i,"spot"));
+			if (i < rowCount-1) {
 				values += ", ";
 			}
 		}
@@ -111,15 +116,18 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 	                    throws SQLException {
 		
 		// Reinitialize data
-		this.sql = getSQL(_break);
+		setSQL(getSQL(_break));
 		super.refresh();
 	}
 	
 	
 	public void remove(int rowIndex) {
 		
+		int rowCount;
+		
+		rowCount = getRowCount();
 		for (int i=rowIndex+1; i<rowCount; ++i) {
-			data.get(i)[0] = i;
+			setValueAt(i, i, 0);
 		}
 		super.remove(rowIndex);
 	}
@@ -134,22 +142,20 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 	public static void main(String[] args) {
 		
 		JFrame frame;
-		JTable table;
-		SlotTableModel tableModel;
+		SlotTable table;
 		
 		// Start
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("SlotTableModel");
+		System.out.println("SlotTable");
 		System.out.println("****************************************");
 		System.out.println();
 		
 		try {
 			
 			// Create frame with table
-			frame = new JFrame("SlotTableModel");
-			tableModel = new SlotTableModel(new Break(12));
-			table = new JTable(tableModel);
+			frame = new JFrame("SlotTable");
+			table = new SlotTable(new Break(12));
 			frame.setContentPane(table);
 			frame.pack();
 			frame.setVisible(true);
@@ -158,31 +164,31 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 			System.out.println("Waiting to add...");
 			Thread.sleep(2000);
 			System.out.println("Adding...");
-			tableModel.add(new Spot(19));
+			table.add(new Spot(19));
 			frame.pack();
-			System.out.println("Now has rows: " + tableModel.getRowCount());
-			System.out.println(tableModel.getValues());
+			System.out.println("Now has rows: " + table.getRowCount());
+			System.out.println(table.getValues());
 			
 			// Test commit
 			System.out.println("Waiting to commit...");
 			Thread.sleep(2000);
 			System.out.println("Committing...");
-			tableModel.commit();
+			table.commit();
 			
 			// Test remove
 			System.out.println("\nWaiting to remove...");
 			Thread.sleep(5000);
 			System.out.println("Removing...");
-			tableModel.remove(1);
+			table.remove(1);
 			frame.pack();
-			System.out.println("Now has rows: " + tableModel.getRowCount());
-			System.out.println(tableModel.getValues());
+			System.out.println("Now has rows: " + table.getRowCount());
+			System.out.println(table.getValues());
 			
 			// Test commit
 			System.out.println("Waiting to commit...");
 			Thread.sleep(2000);
 			System.out.println("Committing...");
-			tableModel.commit();
+			table.commit();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -193,7 +199,7 @@ public class SlotTableModel extends HidableDatabaseTableModel {
 		// Finish
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("SlotTableModel");
+		System.out.println("SlotTable");
 		System.out.println("****************************************");
 		System.out.println();
 	}

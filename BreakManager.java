@@ -29,7 +29,7 @@ public class BreakManager extends DatabaseTableManager {
 	public BreakManager(JFrame frame)
 	                    throws SQLException {
 		
-		super(new HidableDatabaseTableModel(sql, getHiddenColumns()));
+		super(sql, getHiddenColumns());
 		
 		// Buttons
 		addButton("Insert");
@@ -86,7 +86,7 @@ public class BreakManager extends DatabaseTableManager {
 		try {
 			if (!GUI.showConfirmDelete(this))
 				return;
-			Break.delete((Integer)tableModel.getValueAt(row, "id"));
+			Break.delete((Integer)getValueAt(row, "id"));
 			refresh();
 			GUI.showMessage(this, "Deleted break.");
 		} catch (SQLException e) {
@@ -119,7 +119,7 @@ public class BreakManager extends DatabaseTableManager {
 		}
 		
 		try {
-			id = (Integer)tableModel.getValueAt(row, "id");
+			id = (Integer)getValueAt(row, "id");
 			updateDialog.setBreak(new Break(id));
 			updateDialog.setLocationRelativeTo(this);
 			updateDialog.pack();

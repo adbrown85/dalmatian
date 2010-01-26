@@ -21,31 +21,31 @@ import javax.swing.table.TableColumnModel;
 public class DatabaseTable extends JTable {
 	
 	private static final int PADDING=35;
-	protected DatabaseTableModel tableModel;
-	protected Object[] longestValues;
+	private DatabaseTableModel tableModel;
+	private Object[] longestValues;
+	private String sql;
 	
 	
 	public DatabaseTable(String sql)
 	                     throws SQLException {
 		
 		super(new DatabaseTableModel(sql));
-		
-		// Initialize
-		this.tableModel = (DatabaseTableModel)dataModel;
-		initLongestValues();
-		initWidths();
+		init(sql);
 	}
 	
 	
-	public DatabaseTable(DatabaseTableModel tableModel)
+	public DatabaseTable(String sql,
+	                     String[] hiddenColumns)
 	                     throws SQLException {
 		
-		super(tableModel);
+		super(new HidableDatabaseTableModel(sql, hiddenColumns));
+		init(sql);
+	}
+	
+	
+	public void add(Object[] row) {
 		
-		// Initialize
-		this.tableModel = tableModel;
-		initLongestValues();
-		initWidths();
+		tableModel.add(row);
 	}
 	
 	
@@ -69,6 +69,28 @@ public class DatabaseTable extends JTable {
 		
 		// Return maximum
 		return Math.max(cellWidth, headerWidth);
+	}
+	
+	
+	public String getSQL() {
+		
+		return sql;
+	}
+	
+	
+	public Object getValueAt(int row,
+	                         String columnName) {
+		
+		return tableModel.getValueAt(row, columnName);
+	}
+	
+	
+	private void init(String sql) {
+		
+		this.sql = sql;
+		this.tableModel = (DatabaseTableModel)dataModel;
+		initLongestValues();
+		initWidths();
 	}
 	
 	
@@ -116,6 +138,19 @@ public class DatabaseTable extends JTable {
 		tableModel.refresh();
 		initLongestValues();
 		initWidths();
+		resizeAndRepaint();
+	}
+	
+	
+	public void remove(int row) {
+		
+		tableModel.remove(row);
+	}
+	
+	
+	public void setSQL(String sql) {
+		
+		this.sql = sql;
 	}
 	
 	
@@ -123,6 +158,7 @@ public class DatabaseTable extends JTable {
 		
 		JFrame frame;
 		String sql;
+		String[] hiddenColumns={"year"};
 		
 		// Start
 		System.out.println();
@@ -135,7 +171,7 @@ public class DatabaseTable extends JTable {
 		try {
 			frame = new JFrame("DatabaseTable");
 			sql = "SELECT id,sponsor,title,year FROM spot";
-			frame.setContentPane(new DatabaseTable(sql));
+			frame.setContentPane(new DatabaseTable(sql, hiddenColumns));
 			frame.pack();
 			frame.setVisible(true);
 		} catch (SQLException e) {

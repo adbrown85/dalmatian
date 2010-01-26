@@ -21,24 +21,32 @@ public class DatabaseTableManager extends JPanel
 	private final int HEIGHT=480, WIDTH=640;
 	protected ButtonPanel buttonPanel;
 	protected DatabaseTable table;
-	protected DatabaseTableModel tableModel;
 	protected JFrame frame;
 	protected JScrollPane scrollPane;
+	
+	
+	public DatabaseTableManager(DatabaseTable table)
+	                            throws SQLException {
+		
+		super();
+		init(table);
+	}
 	
 	
 	public DatabaseTableManager(String sql)
 	                            throws SQLException {
 		
 		super();
-		init(new DatabaseTableModel(sql));
+		init(new DatabaseTable(sql));
 	}
 	
 	
-	public DatabaseTableManager(DatabaseTableModel tableModel)
+	public DatabaseTableManager(String sql,
+	                            String[] hiddenColumns)
 	                            throws SQLException {
 		
 		super();
-		init(tableModel);
+		init(new DatabaseTable(sql, hiddenColumns));
 	}
 	
 	
@@ -76,13 +84,20 @@ public class DatabaseTableManager extends JPanel
 	}
 	
 	
+	public Object getValueAt(int row,
+	                         String columnName) {
+		
+		return table.getValueAt(row, columnName);
+	}
+	
+	
 	public boolean hasSelected() {
 		
 		return getSelectedRow() != -1;
 	}
 	
 	
-	private void init(DatabaseTableModel tableModel)
+	private void init(DatabaseTable table)
 	                  throws SQLException {
 		
 		// Appearance

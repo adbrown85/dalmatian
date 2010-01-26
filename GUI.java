@@ -38,18 +38,37 @@ public class GUI {
 	
 	public static JScrollPane getScrollPaneFor(Component component) {
 		
+		return getScrollPaneFor(component, 0);
+	}
+	
+	
+	public static JScrollPane getScrollPaneFor(Component component,
+	                                           int borderWidth) {
+		
 		int policy=ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 		JScrollPane scrollPane;
 		
 		scrollPane = new JScrollPane(component);
 		scrollPane.setMaximumSize(getInfiniteSize());
 		scrollPane.setVerticalScrollBarPolicy(policy);
+		if (borderWidth > 0)
+			setScrollPaneBorder(scrollPane, borderWidth);
 		return scrollPane;
 	}
 	
 	
-	protected static void setScrollPaneBorder(JScrollPane scrollPane,
-	                                          Border border) {
+	public static void setScrollPaneBorder(JScrollPane scrollPane,
+	                                       int width) {
+		
+		Border border;
+		
+		border = BorderFactory.createEmptyBorder(width, width, width, width);
+		setScrollPaneBorder(scrollPane, border);
+	}
+	
+	
+	public static void setScrollPaneBorder(JScrollPane scrollPane,
+	                                       Border border) {
 		
 		Border compound, inside;
 		

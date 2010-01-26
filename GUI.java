@@ -35,6 +35,18 @@ public class GUI {
 	}
 	
 	
+	public static JScrollPane getScrollPaneFor(Component component) {
+		
+		int policy=ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+		JScrollPane scrollPane;
+		
+		scrollPane = new JScrollPane(component);
+		scrollPane.setMaximumSize(getInfiniteSize());
+		scrollPane.setVerticalScrollBarPolicy(policy);
+		return scrollPane;
+	}
+	
+	
 	public static boolean showConfirmDelete(Component parent) {
 		
 		int option, style;

@@ -18,16 +18,19 @@ import java.util.Vector;
 public class Clock extends Thread {
 	
 	private static final int PRECISION=200;
+	
 	private Calendar alarm, time;
-	private int lastSecond=-1, second;
 	private ClockWorker worker;
+	private int lastSecond=-1, second;
+	private Object alarmNotifier;
 	
 	
 	public Clock() {
 		
-		resetAlarm();
+		alarm = null;
 		worker = new ClockWorker();
 		time = Calendar.getInstance();
+		alarmNotifier = new Object();
 	}
 	
 	
@@ -45,8 +48,7 @@ public class Clock extends Thread {
 		
 		time.clear(Calendar.MILLISECOND);
 		if (time.equals(alarm)) {
-			resetAlarm();
-			worker.fireClockEvent(ClockEvent.ALARM);
+			triggerAlarm();
 		}
 	}
 	
@@ -76,9 +78,13 @@ public class Clock extends Thread {
 	}
 	
 	
-	private synchronized void resetAlarm() {
+	public synchronized void triggerAlarm() {
 		
 		alarm = null;
+		synchronized (alarmNotifier) {
+			alarmNotifier.notifyAll();
+		}
+		worker.fireClockEvent(ClockEvent.ALARM);
 	}
 	
 	
@@ -93,6 +99,15 @@ public class Clock extends Thread {
 		alarm.setTimeInMillis(timestamp.getTime());
 		alarm.clear(Calendar.MILLISECOND);
 		return true;
+	}
+	
+	
+	public void waitForAlarm()
+	                         throws InterruptedException {
+		
+		synchronized (alarmNotifier) {
+			alarmNotifier.wait();
+		}
 	}
 	
 	
@@ -119,8 +134,13 @@ public class Clock extends Thread {
 				System.out.println("Alarm!");
 			}
 		});
-		clock.setAlarm(Timestamp.valueOf("2010-01-27 17:50:00"));
+		clock.setAlarm(Timestamp.valueOf("2010-01-28 02:12:00"));
 		clock.start();
+		try {
+			clock.waitForAlarm();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		// Finish
 		System.out.println();

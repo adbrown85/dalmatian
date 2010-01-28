@@ -14,16 +14,28 @@ import javax.swing.*;
 /**
  * Displays a clock in several text fields.
  */
-public class ClockDisplay extends JLabel
+public class ClockDisplay extends Box
                           implements ClockListener {
 	
-	private static DateFormat dateFormat=DateFormat.getDateTimeInstance();
+	private static final DateFormat dateFormat;
 	private Clock clock;
+	private JLabel label;
+	
+	
+	static {
+		
+		dateFormat = DateFormat.getDateTimeInstance();
+	}
 	
 	
 	public ClockDisplay(Clock clock) {
 		
-		super(dateFormat.format(clock.getTime()));
+		super(BoxLayout.LINE_AXIS);
+		
+		// Label
+		label = new JLabel(dateFormat.format(clock.getTime()));
+		label.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		add(label);
 		
 		// Setup clock
 		this.clock = clock;
@@ -33,7 +45,7 @@ public class ClockDisplay extends JLabel
 	
 	public void clockChanged(ClockEvent event) {
 		
-		setText(dateFormat.format(clock.getTime()));
+		label.setText(dateFormat.format(clock.getTime()));
 	}
 	
 	

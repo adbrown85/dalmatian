@@ -41,17 +41,17 @@ public class Manager {
 		
 		JPanel breaksPanel, sponsorsPanel, spotsPanel;
 		
-		// Sponsors
-		sponsorsPanel = new SponsorManager(frame);
-		tabbedPane.addTab("Sponsors", sponsorsPanel);
+		// Breaks
+		breaksPanel = new BreakManager(frame);
+		tabbedPane.addTab("Breaks", breaksPanel);
 		
 		// Spots
 		spotsPanel = new SpotManager(frame);
 		tabbedPane.addTab("Spots", spotsPanel);
 		
-		// Breaks
-		breaksPanel = new BreakManager(frame);
-		tabbedPane.addTab("Breaks", breaksPanel);
+		// Sponsors
+		sponsorsPanel = new SponsorManager(frame);
+		tabbedPane.addTab("Sponsors", sponsorsPanel);
 	}
 	
 	

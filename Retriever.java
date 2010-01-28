@@ -14,6 +14,7 @@ import java.util.Vector;
  */
 public class Retriever {
 	
+	private static PreparedStatement filesForBreak=null;
 	private static PreparedStatement titlesForSponsor=null;
 	private static PreparedStatement sponsorsWithSpots=null;
 	private static PreparedStatement yearsForSponsorTitle=null;
@@ -25,11 +26,31 @@ public class Retriever {
 	                 throws SQLException {
 		
 		// Initialize
+		initFilesForBreak();
 		initTitlesForSponsor();
 		initSponsorsWithSpots();
 		initSpotForSponsorTitleYear();
 		initSpotIdForSponsorTitleYear();
 		initYearsForSponsorTitle();
+	}
+	
+	
+	public Vector<String> getFilesForBreak(Break _break)
+	                                       throws SQLException {
+		
+		ResultSet results;
+		Vector<String> files;
+		
+		// Execute query
+		filesForBreak.setInt(1, _break.getId());
+		results = filesForBreak.executeQuery();
+		
+		// Process results
+		files = new Vector<String>();
+		while (results.next()) {
+			files.add(results.getString(1));
+		}
+		return files;
 	}
 	
 	
@@ -122,6 +143,22 @@ public class Retriever {
 			years.add(results.getInt(1));
 		}
 		return years;
+	}
+	
+	
+	private void initFilesForBreak()
+	                               throws SQLException {
+		
+		String sql;
+		
+		if (filesForBreak != null)
+			return;
+		
+		sql = "SELECT sp.filename " + 
+		      "FROM slot AS sl JOIN spot AS sp " + 
+		      "ON sl.spot=sp.id " +
+		      "WHERE sl.break=?";
+		filesForBreak = Database.prepareStatement(sql);
 	}
 	
 	
@@ -245,7 +282,7 @@ public class Retriever {
 			System.out.println("\nSpot for sponsor, title, year:");
 			sponsor = "Tire Land USA";
 			title = "Christmas Buy Three Get Fourth Free";
-			year = 2009;
+			year = 2010;
 			spot = retriever.getSpotForSponsorTitleYear(sponsor, title, year);
 			spot.print();
 			
@@ -253,9 +290,16 @@ public class Retriever {
 			System.out.println("\nSpot Id for sponsor, title, year:");
 			sponsor = "Tire Land USA";
 			title = "Christmas Buy Three Get Fourth Free";
-			year = 2009;
+			year = 2010;
 			id = retriever.getSpotIdFor(sponsor, title, year);
 			System.out.println("  " + id);
+			
+			// Files for break
+			System.out.println("\nFiles for break:");
+			strings = retriever.getFilesForBreak(new Break(12));
+			for (String string : strings) {
+				System.out.println("  " + string);
+			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

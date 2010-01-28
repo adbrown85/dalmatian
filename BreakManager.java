@@ -16,20 +16,28 @@ import javax.swing.*;
  */
 public class BreakManager extends DatabaseTableManager {
 	
+	private static final String[] hiddenColumns;
 	private static final String sql;
 	private BreakInsertDialog insertDialog;
 	private BreakUpdateDialog updateDialog;
 	
 	
 	static {
-		sql = "SELECT id,start,end FROM break ORDER BY start";
+		sql = "SELECT id, " + 
+		             "date_format(start,'%a') AS day, " + 
+		             "date_format(start,'%b %d %Y') AS date, " + 
+		             "date_format(start,'%r') AS time " + 
+		      "FROM break " +
+		      "ORDER BY start DESC";
+		hiddenColumns = new String[1];
+		hiddenColumns[0] = "id";
 	}
 	
 	
 	public BreakManager(Frame frame)
 	                    throws SQLException {
 		
-		super(sql, getHiddenColumns());
+		super(sql, hiddenColumns);
 		
 		// Buttons
 		addButton("Insert");
@@ -62,14 +70,6 @@ public class BreakManager extends DatabaseTableManager {
 		} else if (command.equals("Refresh")) {
 			handleRefresh();
 		}
-	}
-	
-	
-	private static String[] getHiddenColumns() {
-		
-		String[] names=null;
-		// String[] names={"id"};
-		return names;
 	}
 	
 	

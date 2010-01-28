@@ -25,8 +25,8 @@ public class BreakUpdateDialog extends BreakDialog
 		super(frame, "Update Break");
 		
 		// Buttons
-		addButton("Update");
 		addButton("Cancel");
+		addButton("Update");
 	}
 	
 	

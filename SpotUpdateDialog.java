@@ -18,7 +18,7 @@ import javax.swing.*;
 public class SpotUpdateDialog extends SpotDialog {
 	
 	
-	public SpotUpdateDialog(JFrame frame)
+	public SpotUpdateDialog(Frame frame)
 	                        throws SQLException {
 		
 		super(frame, "Update Spot");

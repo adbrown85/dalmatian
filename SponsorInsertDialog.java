@@ -20,7 +20,7 @@ import javax.swing.*;
 public class SponsorInsertDialog extends SponsorDialog {
 	
 	
-	public SponsorInsertDialog(JFrame frame,
+	public SponsorInsertDialog(Frame frame,
 	                           String title) {
 		
 		super(frame, title);

@@ -18,7 +18,7 @@ import javax.swing.*;
 public class SpotInsertDialog extends SpotDialog {
 	
 	
-	public SpotInsertDialog(JFrame frame)
+	public SpotInsertDialog(Frame frame)
 	                        throws SQLException {
 		
 		super(frame, "Insert Spot");

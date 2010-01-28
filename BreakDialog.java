@@ -22,7 +22,7 @@ public class BreakDialog extends InputDialog
 	SlotManager slotManager;
 	
 	
-	public BreakDialog(JFrame frame,
+	public BreakDialog(Frame frame,
 	                   String title)
 	                   throws SQLException {
 		

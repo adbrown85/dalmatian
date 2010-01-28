@@ -24,7 +24,7 @@ public class SpotSelector extends InputDialog {
 	private AudioPlayer audioPlayer=null;
 	
 	
-	public SpotSelector(JFrame frame,
+	public SpotSelector(Frame frame,
 	                    String title)
 	                    throws SQLException {
 		

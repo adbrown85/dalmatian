@@ -20,7 +20,7 @@ public class SlotManager extends DatabaseTableManager {
 	SpotSelector spotSelector;
 	
 	
-	public SlotManager(JFrame frame,
+	public SlotManager(Frame frame,
 	                   Break _break)
 	                   throws SQLException {
 		

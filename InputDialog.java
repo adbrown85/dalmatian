@@ -23,7 +23,7 @@ public class InputDialog extends ButtonDialog {
 	protected final InputPanel inputPanel;
 	
 	
-	public InputDialog(JFrame frame,
+	public InputDialog(Frame frame,
 	                   String frameTitle,
 	                   String inputTitle) {
 		

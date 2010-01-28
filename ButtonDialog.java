@@ -28,7 +28,7 @@ public class ButtonDialog extends ActionDialog {
 	protected final JPanel centerPanel, contentPane;
 	
 	
-	public ButtonDialog(JFrame frame,
+	public ButtonDialog(Frame frame,
 	                    String title) {
 		
 		super(frame, title);

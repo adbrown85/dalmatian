@@ -27,7 +27,7 @@ public class SponsorManager extends DatabaseTableManager  {
 	}
 	
 	
-	public SponsorManager(JFrame frame)
+	public SponsorManager(Frame frame)
 	                      throws SQLException {
 		
 		super(sql);

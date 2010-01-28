@@ -22,7 +22,7 @@ public class SpotDialog extends InputDialog {
 	private Spot original=null;
 	
 	
-	public SpotDialog(JFrame frame,
+	public SpotDialog(Frame frame,
 	                  String title)
 	                  throws SQLException {
 		

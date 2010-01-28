@@ -26,7 +26,7 @@ public class BreakManager extends DatabaseTableManager {
 	}
 	
 	
-	public BreakManager(JFrame frame)
+	public BreakManager(Frame frame)
 	                    throws SQLException {
 		
 		super(sql, getHiddenColumns());

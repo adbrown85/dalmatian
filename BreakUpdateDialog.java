@@ -19,7 +19,7 @@ public class BreakUpdateDialog extends BreakDialog
                                implements ActionListener {
 	
 	
-	public BreakUpdateDialog(JFrame frame)
+	public BreakUpdateDialog(Frame frame)
 	                         throws SQLException {
 		
 		super(frame, "Update Break");

@@ -19,7 +19,7 @@ public class BreakInsertDialog extends BreakDialog
                                implements ActionListener {
 	
 	
-	public BreakInsertDialog(JFrame frame)
+	public BreakInsertDialog(Frame frame)
 	                         throws SQLException {
 		
 		super(frame, "Insert Break");

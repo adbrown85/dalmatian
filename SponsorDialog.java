@@ -23,7 +23,7 @@ public class SponsorDialog extends InputDialog {
 	private Sponsor original=null;
 	
 	
-	public SponsorDialog(JFrame frame,
+	public SponsorDialog(Frame frame,
 	                     String title) {
 		
 		super(frame, title, "Input");

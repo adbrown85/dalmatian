@@ -30,11 +30,11 @@ public class ActionDialog extends JDialog
                           implements ActionListener {
 	
 	private boolean pausedEvents=false;
-	protected final JFrame frame;
+	protected final Frame frame;
 	protected final Vector<ActionListener> listeners;
 	
 	
-	public ActionDialog(JFrame frame,
+	public ActionDialog(Frame frame,
 	                    String title) {
 		
 		super(frame, title, true);

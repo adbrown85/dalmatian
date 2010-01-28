@@ -31,7 +31,7 @@ public class SpotManager extends DatabaseTableManager  {
 	/**
 	 * Creates a new %SponsorsManager.
 	 */
-	public SpotManager(JFrame frame)
+	public SpotManager(Frame frame)
 	                   throws SQLException {
 		
 		super(sql);

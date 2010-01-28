@@ -48,30 +48,9 @@ public class SlotTable extends DatabaseTable {
 	}
 	
 	
-	public void commit()
-	                   throws SQLException {
+	public Break getBreak() {
 		
-		String sql;
-		
-		// Start transation
-		Database.executeUpdate("START TRANSACTION");
-		
-		// Insert break, or update break and clear slots
-		if (_break.getId() == 0) {
-			_break.insert();
-		} {
-			Break.update(_break, _break);
-			sql = "  DELETE FROM slot WHERE break=" + _break.getId();
-			Database.executeUpdate(sql);
-		}
-		
-		// Insert slots back into the break and commit
-		sql = "  INSERT INTO slot(break,position,spot) " + 
-		      "  VALUES " + getValues();
-		Database.executeUpdate(sql);
-		
-		// Commit
-		Database.executeUpdate("COMMIT");
+		return _break;
 	}
 	
 	
@@ -89,26 +68,6 @@ public class SlotTable extends DatabaseTable {
 		String[] hiddenColumnNames={"spot"};
 		
 		return hiddenColumnNames;
-	}
-	
-	
-	private String getValues() {
-		
-		int breakId, rowCount;
-		String values="";
-		
-		breakId = _break.getId();
-		rowCount = getRowCount();
-		for (int i=0; i<rowCount; ++i) {
-			values += String.format("(%d, %d, %d)",
-			                        breakId,
-			                        i+1,
-			                        getValueAt(i,"spot"));
-			if (i < rowCount-1) {
-				values += ", ";
-			}
-		}
-		return values;
 	}
 	
 	
@@ -167,13 +126,6 @@ public class SlotTable extends DatabaseTable {
 			table.add(new Spot(19));
 			frame.pack();
 			System.out.println("Now has rows: " + table.getRowCount());
-			System.out.println(table.getValues());
-			
-			// Test commit
-			System.out.println("Waiting to commit...");
-			Thread.sleep(2000);
-			System.out.println("Committing...");
-			table.commit();
 			
 			// Test remove
 			System.out.println("\nWaiting to remove...");
@@ -182,15 +134,8 @@ public class SlotTable extends DatabaseTable {
 			table.remove(1);
 			frame.pack();
 			System.out.println("Now has rows: " + table.getRowCount());
-			System.out.println(table.getValues());
-			
-			// Test commit
-			System.out.println("Waiting to commit...");
-			Thread.sleep(2000);
-			System.out.println("Committing...");
-			table.commit();
-			
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

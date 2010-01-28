@@ -55,7 +55,56 @@ public class SlotManager extends DatabaseTableManager {
 	public void commit()
 	                   throws SQLException {
 		
-		((SlotTable)table).commit();
+		Break _break;
+		String sql;
+		
+		try {
+			
+			// Start transation
+			Database.executeUpdate("START TRANSACTION");
+			
+			// Insert break, or update break and clear slots
+			_break = ((SlotTable)table).getBreak();
+			if (_break.getId() == 0) {
+				_break.insert();
+			} else {
+				Break.update(_break, _break);
+				sql = "  DELETE FROM slot WHERE break=" + _break.getId();
+				Database.executeUpdate(sql);
+			}
+			
+			// Insert slots back into the break and commit
+			sql = "  INSERT INTO slot(break,position,spot) " + 
+			      "  VALUES " + getValues(_break);
+			Database.executeUpdate(sql);
+			
+			// Commit
+			Database.executeUpdate("COMMIT");
+		}
+		catch (SQLException e) {
+			Database.executeUpdate("ROLLBACK");
+			throw e;
+		}
+	}
+	
+	
+	private String getValues(Break _break) {
+		
+		int breakId, rowCount;
+		String values="";
+		
+		breakId = _break.getId();
+		rowCount = table.getRowCount();
+		for (int i=0; i<rowCount; ++i) {
+			values += String.format("(%d, %d, %d)",
+			                        breakId,
+			                        i+1,
+			                        table.getValueAt(i,"spot"));
+			if (i < rowCount-1) {
+				values += ", ";
+			}
+		}
+		return values;
 	}
 	
 	
@@ -107,7 +156,10 @@ public class SlotManager extends DatabaseTableManager {
 	
 	public static void main(String[] args) {
 		
-		JFrame frame;
+		Box box;
+		JButton button;
+		final JFrame frame;
+		final SlotManager slotManager;
 		
 		// Start
 		System.out.println();
@@ -117,13 +169,39 @@ public class SlotManager extends DatabaseTableManager {
 		System.out.println();
 		
 		try {
-			// Test
+			
+			// Make frame
 			frame = new JFrame("Slot Manager");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setContentPane(new SlotManager(frame, new Break(12)));
+			
+			// Make slot manager in box
+			box = new Box(BoxLayout.PAGE_AXIS);
+			slotManager = new SlotManager(frame, new Break(12));
+			slotManager.setBorder(BorderFactory.createTitledBorder("Slots"));
+			box.add(slotManager);
+			
+			// Add commit button
+			button = new JButton("Commit");
+			button.setAlignmentX(0.5f);
+			box.add(button);
+			button.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent event) {
+					try {
+						slotManager.commit();
+						GUI.showMessage(frame, "Committed.");
+					} catch (SQLException e) {
+						GUI.showError(frame, "Could not commit.");
+						e.printStackTrace();
+					}
+				}
+			});
+			
+			// Show in frame
+			frame.setContentPane(box);
 			frame.pack();
 			frame.setVisible(true);
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
 		}
 		

@@ -106,6 +106,7 @@ public class DatabaseTableManager extends JPanel
 		setMaximumSize(GUI.getInfiniteSize());
 		
 		// Table
+		this.table = table;
 		scrollPane = GUI.getScrollPaneFor(table);
 		add(scrollPane);
 		

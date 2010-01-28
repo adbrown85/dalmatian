@@ -77,6 +77,12 @@ public class DatabaseTableModel extends AbstractTableModel {
 	}
 	
 	
+	public String getSQL() {
+		
+		return sql;
+	}
+	
+	
 	public Object getValueAt(int row,
 	                         int column) {
 		

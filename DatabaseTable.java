@@ -23,14 +23,13 @@ public class DatabaseTable extends JTable {
 	private static final int PADDING=35;
 	private DatabaseTableModel tableModel;
 	private Object[] longestValues;
-	private String sql;
 	
 	
 	public DatabaseTable(String sql)
 	                     throws SQLException {
 		
 		super(new DatabaseTableModel(sql));
-		init(sql);
+		init();
 	}
 	
 	
@@ -39,7 +38,7 @@ public class DatabaseTable extends JTable {
 	                     throws SQLException {
 		
 		super(new HidableDatabaseTableModel(sql, hiddenColumns));
-		init(sql);
+		init();
 	}
 	
 	
@@ -74,7 +73,7 @@ public class DatabaseTable extends JTable {
 	
 	public String getSQL() {
 		
-		return sql;
+		return tableModel.getSQL();
 	}
 	
 	
@@ -85,9 +84,8 @@ public class DatabaseTable extends JTable {
 	}
 	
 	
-	private void init(String sql) {
+	private void init() {
 		
-		this.sql = sql;
 		this.tableModel = (DatabaseTableModel)dataModel;
 		initLongestValues();
 		initWidths();
@@ -150,7 +148,7 @@ public class DatabaseTable extends JTable {
 	
 	public void setSQL(String sql) {
 		
-		this.sql = sql;
+		tableModel.setSQL(sql);
 	}
 	
 	

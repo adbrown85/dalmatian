@@ -71,6 +71,12 @@ public class DatabaseTableManager extends JPanel
 	}
 	
 	
+	public Frame getFrame() {
+		
+		return JOptionPane.getFrameForComponent(this);
+	}
+	
+	
 	public int getSelectedRow() {
 		
 		return table.getSelectedRow();

@@ -4,12 +4,9 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.awt.event.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Vector;
-
 
 
 /**
@@ -17,29 +14,24 @@ import java.util.Vector;
  */
 public class Clock extends Thread {
 	
-	private static final int PRECISION=200;
+	private static final int PRECISION = 200;
 	
 	private Calendar alarm, time;
 	private ClockWorker worker;
 	private int lastSecond=-1, second;
 	private Object alarmNotifier;
 	
-	
 	public Clock() {
-		
 		alarm = null;
 		worker = new ClockWorker();
 		time = Calendar.getInstance();
 		alarmNotifier = new Object();
 	}
 	
-	
 	public void addClockListener(ClockEvent event,
 	                             ClockListener listener) {
-		
 		worker.addClockListener(event, listener);
 	}
-	
 	
 	private synchronized void checkAlarm() {
 		
@@ -52,15 +44,11 @@ public class Clock extends Thread {
 		}
 	}
 	
-	
 	public Date getTime() {
-		
 		return time.getTime();
 	}
 	
-	
 	public void run() {
-		
 		try {
 			while (true) {
 				time = Calendar.getInstance();
@@ -77,16 +65,13 @@ public class Clock extends Thread {
 		}
 	}
 	
-	
 	public synchronized void triggerAlarm() {
-		
 		alarm = null;
 		synchronized (alarmNotifier) {
 			alarmNotifier.notifyAll();
 		}
 		worker.fireClockEvent(ClockEvent.ALARM);
 	}
-	
 	
 	public synchronized boolean setAlarm(Timestamp timestamp) {
 		
@@ -101,15 +86,11 @@ public class Clock extends Thread {
 		return true;
 	}
 	
-	
-	public void waitForAlarm()
-	                         throws InterruptedException {
-		
+	public void waitForAlarm() throws InterruptedException {
 		synchronized (alarmNotifier) {
 			alarmNotifier.wait();
 		}
 	}
-	
 	
 	public static void main(String[] args) {
 		

@@ -4,14 +4,10 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.Vector;
-
 
 
 /**
@@ -19,41 +15,36 @@ import java.util.Vector;
  */
 public class Sponsor {
 	
-	private static PreparedStatement deleteStatement,
-	                                 insertStatement,
-	                                 selectStatement,
-	                                 updateStatement;
+	private static final PreparedStatement deleteStatement;
+	private static final PreparedStatement insertStatement;
+	private static final PreparedStatement selectStatement;
+	private static final PreparedStatement updateStatement;
+	
 	private String name;
-	private String street, city, state, zip;
+	private String street;
+	private String city;
+	private String state;
+	private String zip;
 	private String phone;
 	
-	
 	/**
-	 * Static constructor.
+	 * Initializes static fields.
 	 */
 	static {
-		
-		String message;
-		
 		try {
-			initDeleteStatement();
-			initInsertStatement();
-			initSelectStatement();
-			initUpdateStatement();
+			deleteStatement = makeDeleteStatement();
+			insertStatement = makeInsertStatement();
+			selectStatement = makeSelectStatement();
+			updateStatement = makeUpdateStatement();
 		} catch (SQLException e) {
-			message = "[Sponsor] Could not prepare statements.\n" +
-			          "[Sponsor] Check database connection.";
-			throw new ExceptionInInitializerError(message);
+			throw new ExceptionInInitializerError("Could not makes statements!");
 		}
 	}
 	
-	
 	/**
-	 * Creates a new, empty %Sponsor.
+	 * Creates a new, empty Sponsor.
 	 */
 	public Sponsor() {
-		
-		// Initialize fields
 		name = null;
 		street = null;
 		city = null;
@@ -62,36 +53,31 @@ public class Sponsor {
 		phone = null;
 	}
 	
-	
 	/**
-	 * Creates a new %Sponsor from one already in the database.
+	 * Creates a new Sponsor from one already in the database.
 	 */
-	public Sponsor(String name)
-	               throws SQLException {
+	public Sponsor(String name) throws SQLException {
 		
-		ResultSet results;
+		ResultSet rs;
 		
 		// Execute query
 		selectStatement.setString(1, name);
-		results = selectStatement.executeQuery();
+		rs = selectStatement.executeQuery();
 		
 		// Process results
-		results.next();
-		this.name = results.getString("name");
-		this.street = results.getString("street");
-		this.city = results.getString("city");
-		this.state = results.getString("state");
-		this.zip = results.getString("zip");
-		this.phone = results.getString("phone");
+		rs.next();
+		this.name = rs.getString("name");
+		this.street = rs.getString("street");
+		this.city = rs.getString("city");
+		this.state = rs.getString("state");
+		this.zip = rs.getString("zip");
+		this.phone = rs.getString("phone");
 	}
 	
-	
 	/**
-	 * Creates a new %Sponsor by copying another.
+	 * Creates a new Sponsor by copying another.
 	 */
 	public Sponsor(Sponsor other) {
-		
-		// Copy attibutes
 		this.name = other.name;
 		this.street = other.street;
 		this.city = other.city;
@@ -100,12 +86,10 @@ public class Sponsor {
 		this.phone = other.phone;
 	}
 	
-	
 	/**
 	 * Removes a sponsor from the database.
 	 */
-	public static void delete(String name)
-	                          throws SQLException {
+	public static void delete(String name) throws SQLException {
 		
 		int result;
 		
@@ -114,10 +98,10 @@ public class Sponsor {
 		result = deleteStatement.executeUpdate();
 		
 		// Check results
-		if (result != 1)
+		if (result != 1) {
 			throw new SQLException("[Sponsor] No row was deleted.");
+		}
 	}
-	
 	
 	public static Vector<String> getFieldNames() {
 		
@@ -133,153 +117,152 @@ public class Sponsor {
 		return fieldNames;
 	}
 	
-	
-	public static Vector<String> getAllNames() 
-	                                         throws SQLException {
+	public static Vector<String> getAllNames() throws SQLException {
 		
-		ResultSet results;
-		String sql;
-		Vector<String> names;
+		String sql = "SELECT name FROM sponsor ORDER BY name";
+		Vector<String> names = new Vector<String>();
+		ResultSet rs = Database.executeQuery(sql);
 		
-		// Execute query
-		sql = "SELECT name FROM sponsor ORDER BY name";
-		results = Database.executeQuery(sql);
-		
-		// Process results
-		names = new Vector<String>();
-		while (results.next()) {
-			names.add(results.getString(1));
+		while (rs.next()) {
+			names.add(rs.getString(1));
 		}
 		return names;
 	}
 	
+   /**
+    * Inserts the sponsor into the database.
+    */
+   public void insert() throws SQLException {
+      
+      int result;
+      
+      // Form and execute statement
+      insertStatement.setString(1, name);
+      insertStatement.setString(2, street);
+      insertStatement.setString(3, city);
+      insertStatement.setString(4, state);
+      insertStatement.setString(5, zip);
+      insertStatement.setString(6, phone);
+      result = insertStatement.executeUpdate();
+      
+      // Check results
+      if (result == 0)
+         throw new SQLException("[Sponsor] No row was inserted.");
+   }
+   
+   public void print() {
+      System.out.println(toString());
+   }
+   
+   public static void update(Sponsor original,
+                             Sponsor updated)
+                             throws SQLException {
+      updateStatement.setString(1, updated.getName());
+      updateStatement.setString(2, updated.getStreet());
+      updateStatement.setString(3, updated.getCity());
+      updateStatement.setString(4, updated.getState());
+      updateStatement.setString(5, updated.getZip());
+      updateStatement.setString(6, updated.getPhone());
+      updateStatement.setString(7, original.getName());
+      updateStatement.executeUpdate();
+   }
 	
-	public String getName() {return name;}
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
-	public String getStreet() {return street;}
-	
-	public String getCity() {return city;}
-	
-	public String getState() {return state;}
-	
-	public String getZip() {return zip;}
-	
-	public String getPhone() {return phone;}
-	
-	
-	private static void initDeleteStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		sql = "DELETE FROM sponsor WHERE name = ? LIMIT 1";
-		deleteStatement = Database.prepare(sql);
+	private static PreparedStatement makeDeleteStatement() throws SQLException {
+		return Database.prepare(
+		      "DELETE " +
+		      "FROM sponsor " +
+		      "WHERE name = ? LIMIT 1");
 	}
 	
-	
-	private static void initInsertStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		// Form and prepare statement
-		sql = "INSERT INTO sponsor(name, street, city, state, zip, phone)"
-		      + " VALUES(?, ?, ?, ?, ?, ?)";
-		insertStatement = Database.prepare(sql);
+	private static PreparedStatement makeInsertStatement() throws SQLException {
+		return Database.prepare(
+		      "INSERT INTO sponsor(name, street, city, state, zip, phone) " +
+            "VALUES(?, ?, ?, ?, ?, ?)");
 	}
 	
-	
-	private static void initSelectStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		sql = "SELECT * FROM sponsor WHERE name = ?";
-		selectStatement = Database.prepare(sql);
+	private static PreparedStatement makeSelectStatement() throws SQLException {
+		return Database.prepare(
+		      "SELECT * " +
+		      "FROM sponsor " +
+		      "WHERE name = ?");
 	}
 	
-	
-	private static void initUpdateStatement()
-	                                        throws SQLException {
-		
-		String sql;
-
-		sql = "UPDATE sponsor " + 
-		      "SET name=?, street=?, city=?, state=?, zip=?, phone=?" + 
-		      "WHERE name=?";
-		updateStatement = Database.prepare(sql);
+	private static PreparedStatement makeUpdateStatement() throws SQLException {
+		return Database.prepare(
+		      "UPDATE sponsor " + 
+            "SET name=?, street=?, city=?, state=?, zip=?, phone=?" + 
+            "WHERE name=?");
 	}
 	
+	//------------------------------------------------------------
+   // Getters and setters
+   //
 	
-	/**
-	 * Inserts the sponsor into the database.
-	 */
-	public void insert()
-	                   throws SQLException {
-		
-		int result;
-		Statement statement;
-		String sql;
-		
-		// Form and execute statement
-		insertStatement.setString(1, name);
-		insertStatement.setString(2, street);
-		insertStatement.setString(3, city);
-		insertStatement.setString(4, state);
-		insertStatement.setString(5, zip);
-		insertStatement.setString(6, phone);
-		result = insertStatement.executeUpdate();
-		
-		// Check results
-		if (result == 0)
-			throw new SQLException("[Sponsor] No row was inserted.");
+   public String getName() {
+      return name;
+   }
+   
+   public String getStreet() {
+      return street;
+   }
+   
+   public String getCity() {
+      return city;
+   }
+   
+   public String getState() {
+      return state;
+   }
+   
+   public String getZip() {
+      return zip;
+   }
+   
+   public String getPhone() {
+      return phone;
+   }
+   
+	public void setName(String name) {
+	   this.name = name;
 	}
 	
-	
-	public void print() {
-		
-		System.out.println(toString());
+	public void setStreet(String street) {
+	   this.street = street;
 	}
 	
+	public void setCity(String city) {
+	   this.city = city;
+	}
 	
-	public void setName(String name) {this.name = name;}
+	public void setState(String state) {
+	   this.state = state;
+	}
 	
-	public void setStreet(String street) {this.street = street;}
+	public void setZip(String zip) {
+	   this.zip = zip;
+	}
 	
-	public void setCity(String city) {this.city = city;}
+	public void setPhone(String phone) {
+	   this.phone = phone;
+	}
 	
-	public void setState(String state) {this.state = state;}
-	
-	public void setZip(String zip) {this.zip = zip;}
-	
-	public void setPhone(String phone) {this.phone = phone;}
-	
+	//------------------------------------------------------------
+   // Converters
+   //
 	
 	public String toString() {
-		
 		return String.format("%s, %s, %s, %s, %s, %s",
 		                     name, street, city, state, zip, phone);
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	public static void update(Sponsor original,
-	                          Sponsor updated)
-	                          throws SQLException {
-		
-		updateStatement.setString(1, updated.getName());
-		updateStatement.setString(2, updated.getStreet());
-		updateStatement.setString(3, updated.getCity());
-		updateStatement.setString(4, updated.getState());
-		updateStatement.setString(5, updated.getZip());
-		updateStatement.setString(6, updated.getPhone());
-		updateStatement.setString(7, original.getName());
-		updateStatement.executeUpdate();
-	}
-	
-	
-	/**
-	 * Test for %Sponsor.
-	 */
 	public static void main(String[] args) {
 		
 		Sponsor sponsor;

@@ -56,6 +56,10 @@ public class ActionDialog extends JDialog implements ActionListener {
 		listeners.add(listener);
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
+	
 	protected boolean eventsArePaused() {
 		return pausedEvents;
 	}

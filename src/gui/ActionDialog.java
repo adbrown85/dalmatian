@@ -6,9 +6,10 @@
  */
 package gui;
 
-import java.awt.*;
+import java.awt.Frame;
 import java.awt.event.*;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 
 
@@ -31,7 +32,7 @@ import javax.swing.*;
 public class ActionDialog extends JDialog implements ActionListener {
 	
 	protected final Frame frame;
-	protected final Vector<ActionListener> listeners;
+	protected final List<ActionListener> listeners;
 	private boolean pausedEvents;
 	
 	public ActionDialog(Frame frame, String title) {
@@ -40,7 +41,7 @@ public class ActionDialog extends JDialog implements ActionListener {
 		
 		this.pausedEvents = false;
 		this.frame = frame;
-		this.listeners = new Vector<ActionListener>();
+		this.listeners = new ArrayList<ActionListener>();
 	}
 	
 	public void actionPerformed(ActionEvent event) {

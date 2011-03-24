@@ -10,27 +10,17 @@ import javax.swing.*;
 import java.sql.SQLException;
 
 
-
 /**
  * Manages sponsors.
  */
 public class SponsorManager extends DatabaseTableManager  {
 	
-	private SponsorInsertDialog insertDialog;
-	private SponsorUpdateDialog updateDialog;
-	private static final String sql;
+	private final SponsorInsertDialog insertDialog;
+	private final SponsorUpdateDialog updateDialog;
 	
-	
-	static {
-		sql = "SELECT * FROM sponsor " + 
-		      "ORDER BY name";
-	}
-	
-	
-	public SponsorManager(Frame frame)
-	                      throws SQLException {
+	public SponsorManager(Frame frame) throws SQLException {
 		
-		super(sql);
+		super("SELECT * FROM sponsor ORDER BY name");
 		
 		// Buttons
 		addButton("Insert");
@@ -47,12 +37,10 @@ public class SponsorManager extends DatabaseTableManager  {
 		insertDialog.addActionListener(this);
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();
 		
-		command = event.getActionCommand();
 		if (command.equals("Delete")) {
 			handleDelete();
 		} else if (command.equals("Insert")) {
@@ -64,23 +52,15 @@ public class SponsorManager extends DatabaseTableManager  {
 		}
 	}
 	
-	
 	public String getKey() {
-		
-		if (hasSelected()) {
-			return (String)getValueAt(getSelectedRow(), 0);
-		} else {
-			return null;
-		}
+	   return hasSelected() ? (String) getValueAt(getSelectedRow(), 0) : null;
 	}
-	
 	
 	private void handleDelete() {
 		
-		String key;
+		String key = getKey();
 		
 		// Confirm
-		key = getKey();
 		if (key != null && showConfirmDelete(key)) {
 			try {
 				Sponsor.delete(key);
@@ -94,25 +74,21 @@ public class SponsorManager extends DatabaseTableManager  {
 	
 	
 	private void handleInsert() {
-		
-		// Show insert dialog
 		insertDialog.pack();
 		insertDialog.setLocationRelativeTo(this);
 		insertDialog.setVisible(true);
 	}
 	
-	
 	private void handleUpdate() {
 		
-		String key;
+		String key = getKey();
 		
-		// Show update dialog
+      if (key == null) {
+         GUI.showMessage(this, "Please select a sponsor.");
+         return;
+      }
+		
 		try {
-			key = getKey();
-			if (key == null) {
-				GUI.showMessage(this, "Please select a sponsor.");
-				return;
-			}
 			updateDialog.setSponsor(new Sponsor(key));
 			updateDialog.pack();
 			updateDialog.setLocationRelativeTo(this);
@@ -122,21 +98,15 @@ public class SponsorManager extends DatabaseTableManager  {
 		}
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
 	public static void main(String[] args) {
 		
-		JFrame frame;
+		JFrame frame = new JFrame("SponsorManager");
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SponsorManager");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		// Create frame
 		try {
-			frame = new JFrame("SponsorManager");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setContentPane(new SponsorManager(frame));
 			frame.pack();
@@ -144,13 +114,6 @@ public class SponsorManager extends DatabaseTableManager  {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SponsorManager");
-		System.out.println("****************************************");
-		System.out.println();
 	}
 }
 

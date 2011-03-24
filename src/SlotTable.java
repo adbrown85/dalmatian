@@ -4,15 +4,8 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Vector;
 import javax.swing.JFrame;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-
 
 
 /**
@@ -22,16 +15,13 @@ public class SlotTable extends DatabaseTable {
 	
 	Break _break;
 	
-	
 	public SlotTable(Break _break)
 	                 throws SQLException {
 		
 		super(getSQL(_break), getHiddenColumnNames());
 		
-		// Initialize
 		this._break = _break;
 	}
-	
 	
 	public void add(Spot spot) {
 		
@@ -47,21 +37,16 @@ public class SlotTable extends DatabaseTable {
 		super.add(row);
 	}
 	
-	
 	public Break getBreak() {
-		
 		return _break;
 	}
 	
-	
 	private static String getSQL(Break _break) {
-		
 		return "SELECT position,spot,sponsor,title,year " +
 		       "FROM view_slot " +
 		       "WHERE break=" + _break.getId() + " " +
 		       "ORDER BY position";
 	}
-	
 	
 	private static String[] getHiddenColumnNames() {
 		
@@ -70,15 +55,10 @@ public class SlotTable extends DatabaseTable {
 		return hiddenColumnNames;
 	}
 	
-	
-	public void refresh()
-	                    throws SQLException {
-		
-		// Reinitialize data
+	public void refresh() throws SQLException {
 		setSQL(getSQL(_break));
 		super.refresh();
 	}
-	
 	
 	public void remove(int rowIndex) {
 		
@@ -91,62 +71,40 @@ public class SlotTable extends DatabaseTable {
 		super.remove(rowIndex);
 	}
 	
-	
 	public void setBreak(Break _break) {
-		
 		this._break = _break;
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
-		SlotTable table;
+		JFrame frame = new JFrame("SlotTable");
+		Break b = new Break(12);
+		SlotTable table = new SlotTable(b);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SlotTable");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create frame with table
+		frame.setContentPane(table);
+		frame.pack();
+		frame.setVisible(true);
 		
-		try {
-			
-			// Create frame with table
-			frame = new JFrame("SlotTable");
-			table = new SlotTable(new Break(12));
-			frame.setContentPane(table);
-			frame.pack();
-			frame.setVisible(true);
-			
-			// Test add
-			System.out.println("Waiting to add...");
-			Thread.sleep(2000);
-			System.out.println("Adding...");
-			table.add(new Spot(19));
-			frame.pack();
-			System.out.println("Now has rows: " + table.getRowCount());
-			
-			// Test remove
-			System.out.println("\nWaiting to remove...");
-			Thread.sleep(5000);
-			System.out.println("Removing...");
-			table.remove(1);
-			frame.pack();
-			System.out.println("Now has rows: " + table.getRowCount());
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// Test add
+		System.out.println("Waiting to add...");
+		Thread.sleep(2000);
+		System.out.println("Adding...");
+		table.add(new Spot(19));
+		frame.pack();
+		System.out.println("Now has rows: " + table.getRowCount());
 		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SlotTable");
-		System.out.println("****************************************");
-		System.out.println();
+		// Test remove
+		System.out.println("\nWaiting to remove...");
+		Thread.sleep(5000);
+		System.out.println("Removing...");
+		table.remove(1);
+		frame.pack();
+		System.out.println("Now has rows: " + table.getRowCount());
 	}
 }
 

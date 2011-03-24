@@ -7,20 +7,16 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.TreeMap;
 import javax.swing.*;
-
 
 
 /**
  * Dialog dealing with Breaks.
  */
-public class BreakDialog extends InputDialog
-                         implements ActionListener {
+public class BreakDialog extends InputDialog implements ActionListener {
 	
-	Break original=null;
-	SlotManager slotManager;
-	
+	protected Break original=null;
+	protected SlotManager slotManager;
 	
 	public BreakDialog(Frame frame,
 	                   String title)
@@ -38,7 +34,6 @@ public class BreakDialog extends InputDialog
 		initSlotManager(new Break());
 	}
 	
-	
 	public Break getBreak() {
 		
 		Break _break;
@@ -50,9 +45,7 @@ public class BreakDialog extends InputDialog
 		return _break;
 	}
 	
-	
-	private void initSlotManager(Break _break)
-	                             throws SQLException {
+	private void initSlotManager(Break _break) throws SQLException {
 		
 		// Create 
 		slotManager = new SlotManager(frame, _break);
@@ -72,19 +65,15 @@ public class BreakDialog extends InputDialog
 		int height;
 		
 		pack();
-		height = (int)inputPanel.getPreferredSize().getHeight();
+		height = (int) inputPanel.getPreferredSize().getHeight();
 		inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, height));
 	}
 	
-	
-	public void setBreak(Break _break) 
-	                     throws SQLException {
-		
+	public void setBreak(Break _break) throws SQLException {
 		original = new Break(_break);
 		setTimestampIn("Start", _break.getStart());
 		setTimestampIn("End", _break.getEnd());
 	}
-	
 	
 	public static void main(String[] args) {
 		

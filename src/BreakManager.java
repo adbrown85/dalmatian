@@ -21,7 +21,6 @@ public class BreakManager extends DatabaseTableManager {
 	private BreakInsertDialog insertDialog;
 	private BreakUpdateDialog updateDialog;
 	
-	
 	static {
 		sql = "SELECT id, " + 
 		             "date_format(start,'%a') AS day, " + 
@@ -33,9 +32,7 @@ public class BreakManager extends DatabaseTableManager {
 		hiddenColumns[0] = "id";
 	}
 	
-	
-	public BreakManager(Frame frame)
-	                    throws SQLException {
+	public BreakManager(Frame frame) throws SQLException {
 		
 		super(sql, hiddenColumns);
 		
@@ -54,7 +51,6 @@ public class BreakManager extends DatabaseTableManager {
 		updateDialog.addActionListener(this);
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
 		String command;
@@ -72,10 +68,9 @@ public class BreakManager extends DatabaseTableManager {
 		}
 	}
 	
-	
 	private void handleDelete() {
 		
-		int id, row;
+		int row;
 		
 		row = getSelectedRow();
 		if (row == -1) {
@@ -94,19 +89,16 @@ public class BreakManager extends DatabaseTableManager {
 		}
 	}
 	
-	
 	private void handleInsert() {
 		
 		insertDialog.setLocationRelativeTo(this);
 		insertDialog.setVisible(true);
 	}
 	
-	
 	private void handleRefresh() {
 		
 		refresh();
 	}
-	
 	
 	private void handleUpdate() {
 		
@@ -128,7 +120,6 @@ public class BreakManager extends DatabaseTableManager {
 			GUI.showError(this, "Could not update break.");
 		}
 	}
-	
 	
 	public static void main(String[] args) {
 		

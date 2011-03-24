@@ -4,34 +4,27 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.util.Calendar;
-import java.util.Vector;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
- * Utility for notifing ClockListeners.
+ * Utility for notifying ClockListeners.
  */
 public class ClockWorker {
 	
-	private Vector<ClockListener> alarmListeners, secondListeners;
-	
+	private List<ClockListener> alarmListeners;
+	private List<ClockListener> secondListeners;
 	
 	public ClockWorker() {
-		
-		// Create groups
-		alarmListeners = new Vector<ClockListener>();
-		secondListeners = new Vector<ClockListener>();
+		alarmListeners = new ArrayList<ClockListener>();
+		secondListeners = new ArrayList<ClockListener>();
 	}
 	
-	
-	public void addClockListener(ClockEvent event,
-	                             ClockListener listener) {
+	public void addClockListener(ClockEvent event, ClockListener listener) {
 		
-		Vector<ClockListener> listeners;
+		List<ClockListener> listeners = getListeners(event);
 		
-		// Add listener to correct group
-		listeners = getListeners(event);
 		if (listeners != null) {
 			listeners.add(listener);
 		}
@@ -40,27 +33,23 @@ public class ClockWorker {
 	
 	public void fireClockEvent(ClockEvent event) {
 		
-		Vector<ClockListener> listeners;
+		List<ClockListener> listeners = getListeners(event);
 		
-		// Fire to listeners of correct type
-		listeners = getListeners(event);
-		if (listeners == null)
-			return;
-		for (ClockListener listener : listeners) {
-			listener.clockChanged(event);
+		if (listeners != null) {
+   		for (ClockListener cl : listeners) {
+   			cl.clockChanged(event);
+   		}
 		}
 	}
 	
-	
-	private Vector<ClockListener> getListeners(ClockEvent event) {
-		
+	private List<ClockListener> getListeners(ClockEvent event) {
 		switch (event) {
-			case ALARM :
-				return alarmListeners;
-			case SECOND :
-				return secondListeners;
-			default :
-				return null;
+		case ALARM :
+			return alarmListeners;
+		case SECOND :
+			return secondListeners;
+		default :
+			return null;
 		}
 	}
 }

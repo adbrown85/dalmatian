@@ -4,12 +4,8 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.awt.*;
-import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
-import javax.swing.border.*;
-
 
 
 /**
@@ -21,10 +17,7 @@ public class BreakQueue extends Box {
 	private static final String[] hiddenColumns;
 	private DatabaseTable table;
 	
-	
 	static {
-		
-		// SQL and hidden columns
 		sql = "SELECT id, " + 
 		              "date_format(start,'%a') AS day, " + 
 		              "date_format(start,'%b %d %Y') AS date, " + 
@@ -37,50 +30,31 @@ public class BreakQueue extends Box {
 		hiddenColumns[0] = "id";
 	}
 	
-	
-	public BreakQueue()
-	                  throws SQLException {
-		
-		super(BoxLayout.PAGE_AXIS);
-		init(null);
+	public BreakQueue() throws SQLException {
+		this(null);
 	}
 	
-	
-	public BreakQueue(String title)
-	                  throws SQLException {
-		
+	public BreakQueue(String title) throws SQLException {
+	   
 		super(BoxLayout.PAGE_AXIS);
-		init(title);
+		
+      // Table
+      table = new DatabaseTable(sql, hiddenColumns);
+      add(GUI.getScrollPaneFor(table, 2));
+      
+      // Titled border
+      if (title != null) {
+         setBorder(BorderFactory.createTitledBorder(title));
+      }
 	}
 	
-	
-	public Break getNextBreak()
-	                          throws SQLException {
-		
+	public Break getNextBreak() throws SQLException {
 		return new Break((Integer)table.getValueAt(0, "id"));
 	}
 	
-	
-	private void init(String title)
-	                  throws SQLException {
-		
-		// Table
-		table = new DatabaseTable(sql, hiddenColumns);
-		add(GUI.getScrollPaneFor(table, 2));
-		
-		// Titled border
-		if (title != null) {
-			setBorder(BorderFactory.createTitledBorder(title));
-		}
-	}
-	
-	
-	public void refresh()
-	                    throws SQLException {
-		
+	public void refresh() throws SQLException {
 		table.refresh();
 	}
-	
 	
 	public static void main(String[] args) {
 		

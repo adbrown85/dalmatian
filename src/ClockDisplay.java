@@ -5,28 +5,21 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import javax.swing.*;
-
 
 
 /**
  * Displays a clock in several text fields.
  */
-public class ClockDisplay extends Box
-                          implements ClockListener {
+public class ClockDisplay extends Box implements ClockListener {
 	
 	private static final DateFormat dateFormat;
 	private Clock clock;
 	private JLabel label;
 	
-	
 	static {
-		
 		dateFormat = DateFormat.getDateTimeInstance();
 	}
-	
 	
 	public ClockDisplay(Clock clock) {
 		
@@ -42,12 +35,9 @@ public class ClockDisplay extends Box
 		clock.addClockListener(ClockEvent.SECOND, this);
 	}
 	
-	
 	public void clockChanged(ClockEvent event) {
-		
 		label.setText(dateFormat.format(clock.getTime()));
 	}
-	
 	
 	public static void main(String[] args) {
 		

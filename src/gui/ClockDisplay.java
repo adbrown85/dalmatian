@@ -5,11 +5,11 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Clock;
-import ClockEvent;
-import ClockListener;
 import java.text.DateFormat;
 import javax.swing.*;
+import time.Clock;
+import time.ClockEvent;
+import time.ClockListener;
 
 
 /**

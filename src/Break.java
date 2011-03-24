@@ -142,28 +142,28 @@ public class Break {
    }
    
    private static PreparedStatement makeDeleteStatement() throws SQLException {
-      return Database.prepareStatement(
+      return Database.prepare(
             "DELETE " +
             "FROM break " +
             "WHERE id=?");
    }
    
    private static PreparedStatement makeInsertStatement() throws SQLException {
-      return Database.prepareStatement(
+      return Database.prepare(
             "INSERT " +
             "INTO break(start,end) " +
             "VALUES(?, ?)");
    }
    
    private static PreparedStatement makeSelectStatement() throws SQLException {
-      return Database.prepareStatement(
+      return Database.prepare(
             "SELECT * " +
             "FROM break " +
             "WHERE id = ?");
    }
    
    private static PreparedStatement makeUpdateStatement() throws SQLException {
-      return Database.prepareStatement(
+      return Database.prepare(
             "UPDATE break " + 
             "SET id=?, start=?, end=? " +
             "WHERE id=?");

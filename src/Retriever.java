@@ -158,7 +158,7 @@ public class Retriever {
 		      "FROM slot AS sl JOIN spot AS sp " + 
 		      "ON sl.spot=sp.id " +
 		      "WHERE sl.break=?";
-		filesForBreak = Database.prepareStatement(sql);
+		filesForBreak = Database.prepare(sql);
 	}
 	
 	
@@ -171,7 +171,7 @@ public class Retriever {
 			return;
 		
 		sql = "SELECT DISTINCT sponsor FROM spot ORDER BY sponsor";
-		sponsorsWithSpots = Database.prepareStatement(sql);
+		sponsorsWithSpots = Database.prepare(sql);
 	}
 	
 	
@@ -185,7 +185,7 @@ public class Retriever {
 		
 		sql = "SELECT * FROM spot " +
 		      "WHERE sponsor=? AND title=? AND year=?";
-		spotForSponsorTitleYear = Database.prepareStatement(sql);
+		spotForSponsorTitleYear = Database.prepare(sql);
 	}
 	
 	
@@ -199,7 +199,7 @@ public class Retriever {
 		
 		sql = "SELECT id FROM spot " +
 		      "WHERE sponsor=? AND title=? AND year=?";
-		spotIdForSponsorTitleYear = Database.prepareStatement(sql);
+		spotIdForSponsorTitleYear = Database.prepare(sql);
 	}
 	
 	
@@ -214,7 +214,7 @@ public class Retriever {
 		sql = "SELECT DISTINCT title FROM spot " + 
 		      "WHERE sponsor=? " + 
 		      "ORDER BY title";
-		titlesForSponsor = Database.prepareStatement(sql);
+		titlesForSponsor = Database.prepare(sql);
 	}
 	
 	
@@ -229,7 +229,7 @@ public class Retriever {
 		sql = "SELECT year FROM spot " +
 		      "WHERE sponsor=? AND title=? " + 
 		      "ORDER BY year";
-		yearsForSponsorTitle = Database.prepareStatement(sql);
+		yearsForSponsorTitle = Database.prepare(sql);
 	}
 	
 	

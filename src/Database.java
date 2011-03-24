@@ -4,7 +4,6 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -14,126 +13,96 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 
 
-
 /**
  * Utility class for executing queries against the Dalmatian database.
  */
 public class Database {
 	
-	private static Connection connection=null;
+	private static final Connection connection;   // Connection to database
 	
+	/** Initializes static fields. */
+	static {
+	   try {
+	      connection = makeConnection();
+	   } catch (Exception e) {
+	      throw new ExceptionInInitializerError("Could not make connection!");
+	   }
+	}
 	
 	/**
 	 * Gets a new statement from the static connection.
 	 * 
-	 * @throws SQLException when a statement can't be made.
+	 * @throws SQLException if a statement cannot be made.
 	 */
-	public static Statement createStatement()
-	                                        throws SQLException {
-		
-		// Return statement
-		initConnection();
+	public static Statement createStatement() throws SQLException {
 		return connection.createStatement();
 	}
 	
-	
 	/**
 	 * Executes a query on the database.
+	 * 
+	 * @param sql SQL statement
+	 * @throws SQLException if query could not be executed
 	 */
-	public static ResultSet executeQuery(String sql) 
-	                                     throws SQLException {
-		
-		Statement statement;
-		
-		// Pass statement
-		initConnection();
-		statement = connection.createStatement();
-		return statement.executeQuery(sql);
+	public static ResultSet executeQuery(String sql) throws SQLException {
+		return createStatement().executeQuery(sql);
 	}
-	
 	
 	/**
 	 * Updates, inserts, or deletes something in the database.
+	 * 
+    * @param sql SQL statement
+    * @throws SQLException if update could not be executed
 	 */
-	public static int executeUpdate(String sql)
-	                                throws SQLException {
-		
-		Statement statement;
-		
-		// Pass statement
-		initConnection();
-		statement = connection.createStatement();
-		return statement.executeUpdate(sql);
+	public static int executeUpdate(String sql) throws SQLException {
+		return createStatement().executeUpdate(sql);
 	}
 	
-	
 	/**
-	 * Gets the connection to the database.
+	 * Returns the connection to the database.
 	 */
-	public static Connection getConnection()
-	                                       throws SQLException {
-		
-		// Check connection
-		initConnection();
+	public static Connection getConnection() {
 		return connection;
 	}
 	
-	
-	public static Timestamp getCurrentTimestamp()
-	                                            throws SQLException {
+	/**
+	 * Returns the current time according to the database.
+	 * 
+	 * @throws SQLException if problem executing query
+	 */
+	public static Timestamp getCurrentTimestamp() throws SQLException {
 		
-		ResultSet results;
+		ResultSet rs = Database.executeQuery("SELECT CURRENT_TIMESTAMP");
 		
-		// Execute query and process results
-		results = Database.executeQuery("SELECT CURRENT_TIMESTAMP");
-		results.next();
-		return results.getTimestamp(1);
+		rs.next();
+		return rs.getTimestamp(1);
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
 	/**
 	 * Initializes the connection to the database.
 	 * 
-	 * @throws SQLException when there's a problem connecting.
+	 * @throws SQLException if there's a problem connecting.
 	 */
-	private static void initConnection() 
-	                                   throws SQLException {
+	private static Connection makeConnection() throws Exception {
 		
-		String host, name, user, password, url;
+		String host = Configuration.getOption("database", "host");
+		String name = Configuration.getOption("database", "name");
+		String user = Configuration.getOption("database", "user");
+	   String password = Configuration.getOption("database", "password");
+	   String url = String.format("jdbc:mysql://%s/%s", host, name);
 		
-		// Check if already connected
-		if (connection != null)
-			return;
-		
-		try {
-			
-			// Get credentials from configuration
-			host = Configuration.getOption("database", "host");
-			name = Configuration.getOption("database", "name");
-			user = Configuration.getOption("database", "user");
-			password = Configuration.getOption("database", "password");
-			
-			// Make connection
-			url = String.format("jdbc:mysql://%s/%s", host, name);
-			Class.forName("com.mysql.jdbc.Driver");
-			connection =  DriverManager.getConnection(url, user, password);
-			
-		} catch (IOException e) {
-			throw new SQLException(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			throw new SQLException(e.getMessage());
-		}
+		Class.forName("com.mysql.jdbc.Driver");
+		return DriverManager.getConnection(url, user, password);
 	}
 	
-	
-	public static PreparedStatement prepareStatement(String sql)
-	                                                 throws SQLException {
-		
-		// Prepare statement
-		initConnection();
+	/** Creates a prepared statement with the connection. */
+	public static PreparedStatement prepare(String sql) throws SQLException {
 		return connection.prepareStatement(sql);
 	}
-	
 	
 	/**
 	 * Tests %Database.

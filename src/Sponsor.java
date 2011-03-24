@@ -173,7 +173,7 @@ public class Sponsor {
 		String sql;
 		
 		sql = "DELETE FROM sponsor WHERE name = ? LIMIT 1";
-		deleteStatement = Database.prepareStatement(sql);
+		deleteStatement = Database.prepare(sql);
 	}
 	
 	
@@ -185,7 +185,7 @@ public class Sponsor {
 		// Form and prepare statement
 		sql = "INSERT INTO sponsor(name, street, city, state, zip, phone)"
 		      + " VALUES(?, ?, ?, ?, ?, ?)";
-		insertStatement = Database.prepareStatement(sql);
+		insertStatement = Database.prepare(sql);
 	}
 	
 	
@@ -195,7 +195,7 @@ public class Sponsor {
 		String sql;
 		
 		sql = "SELECT * FROM sponsor WHERE name = ?";
-		selectStatement = Database.prepareStatement(sql);
+		selectStatement = Database.prepare(sql);
 	}
 	
 	
@@ -207,7 +207,7 @@ public class Sponsor {
 		sql = "UPDATE sponsor " + 
 		      "SET name=?, street=?, city=?, state=?, zip=?, phone=?" + 
 		      "WHERE name=?";
-		updateStatement = Database.prepareStatement(sql);
+		updateStatement = Database.prepare(sql);
 	}
 	
 	

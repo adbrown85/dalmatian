@@ -160,7 +160,7 @@ public class Spot {
 		String sql;
 		
 		sql = "DELETE FROM spot WHERE id=?";
-		deleteStatement = Database.prepareStatement(sql);
+		deleteStatement = Database.prepare(sql);
 	}
 	
 	
@@ -174,7 +174,7 @@ public class Spot {
 		
 		sql = "INSERT INTO spot(sponsor, title, year, filename, description) " +
 		      "VALUES(?, ?, ?, ?, ?)";
-		insertStatement = Database.prepareStatement(sql);
+		insertStatement = Database.prepare(sql);
 	}
 	
 	
@@ -187,7 +187,7 @@ public class Spot {
 		String sql;
 		
 		sql = "SELECT * FROM spot WHERE id = ?";
-		selectStatement = Database.prepareStatement(sql);
+		selectStatement = Database.prepare(sql);
 	}
 	
 	
@@ -202,7 +202,7 @@ public class Spot {
 		sql = "UPDATE spot " +
 		      "SET sponsor=?, title=?, year=?, filename=?, description=? " + 
 		      "WHERE id=?";
-		updateStatement = Database.prepareStatement(sql);
+		updateStatement = Database.prepare(sql);
 	}
 	
 	

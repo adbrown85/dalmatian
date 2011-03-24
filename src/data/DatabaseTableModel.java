@@ -1,10 +1,11 @@
-package data;
 /*
  * DatabaseTableModel.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

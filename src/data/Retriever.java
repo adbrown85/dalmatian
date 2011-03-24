@@ -1,10 +1,11 @@
-package data;
 /*
  * Retriever.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.*;
 import java.util.Vector;
 

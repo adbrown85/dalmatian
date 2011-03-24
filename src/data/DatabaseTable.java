@@ -1,10 +1,11 @@
-package data;
 /*
  * DatabaseTable.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.awt.Component;
 import java.sql.SQLException;
 import javax.swing.JFrame;

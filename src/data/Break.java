@@ -1,10 +1,11 @@
-package data;
 /*
  * Break.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

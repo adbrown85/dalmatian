@@ -1,10 +1,11 @@
-package data;
 /*
  * SlotTable.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.SQLException;
 import javax.swing.JFrame;
 

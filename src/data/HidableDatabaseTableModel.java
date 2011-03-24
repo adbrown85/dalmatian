@@ -1,10 +1,11 @@
-package data;
 /*
  * HidableDatabaseTableModel.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.JFrame;

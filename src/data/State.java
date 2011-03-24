@@ -1,10 +1,11 @@
-package data;
 /*
  * State.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package data;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

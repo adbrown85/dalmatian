@@ -8,14 +8,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-
 
 
 /**
@@ -31,165 +29,133 @@ public class DatabaseTableModel extends AbstractTableModel {
 	protected String[] columnNames;
 	protected Vector<Object[]> data;
 	
-	
-	public DatabaseTableModel(String sql)
-	                          throws SQLException {
+	public DatabaseTableModel(String sql) throws SQLException {
 		
 		super();
 		
-		// Initialize
 		initResultsMetaData(sql);
 		initColumnCount();
 		initColumnNames();
 		initData();
 	}
 	
-	
 	public void add(Object[] row) {
-		
 		data.add(row);
 		++rowCount;
 		fireTableRowsInserted(rowCount, rowCount);
 	}
 	
+   public void refresh() throws SQLException {
+      initResultsMetaData(this.sql);
+      initData();
+      fireTableDataChanged();
+   }
+   
+   public void remove(int row) {
+      data.removeElementAt(row);
+      --rowCount;
+      fireTableRowsDeleted(row, row);
+   }
 	
-	public int getRowCount() {
-		
-		return rowCount;
-	}
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
+   private void initColumnCount() throws SQLException {
+      columnCount = metaData.getColumnCount();
+   }
+   
+   private void initColumnNames() throws SQLException {
+      
+      String columnName;
+      
+      // Store names from metadata
+      columnNames = new String[columnCount];
+      columnNameToIndex = new TreeMap<String,Integer>();
+      for (int i=0; i<columnCount; ++i) {
+         columnName = metaData.getColumnName(i+1);
+         columnNames[i] = columnName;
+         columnNameToIndex.put(columnName, i);
+      }
+   }
+   
+   private void initData() throws SQLException {
+      
+      Object[] row;
+      int type;
+      
+      // Fill with results
+      data = new Vector<Object[]>();
+      while (results.next()) {
+         row = new Object[columnCount];
+         for (int i=0; i<columnCount; ++i) {
+            type = metaData.getColumnType(i+1);
+            if (type == Types.DATE || type == Types.INTEGER)
+               row[i] = results.getInt(i+1);
+            else
+               row[i] = results.getString(i+1);
+         }
+         data.add(row);
+      }
+      rowCount = data.size();
+   }
+   
+   private void initResultsMetaData(String sql) throws SQLException {
+      this.sql = sql;
+      results = Database.executeQuery(sql);
+      metaData = results.getMetaData();
+   }
 	
-	public int getColumnCount() {
-		
-		return columnCount;
-	}
+	//------------------------------------------------------------
+   // Getters and setters
+   //
+
+   public int getRowCount() {
+      return rowCount;
+   }
+   
+   public int getColumnCount() {
+      return columnCount;
+   }
+   
+   protected int getColumnIndex(String columnName) {
+      return columnNameToIndex.get(columnName);
+   }
+   
+   public String getColumnName(int columnIndex) {
+      return columnNames[columnIndex];
+   }
+   
+   public String getSQL() {
+      return sql;
+   }
+   
+   public Object getValueAt(int row, int column) {
+      return data.get(row)[column];
+   }
+   
+   public Object getValueAt(int row, String columnName) {
+      
+      int columnIndex;
+      
+      columnIndex = columnNameToIndex.get(columnName);
+      return data.get(row)[columnIndex];
+   }
 	
-	
-	protected int getColumnIndex(String columnName) {
-		
-		return columnNameToIndex.get(columnName);
-	}
-	
-	
-	public String getColumnName(int columnIndex) {
-		
-		return columnNames[columnIndex];
-	}
-	
-	
-	public String getSQL() {
-		
-		return sql;
-	}
-	
-	
-	public Object getValueAt(int row,
-	                         int column) {
-		
-		return data.get(row)[column];
-	}
-	
-	
-	public Object getValueAt(int row,
-	                         String columnName) {
-		
-		int columnIndex;
-		
-		columnIndex = columnNameToIndex.get(columnName);
-		return data.get(row)[columnIndex];
-	}
-	
-	
-	private void initColumnCount()
-	                             throws SQLException {
-		
-		columnCount = metaData.getColumnCount();
-	}
-	
-	
-	private void initColumnNames()
-	                             throws SQLException {
-		
-		String columnName;
-		
-		// Store names from metadata
-		columnNames = new String[columnCount];
-		columnNameToIndex = new TreeMap<String,Integer>();
-		for (int i=0; i<columnCount; ++i) {
-			columnName = metaData.getColumnName(i+1);
-			columnNames[i] = columnName;
-			columnNameToIndex.put(columnName, i);
-		}
-	}
-	
-	
-	private void initData()
-	                      throws SQLException {
-		
-		Object[] row;
-		int type;
-		
-		// Fill with results
-		data = new Vector<Object[]>();
-		while (results.next()) {
-			row = new Object[columnCount];
-			for (int i=0; i<columnCount; ++i) {
-				type = metaData.getColumnType(i+1);
-				if (type == Types.DATE || type == Types.INTEGER)
-					row[i] = results.getInt(i+1);
-				else
-					row[i] = results.getString(i+1);
-			}
-			data.add(row);
-		}
-		rowCount = data.size();
-	}
-	
-	
-	
-	private void initResultsMetaData(String sql)
-	                                 throws SQLException {
-		
-		this.sql = sql;
-		results = Database.executeQuery(sql);
-		metaData = results.getMetaData();
-	}
-	
-	
-	public void refresh()
-	                    throws SQLException {
-		
-		// Reinitialize data
-		initResultsMetaData(this.sql);
-		initData();
-		fireTableDataChanged();
-	}
-	
-	
-	public void remove(int row) {
-		
-		data.removeElementAt(row);
-		--rowCount;
-		fireTableRowsDeleted(row, row);
-	}
-	
-	
-	public void setSQL(String sql) {
-		
-		this.sql = sql;
-	}
-	
-	
-	public void setValueAt(Object value,
-	                       int row,
-	                       int column) {
-		
-		data.get(row)[column] = value;
-		fireTableCellUpdated(row, column);
-	}
-	
-	
-	public static void main(String[] args) {
+   public void setSQL(String sql) {
+      this.sql = sql;
+   }
+   
+   public void setValueAt(Object value, int row, int column) {
+      data.get(row)[column] = value;
+      fireTableCellUpdated(row, column);
+   }
+   
+	//------------------------------------------------------------
+   // Main
+   //
+   
+   public static void main(String[] args) {
 		
 		DatabaseTableModel tableModel;
 		JFrame frame;

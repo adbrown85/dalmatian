@@ -6,13 +6,13 @@ package gui;
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import AudioPlayer;
-import Retriever;
-import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.*;
+import data.Retriever;
+import data.Spot;
 
 
 /**

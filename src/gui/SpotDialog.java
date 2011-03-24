@@ -5,12 +5,12 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Sponsor;
-import Spot;
-import Year;
 import java.awt.*;
 import java.sql.SQLException;
 import javax.swing.*;
+import data.Sponsor;
+import data.Spot;
+import data.Year;
 
 
 /**

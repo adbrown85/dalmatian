@@ -5,11 +5,11 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import DatabaseTable;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import data.DatabaseTable;
 import java.sql.SQLException;
 
 

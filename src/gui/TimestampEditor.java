@@ -5,7 +5,6 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Database;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
@@ -13,6 +12,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
+import data.Database;
 
 
 /**

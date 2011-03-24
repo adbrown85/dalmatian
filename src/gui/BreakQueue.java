@@ -5,10 +5,10 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Break;
-import DatabaseTable;
 import java.sql.*;
 import javax.swing.*;
+import data.Break;
+import data.DatabaseTable;
 
 
 /**

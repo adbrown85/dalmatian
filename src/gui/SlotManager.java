@@ -5,14 +5,14 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Break;
-import Database;
-import SlotTable;
-import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import javax.swing.*;
+import data.Break;
+import data.Database;
+import data.SlotTable;
+import data.Spot;
 
 
 /**

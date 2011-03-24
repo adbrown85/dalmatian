@@ -5,10 +5,10 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Sponsor;
-import State;
 import java.awt.*;
 import javax.swing.*;
+import data.Sponsor;
+import data.State;
 
 
 /**

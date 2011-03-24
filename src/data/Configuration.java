@@ -1,3 +1,4 @@
+package data;
 /*
  * Configuration.java
  * 

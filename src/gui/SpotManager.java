@@ -5,11 +5,11 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import Retriever;
-import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import data.Retriever;
+import data.Spot;
 import java.sql.SQLException;
 
 

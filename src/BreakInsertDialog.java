@@ -7,9 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.TreeMap;
 import javax.swing.*;
-
 
 
 /**
@@ -18,17 +16,13 @@ import javax.swing.*;
 public class BreakInsertDialog extends BreakDialog
                                implements ActionListener {
 	
-	
-	public BreakInsertDialog(Frame frame)
-	                         throws SQLException {
+	public BreakInsertDialog(Frame frame) throws SQLException {
 		
 		super(frame, "Insert Break");
 		
-		// Buttons
 		addButton("Insert");
 		addButton("Cancel");
 	}
-	
 	
 	public void actionPerformed(ActionEvent event) {
 		
@@ -42,11 +36,7 @@ public class BreakInsertDialog extends BreakDialog
 		}
 	}
 	
-	
 	private void handleInsert() {
-		
-		String message;
-		
 		try {
 			
 			// Insert break and slots
@@ -62,7 +52,6 @@ public class BreakInsertDialog extends BreakDialog
 			JOptionPane.showMessageDialog(this, "Could not insert break.");
 		}
 	}
-	
 	
 	public static void main(String[] args) {
 		

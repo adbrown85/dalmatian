@@ -1,10 +1,11 @@
-package gui;
 /*
  * ActionDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;

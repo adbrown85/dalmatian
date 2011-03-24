@@ -1,10 +1,11 @@
-package gui;
 /*
  * SpotSelector.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import audio.AudioPlayer;
 import java.awt.*;
 import java.awt.event.*;

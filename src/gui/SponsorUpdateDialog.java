@@ -1,10 +1,11 @@
-package gui;
 /*
  * SponsorUpdateDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

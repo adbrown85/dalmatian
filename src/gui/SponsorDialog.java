@@ -1,10 +1,11 @@
-package gui;
 /*
  * SponsorDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import javax.swing.*;
 import data.Sponsor;

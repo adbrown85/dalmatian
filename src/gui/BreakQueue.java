@@ -1,10 +1,11 @@
-package gui;
 /*
  * BreakQueue.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.sql.*;
 import javax.swing.*;
 import data.Break;

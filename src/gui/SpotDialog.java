@@ -1,10 +1,11 @@
-package gui;
 /*
  * SpotDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import java.sql.SQLException;
 import javax.swing.*;

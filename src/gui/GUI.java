@@ -1,10 +1,11 @@
-package gui;
 /*
  * GUI.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;

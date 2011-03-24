@@ -1,10 +1,11 @@
-package gui;
 /*
  * InputDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package gui;
+
 import java.awt.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;

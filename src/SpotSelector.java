@@ -6,12 +6,9 @@
  */
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.sql.SQLException;
-import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.*;
-
 
 
 /**
@@ -19,28 +16,28 @@ import javax.swing.*;
  */
 public class SpotSelector extends InputDialog {
 	
-	private static Retriever retriever=null;
+	private static final Retriever retriever;
+	
 	private boolean playingAudio=false;
 	private AudioPlayer audioPlayer=null;
 	
+	static {
+	   retriever = new Retriever();
+	}
 	
-	public SpotSelector(Frame frame,
-	                    String title)
-	                    throws SQLException {
+	public SpotSelector(Frame frame, String title) throws SQLException {
 		
 		super(frame, title, "Input");
 		
-		// Initialize
-		setResizable(false);
-		initRetriever();
 		initInputs();
 		initButtons();
+		
+		setResizable(false);
 	}
-	
 	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();
 		
 		// Check pause
 		if (eventsArePaused()) {
@@ -48,7 +45,6 @@ public class SpotSelector extends InputDialog {
 		}
 		
 		// Handle command
-		command = event.getActionCommand();
 		if (command.equals("Sponsor")) {
 			handleSponsor();
 		} else if (command.equals("Title")) {
@@ -72,62 +68,24 @@ public class SpotSelector extends InputDialog {
 		}
 	}
 	
-	
-	public Vector<String> getSponsorsWithSpots()
-	                                           throws SQLException {
-		
-		return retriever.getSponsorsWithSpots();
-	}
-	
-	
-	public Spot getSpot()
-	                    throws SQLException {
-		
-		String sponsor, title;
-		Integer year;
-		
-		sponsor = (String)getItemFrom("Sponsor");
-		title = (String)getItemFrom("Title");
-		year = (Integer)getItemFrom("Year");
-		return retriever.getSpotForSponsorTitleYear(sponsor, title, year);
-	}
-	
-	
-	public Vector<String> getTitlesForSponsor()
-	                                          throws SQLException {
-		
-		return retriever.getTitlesForSponsor((String)getItemFrom("Sponsor"));
-	}
-	
-	
-	public Vector<Integer> getYearsForSponsorTitle()
-	                                               throws SQLException {
-		
-		return retriever.getYearsForSponsorTitle((String)getItemFrom("Sponsor"),
-		                                         (String)getItemFrom("Title"));
-	}
-	
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
 	private void handleAudioPlayerPlaying() {
-		
 		playingAudio = true;
 	}
 	
-	
 	private void handleAudioPlayerStopped() {
-		
 		playingAudio = false;
 	}
 	
-	
 	protected void handleCancel() {
-		
 		pauseEvents();
 		clear();
 		restartEvents();
 		setVisible(false);
 	}
-	
 	
 	private void handlePlay() {
 		
@@ -138,7 +96,6 @@ public class SpotSelector extends InputDialog {
 		audioPlayer.addActionListener(this);
 		audioPlayer.start();
 	}
-	
 	
 	private void handleRefresh() {
 		
@@ -158,13 +115,10 @@ public class SpotSelector extends InputDialog {
 		}
 	}
 	
-	
 	private void handleSelect() {
-		
 		fireActionEvent("Selected");
 		setVisible(false);
 	}
-	
 	
 	private void handleSponsor() {
 		
@@ -185,13 +139,10 @@ public class SpotSelector extends InputDialog {
 		}
 	}
 	
-	
 	private void handleStop() {
-		
 		if (audioPlayer != null)
 			audioPlayer.stopPlaying();
 	}
-	
 	
 	private void handleTitle() {
 		
@@ -212,33 +163,28 @@ public class SpotSelector extends InputDialog {
 		}
 	}
 	
-	
 	private void handleYear() {
-		
 		try {
 			setFilenameDescription();
 		} catch (SQLException e) {
+		   ;
 		}
 	}
 	
-	
 	private void initButtons() {
 		
-		String[] names={"Select","Play","Stop","Refresh","Cancel"};
+		String[] names = { "Select", "Play", "Stop", "Refresh", "Cancel" };
 		
-		// Add buttons
 		for (String name : names) {
 			addButton(name);
 		}
 	}
 	
-	
-	private void initInputs() 
-	                        throws SQLException {
+	private void initInputs() throws SQLException {
 		
-		Color color=new Color(0.9f, 0.9f, 0.9f);
-		JTextArea textArea;
-		JTextField textField;
+		Color color = new Color(0.9f, 0.9f, 0.9f);
+		JTextArea textArea = new JTextArea(4, 30);
+		JTextField textField = new JTextField(30);
 		
 		// Add editable inputs
 		addInput("Sponsor", new JComboBox(getSponsorsWithSpots()));
@@ -246,76 +192,84 @@ public class SpotSelector extends InputDialog {
 		addInput("Year", new JComboBox(getYearsForSponsorTitle()));
 		
 		// Add non-editable inputs
-		textField = new JTextField(30);
 		textField.setEditable(false);
 		textField.setBackground(color);
 		addInput("Filename", textField);
-		textArea = new JTextArea(4, 30);
 		textArea.setEditable(false);
 		textArea.setBackground(color);
 		addInput("Description", textArea);
 		setFilenameDescription();
 	}
 	
+	//------------------------------------------------------------
+   // Getters and setters
+   //
 	
-	private void initRetriever()
-	                           throws SQLException {
+   public Vector<String> getSponsorsWithSpots() throws SQLException {
+      return retriever.getSponsorsWithSpots();
+   }
+   
+   public Spot getSpot() throws SQLException {
+      
+      String sponsor = getSponsorItem();
+      String title = getTitleItem();
+      Integer year = getYearItem();
+      
+      return retriever.getSpotForSponsorTitleYear(sponsor, title, year);
+   }
+   
+   public Vector<String> getTitlesForSponsor() throws SQLException {
+      return retriever.getTitlesForSponsor(getSponsorItem());
+   }
+   
+   public Vector<Integer> getYearsForSponsorTitle() throws SQLException {
+      
+      String sponsor = getSponsorItem();
+      String title = getTitleItem();
+      
+      return retriever.getYearsForSponsorTitle(sponsor, title);
+   }
+   
+   private String getSponsorItem() {
+      return (String) getItemFrom("Sponsor");
+   }
+   
+   private String getTitleItem() {
+      return (String) getItemFrom("Title");
+   }
+   
+   private Integer getYearItem() {
+      return (Integer) getItemFrom("Year");
+   }
+   
+	private void setFilenameDescription() throws SQLException {
 		
-		// Miscellaneous
-		if (retriever == null)
-			retriever = new Retriever();
-	}
-	
-	
-	private void setFilenameDescription()
-	                                    throws SQLException {
-		
-		Spot spot;
+		Spot spot = getSpot();
 		
 		// Set filename
-		spot = getSpot();
-		((JTextField)getInput("Filename")).setText(spot.getFilename());
-		((JTextArea)getInput("Description")).setText(spot.getDescription());
+		((JTextField) getInput("Filename")).setText(spot.getFilename());
+		((JTextArea) getInput("Description")).setText(spot.getDescription());
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
-		SpotSelector dialog;
+		JFrame frame = new JFrame("Frame");
+		SpotSelector ss = new SpotSelector(frame, "Select Spot");
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotSelector");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(640, 480));
+		frame.pack();
+		frame.setVisible(true);
 		
-		try {
-			
-			// Create frame
-			frame = new JFrame("Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setPreferredSize(new Dimension(640, 480));
-			frame.pack();
-			frame.setVisible(true);
-			
-			// Create dialog
-			dialog = new SpotSelector(frame, "Select Spot");
-			dialog.pack();
-			dialog.setLocationRelativeTo(frame);
-			dialog.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotSelector");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create dialog
+		ss.pack();
+		ss.setLocationRelativeTo(frame);
+		ss.setVisible(true);
 	}
 }
 

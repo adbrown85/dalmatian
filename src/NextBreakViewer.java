@@ -4,12 +4,8 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import java.awt.*;
-import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
-import javax.swing.border.*;
-
 
 
 /**
@@ -17,92 +13,58 @@ import javax.swing.border.*;
  */
 public class NextBreakViewer extends Box {
 	
-	private SlotTable table;
+	private final SlotTable table;
 	
-	
-	public NextBreakViewer()
-	                       throws SQLException {
-		
-		super(BoxLayout.PAGE_AXIS);
-		init(null, new Break());
+	public NextBreakViewer() throws SQLException {
+		this(null);
 	}
 	
-	
-	public NextBreakViewer(String title)
-	                       throws SQLException {
-		
-		super(BoxLayout.PAGE_AXIS);
-		init(title, new Break());
+	public NextBreakViewer(String title) throws SQLException {
+		this(title, new Break());
 	}
-	
 	
 	public NextBreakViewer(String title,
 	                       Break nextBreak)
 	                       throws SQLException {
-		
 		super(BoxLayout.PAGE_AXIS);
-		init(title, nextBreak);
+		
+      // Table
+      table = new SlotTable(nextBreak);
+      add(GUI.getScrollPaneFor(table, 2));
+      
+      // Titled border
+      if (title != null) {
+         setBorder(BorderFactory.createTitledBorder(title));
+      }
 	}
 	
-	
-	private void init(String title,
-	                  Break nextBreak)
-	                  throws SQLException {
-		
-		// Table
-		table = new SlotTable(nextBreak);
-		add(GUI.getScrollPaneFor(table, 2));
-		
-		// Titled border
-		if (title != null) {
-			setBorder(BorderFactory.createTitledBorder(title));
-		}
-	}
-	
-	
-	public void refresh()
-	                    throws SQLException {
-		
+	public void refresh() throws SQLException {
 		table.refresh();
 	}
 	
-	
-	public void setBreak(Break _break) {
-		
-		table.setBreak(_break);
+	public void setBreak(Break b) {
+		table.setBreak(b);
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
+		final JFrame frame = new JFrame("NextBreakViewer Frame");
+		final Break b = new Break(12);
+		final NextBreakViewer nbv = new NextBreakViewer("Next Break", b);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("NextBreakViewer");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		try {
-			
-			// Show in frame
-			frame = new JFrame("NextBreakViewer Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.add(new NextBreakViewer("Next Break", new Break(12)));
-			frame.pack();
-			frame.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("NextBreakViewer");
-		System.out.println("****************************************");
-		System.out.println();
+		SwingUtilities.invokeLater(new Runnable() {
+         @Override
+         public void run() {
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(nbv);
+            frame.pack();
+            frame.setVisible(true);
+         }
+		});
 	}
 }
 

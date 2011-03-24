@@ -1,9 +1,11 @@
+package gui;
 /*
  * TimestampEditor.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Database;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

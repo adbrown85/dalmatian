@@ -1,9 +1,11 @@
+package gui;
 /*
  * DatabaseTableManager.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import DatabaseTable;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

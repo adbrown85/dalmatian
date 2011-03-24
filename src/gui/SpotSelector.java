@@ -1,9 +1,13 @@
+package gui;
 /*
  * SpotSelector.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import AudioPlayer;
+import Retriever;
+import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

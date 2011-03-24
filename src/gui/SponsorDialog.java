@@ -1,9 +1,12 @@
+package gui;
 /*
  * SponsorDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Sponsor;
+import State;
 import java.awt.*;
 import javax.swing.*;
 

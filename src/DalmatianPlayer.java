@@ -4,6 +4,10 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import gui.BreakQueue;
+import gui.ButtonPanel;
+import gui.ClockDisplay;
+import gui.NextBreakViewer;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

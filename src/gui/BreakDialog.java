@@ -1,9 +1,11 @@
+package gui;
 /*
  * BreakEditor.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Break;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;

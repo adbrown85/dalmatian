@@ -1,5 +1,6 @@
+package gui;
 /*
- * SpotUpdateDialog.java
+ * SpotInsertDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
@@ -11,40 +12,40 @@ import javax.swing.*;
 
 
 /**
- * Dialog for updating a Spot.
+ * Dialog for adding a Spot.
  */
-public class SpotUpdateDialog extends SpotDialog {
+public class SpotInsertDialog extends SpotDialog {
 	
-	public SpotUpdateDialog(Frame frame) throws SQLException {
+	public SpotInsertDialog(Frame frame) throws SQLException {
 		
-		super(frame, "Update Spot");
+		super(frame, "Insert Spot");
 		
-		addButton("Update");
+		addButton("Insert");
 		addButton("Cancel");
-		addButton("Reset");
+		addButton("Clear");
 	}
 	
 	public void actionPerformed(ActionEvent event) {
 		
 		String command = event.getActionCommand();
 		
-		if (command.equals("Update")) {
-			handleUpdate();
+		if (command.equals("Insert")) {
+			handleInsert();
 		} else if (command.equals("Cancel")) {
 			handleCancel();
-		} else if (command.equals("Reset")) {
-			handleReset();
+		} else if (command.equals("Clear")) {
+			handleClear();
 		}
 	}
 	
-	private void handleUpdate() {
+	private void handleInsert() {
 		try {
-			Spot.update(getOriginal(), getSpot());
+			getSpot().insert();
 			fireActionEvent("Refresh");
-			GUI.showMessage(this, "Updated spot.");
+			GUI.showMessage(this, "Inserted spot.");
 			close();
 		} catch (SQLException e) {
-			GUI.showError(this, "Could not update spot: " + e.getMessage());
+			GUI.showError(this, "Could not insert spot!");
 		}
 	}
 	
@@ -55,7 +56,7 @@ public class SpotUpdateDialog extends SpotDialog {
 	public static void main(String[] args) throws Exception {
 		
 		JFrame frame = new JFrame("Frame");
-		SpotUpdateDialog sud = new SpotUpdateDialog(frame);
+		SpotInsertDialog sid = new SpotInsertDialog(frame);
 		
 		// Create frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,10 +65,9 @@ public class SpotUpdateDialog extends SpotDialog {
 		frame.setVisible(true);
 		
 		// Create dialog
-		sud.setSpot(new Spot(1));
-		sud.pack();
-		sud.setLocationRelativeTo(frame);
-		sud.setVisible(true);
+		sid.pack();
+		sid.setLocationRelativeTo(frame);
+		sid.setVisible(true);
 	}
 }
 

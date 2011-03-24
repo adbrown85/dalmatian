@@ -1,9 +1,11 @@
+package gui;
 /*
- * SpotInsertDialog.java
+ * SpotUpdateDialog.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
@@ -11,40 +13,40 @@ import javax.swing.*;
 
 
 /**
- * Dialog for adding a Spot.
+ * Dialog for updating a Spot.
  */
-public class SpotInsertDialog extends SpotDialog {
+public class SpotUpdateDialog extends SpotDialog {
 	
-	public SpotInsertDialog(Frame frame) throws SQLException {
+	public SpotUpdateDialog(Frame frame) throws SQLException {
 		
-		super(frame, "Insert Spot");
+		super(frame, "Update Spot");
 		
-		addButton("Insert");
+		addButton("Update");
 		addButton("Cancel");
-		addButton("Clear");
+		addButton("Reset");
 	}
 	
 	public void actionPerformed(ActionEvent event) {
 		
 		String command = event.getActionCommand();
 		
-		if (command.equals("Insert")) {
-			handleInsert();
+		if (command.equals("Update")) {
+			handleUpdate();
 		} else if (command.equals("Cancel")) {
 			handleCancel();
-		} else if (command.equals("Clear")) {
-			handleClear();
+		} else if (command.equals("Reset")) {
+			handleReset();
 		}
 	}
 	
-	private void handleInsert() {
+	private void handleUpdate() {
 		try {
-			getSpot().insert();
+			Spot.update(getOriginal(), getSpot());
 			fireActionEvent("Refresh");
-			GUI.showMessage(this, "Inserted spot.");
+			GUI.showMessage(this, "Updated spot.");
 			close();
 		} catch (SQLException e) {
-			GUI.showError(this, "Could not insert spot!");
+			GUI.showError(this, "Could not update spot: " + e.getMessage());
 		}
 	}
 	
@@ -55,7 +57,7 @@ public class SpotInsertDialog extends SpotDialog {
 	public static void main(String[] args) throws Exception {
 		
 		JFrame frame = new JFrame("Frame");
-		SpotInsertDialog sid = new SpotInsertDialog(frame);
+		SpotUpdateDialog sud = new SpotUpdateDialog(frame);
 		
 		// Create frame
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,9 +66,10 @@ public class SpotInsertDialog extends SpotDialog {
 		frame.setVisible(true);
 		
 		// Create dialog
-		sid.pack();
-		sid.setLocationRelativeTo(frame);
-		sid.setVisible(true);
+		sud.setSpot(new Spot(1));
+		sud.pack();
+		sud.setLocationRelativeTo(frame);
+		sud.setVisible(true);
 	}
 }
 

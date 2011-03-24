@@ -1,3 +1,4 @@
+package gui;
 /*
  * GUI.java
  * 

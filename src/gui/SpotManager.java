@@ -1,9 +1,12 @@
+package gui;
 /*
  * SpotManager.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Retriever;
+import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

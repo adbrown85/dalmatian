@@ -1,5 +1,6 @@
+package gui;
 /*
- * BreakUpdateDialog.java
+ * BreakEditor.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
@@ -13,29 +14,30 @@ import javax.swing.*;
 /**
  * Edits breaks.
  */
-public class BreakUpdateDialog extends BreakDialog
+public class BreakInsertDialog extends BreakDialog
                                implements ActionListener {
 	
-	public BreakUpdateDialog(Frame frame) throws SQLException {
+	public BreakInsertDialog(Frame frame) throws SQLException {
 		
-		super(frame, "Update Break");
+		super(frame, "Insert Break");
 		
+		addButton("Insert");
 		addButton("Cancel");
-		addButton("Update");
 	}
 	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command = event.getActionCommand();
+		String command;
 		
-		if (command.equals("Update")) {
-			handleUpdate();
+		command = event.getActionCommand();
+		if (command.equals("Insert")) {
+			handleInsert();
 		} else if (command.equals("Cancel")) {
 			handleCancel();
 		}
 	}
 	
-	private void handleUpdate() {
+	private void handleInsert() {
 		try {
 			
 			// Insert break and slots
@@ -44,32 +46,23 @@ public class BreakUpdateDialog extends BreakDialog
 			
 			// Confirm and hide
 			fireActionEvent("Refresh");
-			JOptionPane.showMessageDialog(this, "Updated break.");
+			JOptionPane.showMessageDialog(this, "Inserted break.");
 			setVisible(false);
 		}
 		catch (SQLException e) {
-			JOptionPane.showMessageDialog(this, "Could not update break.");
+			JOptionPane.showMessageDialog(this, "Could not insert break.");
 		}
-	}
-	
-	public void setBreak(Break _break)
-	                     throws SQLException {
-		
-		super.setBreak(_break);
-		
-		slotManager.setBreak(_break);
-		slotManager.refresh();
 	}
 	
 	public static void main(String[] args) {
 		
 		JFrame frame;
-		BreakUpdateDialog dialog;
+		BreakInsertDialog dialog;
 		
 		// Start
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("BreakUpdateDialog");
+		System.out.println("BreakInsertDialog");
 		System.out.println("****************************************");
 		System.out.println();
 		
@@ -83,8 +76,7 @@ public class BreakUpdateDialog extends BreakDialog
 			frame.setVisible(true);
 			
 			// Make dialog
-			dialog = new BreakUpdateDialog(frame);
-			dialog.setBreak(new Break(12));
+			dialog = new BreakInsertDialog(frame);
 			dialog.pack();
 			dialog.setLocationRelativeTo(frame);
 			dialog.setVisible(true);
@@ -96,7 +88,7 @@ public class BreakUpdateDialog extends BreakDialog
 		// Finish
 		System.out.println();
 		System.out.println("****************************************");
-		System.out.println("BreakUpdateDialog");
+		System.out.println("BreakInsertDialog");
 		System.out.println("****************************************");
 		System.out.println();
 	}

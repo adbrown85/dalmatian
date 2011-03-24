@@ -1,9 +1,13 @@
+package gui;
 /*
  * ClockDisplay.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Clock;
+import ClockEvent;
+import ClockListener;
 import java.text.DateFormat;
 import javax.swing.*;
 

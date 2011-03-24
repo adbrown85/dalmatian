@@ -1,9 +1,14 @@
+package gui;
 /*
  * SlotManager.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Break;
+import Database;
+import SlotTable;
+import Spot;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

@@ -1,9 +1,12 @@
+package gui;
 /*
  * NextBreakViewer.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import Break;
+import SlotTable;
 import java.sql.*;
 import javax.swing.*;
 

@@ -1,3 +1,4 @@
+package gui;
 /*
  * SponsorInsertDialog.java
  * 

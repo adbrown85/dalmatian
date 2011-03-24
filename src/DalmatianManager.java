@@ -4,6 +4,9 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+import gui.BreakManager;
+import gui.SponsorManager;
+import gui.SpotManager;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import java.sql.SQLException;

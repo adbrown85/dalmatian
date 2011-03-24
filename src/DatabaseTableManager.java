@@ -142,47 +142,26 @@ public class DatabaseTableManager extends JPanel
 		JOptionPane.showMessageDialog(this, message, title, type);
 	}
 	
-	public static void main(String[] args) {
+	//------------------------------------------------------------
+   // Main
+   //
+	
+	public static void main(String[] args) throws SQLException {
 		
-		DatabaseTableManager databaseTableManager;
-		JFrame frame;
-		String sql;
+	   JFrame frame = new JFrame("DatabaseTableManager");
+	   String sql = "SELECT * FROM sponsor ORDER BY name";
+		DatabaseTableManager dtm = new DatabaseTableManager(sql);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("DatabaseTableManager");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create manager and add it to the frame
+		dtm.addButton("New");
+		dtm.addButton("Edit");
+		dtm.addButton("Delete");
 		
-		try {
-			
-			// Create frame
-			frame = new JFrame("DatabaseTableManager");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			
-			// Create manager and add it to the frame
-			sql = "SELECT * FROM sponsor ORDER BY name";
-			databaseTableManager = new DatabaseTableManager(sql);
-			databaseTableManager.addButton("New");
-			databaseTableManager.addButton("Edit");
-			databaseTableManager.addButton("Delete");
-			
-			// Add it to the frame
-			frame.setContentPane(databaseTableManager);
-			frame.pack();
-			frame.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("DatabaseTableManager");
-		System.out.println("****************************************");
-		System.out.println();
+		// Add it to the frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(dtm);
+		frame.pack();
+		frame.setVisible(true);
 	}
 }
 

@@ -6,13 +6,10 @@
  */
 
 
-
 /**
  * Interface for an object that wants to receive Clock events.
  */
 public interface ClockListener {
-	
-	
 	
 	public void clockChanged(ClockEvent event);
 }

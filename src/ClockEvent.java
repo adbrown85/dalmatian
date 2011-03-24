@@ -6,7 +6,6 @@
  */
 
 
-
 public enum ClockEvent {
 	
 	ALARM, SECOND

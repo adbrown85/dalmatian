@@ -5,7 +5,7 @@ package gui;
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-import AudioPlayer;
+import audio.AudioPlayer;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;

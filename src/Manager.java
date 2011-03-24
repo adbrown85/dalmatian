@@ -7,22 +7,19 @@
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
 import java.sql.SQLException;
 
 
 
 /**
- * Dalmatian %Manager.
+ * Dalmatian Manager.
  */
 public class Manager {
 	
-	JTabbedPane tabbedPane;
-	JFrame frame;
+	private JTabbedPane tabbedPane;
+	private JFrame frame;
 	
-	
-	public Manager()
-	               throws SQLException {
+	public Manager() throws SQLException {
 		
 		// Make frame
 		frame = new JFrame("Dalmatian Manager");
@@ -35,9 +32,7 @@ public class Manager {
 		frame.setContentPane(tabbedPane);
 	}
 	
-	
-	public void initTabs()
-	                     throws SQLException {
+	public void initTabs() throws SQLException {
 		
 		JPanel breaksPanel, sponsorsPanel, spotsPanel;
 		
@@ -54,20 +49,15 @@ public class Manager {
 		tabbedPane.addTab("Sponsors", sponsorsPanel);
 	}
 	
-	
 	public void run() {
-		
-		// Pack and show frame
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
 	
 	public static void main(String[] args) {
 		
 		Manager manager;
 		
-		// Start
 		System.out.println();
 		System.out.println("****************************************");
 		System.out.println("Manager");
@@ -75,8 +65,6 @@ public class Manager {
 		System.out.println();
 		
 		try {
-			
-			// Run
 			manager = new Manager();
 			manager.run();
 		}
@@ -84,7 +72,6 @@ public class Manager {
 			e.printStackTrace();
 		}
 		
-		// Finish
 		System.out.println();
 		System.out.println("****************************************");
 		System.out.println("Manager");

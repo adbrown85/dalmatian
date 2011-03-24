@@ -7,11 +7,11 @@
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-
 
 
 /**
@@ -20,61 +20,47 @@ import javax.swing.JFrame;
 public class ButtonPanel extends JPanel
                          implements ActionListener {
 	
-	Vector<ActionListener> listeners;
-	
+	private final List<ActionListener> listeners;
 	
 	/**
 	 * Creates a new panel of buttons.
 	 */
 	public ButtonPanel() {
-		
-		// Initialize
-		super(new FlowLayout(FlowLayout.CENTER));
-		listeners = new Vector<ActionListener>();
+		this(FlowLayout.CENTER);
 	}
-	
 	
 	/**
 	 * Creates a new panel of buttons.
 	 */
 	public ButtonPanel(int align) {
-		
-		// Initialize
 		super(new FlowLayout(align));
-		listeners = new Vector<ActionListener>();
+		listeners = new ArrayList<ActionListener>();
 	}
-	
 	
 	/**
 	 * Forwards events to its listeners.
 	 */
 	public void actionPerformed(ActionEvent event) {
-		
 		for (ActionListener listener : listeners) {
 			listener.actionPerformed(event);
 		}
 	}
 	
-	
 	public void addActionListener(ActionListener listener) {
-		
 		listeners.add(listener);
 	}
-	
 	
 	/**
 	 * Adds a button and sets it up for events.
 	 */
 	public void addButton(String name) {
 		
-		JButton button;
+		JButton button = new JButton(name);
 		
-		button = new JButton(name);
 		button.addActionListener(this);
 		button.setActionCommand(name);
 		add(button);
 	}
-	
 	
 	/**
 	 * Test for ButtonPanel.

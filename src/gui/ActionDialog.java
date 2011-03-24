@@ -28,8 +28,7 @@ import javax.swing.*;
  * ActionDialog adds pauseEvents(), restartEvents(), and 
  * eventsArePaused() for that reason.
  */
-public class ActionDialog extends JDialog
-                          implements ActionListener {
+public class ActionDialog extends JDialog implements ActionListener {
 	
 	protected final Frame frame;
 	protected final Vector<ActionListener> listeners;
@@ -76,46 +75,4 @@ public class ActionDialog extends JDialog
 	protected void restartEvents() {
 		pausedEvents = false;
 	}
-	
-	public static void main(String[] args) throws Exception {
-		
-		JButton button = new JButton("Action");
-		JFrame frame = new JFrame("Frame");
-		ActionDialog dialog = new ActionDialog(frame, "Button Dialog");
-		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("ActionDialog");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		// Create frame
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(400, 300));
-		frame.pack();
-		frame.setVisible(true);
-		
-		// Create dialog with button
-		button.setActionCommand("Action");
-		dialog.add(button);
-		button.addActionListener(dialog);
-		dialog.pack();
-		dialog.setLocationRelativeTo(frame);
-		dialog.setVisible(true);
-		dialog.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				System.out.println(event.getActionCommand());
-			}
-		});
-		dialog.fireActionEvent("Action fired from ActionDialog.");
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("ActionDialog");
-		System.out.println("****************************************");
-		System.out.println();
-	}
 }
-

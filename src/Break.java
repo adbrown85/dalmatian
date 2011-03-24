@@ -5,6 +5,7 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.sql.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
@@ -14,57 +15,58 @@ import java.text.SimpleDateFormat;
  */
 public class Break {
 	
-	private static PreparedStatement deleteStatement,
-	                                 insertStatement,
-	                                 selectStatement,
-	                                 updateStatement;
-	private static SimpleDateFormat dateFormat;
-	private int id;
-	private Timestamp start, end;
+	private static PreparedStatement deleteStatement;
+	private static PreparedStatement insertStatement;
+	private static PreparedStatement selectStatement;
+	private static PreparedStatement updateStatement;
+	private static DateFormat dateFormat;
 	
+	private int id;                     // Identifier in database
+	private Timestamp start;            // Start of the break
+	private Timestamp end;              // End of the break
 	
 	/**
 	 * Initializes prepared SQL statements and date format.
 	 */
 	static {
-		
-		String message;
-		
 		try {
-			initDateFormat();
-			initDeleteStatement();
-			initInsertStatement();
-			initSelectStatement();
-			initUpdateStatement();
+			dateFormat = makeDateFormat();
+			deleteStatement = makeDeleteStatement();
+			insertStatement = makeInsertStatement();
+			selectStatement = makeSelectStatement();
+			updateStatement = makeUpdateStatement();
 		} catch (SQLException e) {
-			message = "[Break] Could not prepare SQL statements.\n" + 
-			          "[Break] Check database connection.";
-			throw new ExceptionInInitializerError(message);
+			throw new ExceptionInInitializerError("Could not prepare SQL!");
 		}
 	}
-	
 	
 	/**
 	 * Creates a new empty break.
 	 */
 	public Break() {
-		
 		this.id = 0;
 		this.start = null;
 		this.end = null;
 	}
 	
-	
-	public Break(Break other) {
-		
-		this.id = other.id;
-		this.start = other.start;
-		this.end = other.end;
+	/**
+	 * Creates a break by copying another break.
+	 * 
+	 * @param b Another break
+	 */
+	public Break(Break b) {
+		this.id = b.id;
+		this.start = b.start;
+		this.end = b.end;
 	}
 	
-	
-	public Break(int id)
-	             throws SQLException {
+	/**
+	 * Creates a break from a database ID.
+	 * 
+	 * @param id Identifier of a break in the database
+	 * @throws SQLException if ID is not in database
+	 */
+	public Break(int id) throws SQLException {
 		
 		ResultSet results;
 		
@@ -79,89 +81,23 @@ public class Break {
 		this.end = results.getTimestamp("end");
 	}
 	
-	
-	public Timestamp getEnd() {
-		
-		return end;
-	}
-	
-	
-	public int getId() {
-		
-		return id;
-	}
-	
-	
-	public Timestamp getStart() {
-		
-		return start;
-	}
-	
-	
-	public static void delete(int id)
-	                          throws SQLException {
-		
-		// Execute update
+	/** 
+	 * Deletes a break from the database.
+	 * 
+	 * @param id Identifier of break in database
+	 * @throws SQLException if ID is not in database
+	 */
+	public static void delete(int id) throws SQLException {
 		deleteStatement.setInt(1, id);
 		deleteStatement.executeUpdate();
 	}
 	
-	
-	private static void initDateFormat() {
-		
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	}
-	
-	
-	private static void initDeleteStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		// Prepare statement
-		sql = "DELETE FROM break WHERE id=?";
-		deleteStatement = Database.prepareStatement(sql);
-	}
-	
-	
-	private static void initInsertStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		// Prepare statement
-		sql = "INSERT INTO break(start,end) " +
-		      "VALUES(?, ?)";
-		insertStatement = Database.prepareStatement(sql);
-	}
-	
-	
-	private static void initSelectStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		// Prepare statement
-		sql = "SELECT * FROM break WHERE id = ?";
-		selectStatement = Database.prepareStatement(sql);
-	}
-	
-	
-	private static void initUpdateStatement()
-	                                        throws SQLException {
-		
-		String sql;
-		
-		// Prepare statement
-		sql = "UPDATE break " + 
-		      "SET id=?, start=?, end=? " +
-		      "WHERE id=?";
-		updateStatement = Database.prepareStatement(sql);
-	}
-	
-	
-	public void insert()
-	                   throws SQLException {
+	/**
+	 * Inserts a break into the database.
+	 * 
+	 * @throws SQLException if could not be inserted
+	 */
+	public void insert() throws SQLException {
 		
 		ResultSet keys;
 		
@@ -176,50 +112,100 @@ public class Break {
 		this.id = keys.getInt(1);
 	}
 	
-	
 	public void print() {
-		
 		System.out.println(toString());
 	}
 	
+	/**
+	 * Updates the values of a break.
+	 * 
+	 * @param original Break with original ID
+	 * @param updated Break with new values
+	 * @throws SQLException
+	 */
+   public static void update(Break original,
+                             Break updated)
+                             throws SQLException {
+      updateStatement.setInt(1, updated.id);
+      updateStatement.setTimestamp(2, updated.start);
+      updateStatement.setTimestamp(3, updated.end);
+      updateStatement.setInt(4, original.id);
+      updateStatement.executeUpdate();
+   }
+	
+   //------------------------------------------------------------
+   // Helpers
+   //
+   
+   private static DateFormat makeDateFormat() {
+      return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   }
+   
+   private static PreparedStatement makeDeleteStatement() throws SQLException {
+      return Database.prepareStatement(
+            "DELETE " +
+            "FROM break " +
+            "WHERE id=?");
+   }
+   
+   private static PreparedStatement makeInsertStatement() throws SQLException {
+      return Database.prepareStatement(
+            "INSERT " +
+            "INTO break(start,end) " +
+            "VALUES(?, ?)");
+   }
+   
+   private static PreparedStatement makeSelectStatement() throws SQLException {
+      return Database.prepareStatement(
+            "SELECT * " +
+            "FROM break " +
+            "WHERE id = ?");
+   }
+   
+   private static PreparedStatement makeUpdateStatement() throws SQLException {
+      return Database.prepareStatement(
+            "UPDATE break " + 
+            "SET id=?, start=?, end=? " +
+            "WHERE id=?");
+   }
+   
+   //------------------------------------------------------------
+   // Getters and setters
+   //
+   
+   public Timestamp getEnd() {
+      return end;
+   }
+   
+   public int getId() {
+      return id;
+   }
+   
+   public Timestamp getStart() {
+      return start;
+   }
 	
 	public void setEnd(Timestamp end) {
-		
 		this.end = end;
 	}
 	
-	
 	public void setId(int id) {
-		
 		this.id = id;
 	}
 	
-	
 	public void setStart(Timestamp start) {
-		
 		this.start = start;
 	}
 	
+	//------------------------------------------------------------
+   // Converters
+   //
 	
 	public String toString() {
-		
 		return String.format("%d: %s, %s", id,
 		                     dateFormat.format(start),
 		                     dateFormat.format(end));
 	}
-	
-	
-	public static void update(Break original,
-	                          Break updated) 
-	                          throws SQLException {
-		
-		updateStatement.setInt(1, updated.id);
-		updateStatement.setTimestamp(2, updated.start);
-		updateStatement.setTimestamp(3, updated.end);
-		updateStatement.setInt(4, original.id);
-		updateStatement.executeUpdate();
-	}
-	
 	
 	/**
 	 * Test for Break.

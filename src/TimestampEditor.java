@@ -13,27 +13,30 @@ import java.util.GregorianCalendar;
 import javax.swing.*;
 
 
-
 /**
  * GUI for editing a timestamp.
  */
 public class TimestampEditor extends JPanel {
 	
-	Calendar calendar;
-	JComboBox monthCombo, dayCombo, yearCombo;
-	JComboBox hourCombo, minuteCombo, secondCombo, amPmCombo;
-	JPanel datePanel, timePanel;
-	Timestamp timestamp;
-	
+	private Calendar calendar;
+	private JComboBox monthCombo;
+	private JComboBox dayCombo;
+	private JComboBox yearCombo;
+	private JComboBox hourCombo;
+	private JComboBox minuteCombo;
+	private JComboBox secondCombo;
+	private JComboBox amPmCombo;
+	private JPanel datePanel;
+	private JPanel timePanel;
+	private Timestamp timestamp;
 	
 	/**
-	 * Creates a new %TimestampEditor.
+	 * Creates a new TimestampEditor.
 	 */
-	public TimestampEditor(Timestamp timestamp) 
-	                       throws SQLException {
+	public TimestampEditor(Timestamp timestamp) throws SQLException {
 		
-		// Initialize
 		super(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		
 		initDatePanel();
 		initTimePanel();
 		initTimestamp(timestamp);
@@ -42,50 +45,16 @@ public class TimestampEditor extends JPanel {
 		initTime();
 	}
 	
-	
-	public Timestamp getTimestamp() {
-		
-		int month, day, year;
-		int hour, minute, second;
-		String amPm;
-		
-		// Get date
-		month = monthCombo.getSelectedIndex();
-		day = (Integer)dayCombo.getSelectedItem();
-		year = (Integer)yearCombo.getSelectedItem();
-		
-		// Get time
-		hour = (Integer)hourCombo.getSelectedItem();
-		if (hour == 12)
-			hour = 0;
-		minute = (Integer)minuteCombo.getSelectedItem();
-		second = (Integer)secondCombo.getSelectedItem();
-		amPm = (String)amPmCombo.getSelectedItem();
-		if (amPm.equals("PM"))
-			hour += 12;
-		
-		// Set calendar and return timestamp
-		calendar.set(year, month, day, hour, minute, second);
-		return new Timestamp(calendar.getTimeInMillis());
-	}
-	
-	
 	private void initCalendar() {
-		
-		// Set calendar from timestamp
 		calendar = new GregorianCalendar();
 		calendar.setTime(this.timestamp);
 	}
 	
-	
 	private void initDate() {
-		
-		// Initialize to calendar
 		monthCombo.setSelectedItem(calendar.get(Calendar.MONTH) + 1);
 		dayCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 		yearCombo.setSelectedItem(calendar.get(Calendar.DAY_OF_MONTH));
 	}
-	
 	
 	private void initDatePanel() {
 		
@@ -106,7 +75,6 @@ public class TimestampEditor extends JPanel {
 		datePanel.add(yearCombo);
 	}
 	
-	
 	private void initTime() {
 		
 		// Initialize to calendar
@@ -118,7 +86,6 @@ public class TimestampEditor extends JPanel {
 		else
 			amPmCombo.setSelectedItem("PM");
 	}
-	
 	
 	private void initTimePanel() {
 		
@@ -148,80 +115,79 @@ public class TimestampEditor extends JPanel {
 		timePanel.add(amPmCombo);
 	}
 	
-	
-	private void initTimestamp(Timestamp timestamp)
-	                           throws SQLException {
-		
-		// Get from database
+	private void initTimestamp(Timestamp timestamp) throws SQLException {
 		if (timestamp == null)
 			this.timestamp = Database.getCurrentTimestamp();
 		else
 			this.timestamp = timestamp;
 	}
 	
+	//------------------------------------------------------------
+   // Getters and setters
+   //
 	
-	public void setTimestamp(Timestamp timestamp)
-	                         throws SQLException {
-		
+   public Timestamp getTimestamp() {
+      
+      int month, day, year;
+      int hour, minute, second;
+      String amPm;
+      
+      // Get date
+      month = monthCombo.getSelectedIndex();
+      day = (Integer)dayCombo.getSelectedItem();
+      year = (Integer)yearCombo.getSelectedItem();
+      
+      // Get time
+      hour = (Integer)hourCombo.getSelectedItem();
+      if (hour == 12)
+         hour = 0;
+      minute = (Integer)minuteCombo.getSelectedItem();
+      second = (Integer)secondCombo.getSelectedItem();
+      amPm = (String)amPmCombo.getSelectedItem();
+      if (amPm.equals("PM"))
+         hour += 12;
+      
+      // Set calendar and return timestamp
+      calendar.set(year, month, day, hour, minute, second);
+      return new Timestamp(calendar.getTimeInMillis());
+   }
+	
+	public void setTimestamp(Timestamp timestamp) throws SQLException {
 		initTimestamp(timestamp);
 		initCalendar();
 		initDate();
 		initTime();
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	/**
-	 * Test for TimestampEditor.
-	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JButton button;
-		JFrame frame;
-		JPanel pane;
-		final TimestampEditor timestampEditor;
+		final JButton button = new JButton("Print");
+		final JFrame frame = new JFrame("TimestampEditor");
+		final JPanel pane = new JPanel();
+		final TimestampEditor te = new TimestampEditor(null);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("TimestampEditor");
-		System.out.println("****************************************");
-		System.out.println();
+		// Make content pane with editor
+		pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
+		pane.add(te);
 		
-		try {
-			
-			// Make content pane with editor
-			pane = new JPanel();
-			pane.setLayout(new BoxLayout(pane, BoxLayout.PAGE_AXIS));
-			timestampEditor = new TimestampEditor(null);
-			pane.add(timestampEditor);
-			
-			// Add button
-			button = new JButton("Print");
-			button.setAlignmentX(Component.CENTER_ALIGNMENT);
-			button.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					System.out.println(timestampEditor.getTimestamp());
-				}
-			});
-			pane.add(button);
-			
-			// Create and show frame
-			frame = new JFrame("TimestampEditor");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setContentPane(pane);
-			frame.pack();
-			frame.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		// Add button
+		button.setAlignmentX(Component.CENTER_ALIGNMENT);
+		button.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(te.getTimestamp());
+			}
+		});
+		pane.add(button);
 		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("TimestampEditor");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create and show frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(pane);
+		frame.pack();
+		frame.setVisible(true);
 	}
 }
 

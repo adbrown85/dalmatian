@@ -75,7 +75,7 @@ public class ActionDialog extends JDialog
 		pausedEvents = false;
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		JButton button = new JButton("Action");
 		JFrame frame = new JFrame("Frame");

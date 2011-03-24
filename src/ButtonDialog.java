@@ -56,7 +56,7 @@ public class ButtonDialog extends ActionDialog {
 		buttonPanel.addButton(name);
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
 		JFrame frame;
 		ButtonDialog dialog;

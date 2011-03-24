@@ -7,11 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
-import java.util.TreeMap;
-import java.util.Vector;
 import javax.swing.*;
-
-
 
 
 /**
@@ -19,24 +15,19 @@ import javax.swing.*;
  */
 public class SponsorUpdateDialog extends SponsorDialog {
 	
-	
-	public SponsorUpdateDialog(Frame frame,
-	                           String title) {
+	public SponsorUpdateDialog(Frame frame, String title) {
 		
 		super(frame, title);
 		
-		// Buttons
 		addButton("Update");
 		addButton("Cancel");
 		addButton("Reset");
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();;
 		
-		command = event.getActionCommand();
 		if (command.equals("Cancel")) {
 			handleCancel();
 		} else if (command.equals("Reset")) {
@@ -45,7 +36,6 @@ public class SponsorUpdateDialog extends SponsorDialog {
 			handleUpdate();
 		}
 	}
-	
 	
 	private void handleUpdate() {
 		
@@ -59,45 +49,23 @@ public class SponsorUpdateDialog extends SponsorDialog {
 		}
 	}
 	
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
-		SponsorUpdateDialog dialog;
+		JFrame frame = new JFrame("Frame");
+		String title = "Update Sponsor";
+		SponsorUpdateDialog sud = new SponsorUpdateDialog(frame, title);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SponsorUpdateDialog");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(320, 240));
+		frame.pack();
+		frame.setVisible(true);
 		
-		try {
-			
-			// Create window
-			frame = new JFrame("Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setPreferredSize(new Dimension(320, 240));
-			frame.pack();
-			frame.setVisible(true);
-			
-			// Create dialog
-			dialog = new SponsorUpdateDialog(frame, "Update Sponsor");
-			dialog.setSponsor(new Sponsor("First Citizens National Bank"));
-			dialog.pack();
-			dialog.setLocationRelativeTo(frame);
-			dialog.setVisible(true);
-		} 
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SponsorUpdateDialog");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create dialog
+		sud.setSponsor(new Sponsor("First Citizens National Bank"));
+		sud.pack();
+		sud.setLocationRelativeTo(frame);
+		sud.setVisible(true);
 	}
 }
 

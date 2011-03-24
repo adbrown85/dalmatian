@@ -13,24 +13,19 @@ import java.util.Vector;
 import net.java.games.input.*;
 
 
-
-public class Dalmation implements JoystickListener {
+public class Dalmatian implements JoystickListener {
 	
-	Joystick joystick;
-	Date nextDate;
-	Vector<File> spots;
+	private Joystick joystick;
+	private Date nextDate;
+	private Vector<File> spots;
 	
-	
-	
+	/** Plays spots. */
 	public void buttonPressed(Component button) throws Exception {
-		
-		// Play spots
 		System.out.println(button.getName() + " was pressed!");
-		if (spots != null)
+		if (spots != null) {
 			Player.play(spots);
+		}
 	}
-	
-	
 	
 	public void load(File dir) throws Exception {
 		
@@ -53,8 +48,6 @@ public class Dalmation implements JoystickListener {
 				parse(b);
 	}
 	
-	
-	
 	public void parse(File brk) throws Exception {
 		
 		Date time, date1, date2;
@@ -76,8 +69,6 @@ public class Dalmation implements JoystickListener {
 			spots.add(new File("./audio/" + scan.next() + ".wav"));
 	}
 	
-	
-	
 	public void start() throws Exception {
 		
 		File dir = new File("./breaks");
@@ -91,11 +82,9 @@ public class Dalmation implements JoystickListener {
 		joystick.poll(150);
 	}
 	
-	
-	
 	public static void main(String args[]) throws Exception {
 		
-		Dalmation d = new Dalmation();
+		Dalmatian d = new Dalmatian();
 		d.start();
 	}
 }

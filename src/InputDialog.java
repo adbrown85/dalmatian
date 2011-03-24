@@ -5,23 +5,19 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.awt.*;
-import java.awt.event.*;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Vector;
 import javax.swing.*;
-
 
 
 /**
  * Dialog for taking input from the user.
  * 
- * Basically a ButtonDialog with an InputPanel attached.
+ * <p>Basically a ButtonDialog with an InputPanel attached.
  */
 public class InputDialog extends ButtonDialog {
 	
 	protected final InputPanel inputPanel;
-	
 	
 	public InputDialog(Frame frame,
 	                   String frameTitle,
@@ -29,91 +25,75 @@ public class InputDialog extends ButtonDialog {
 		
 		super(frame, frameTitle);
 		
-		// Input panel
 		inputPanel = new InputPanel(inputTitle);
 		inputPanel.addActionListener(this);
 		add(inputPanel);
 	}
 	
-	
 	protected final void addInput(String name,
 	                              JComponent input) {
-		
 		inputPanel.addInput(name, input);
 	}
 	
-	
 	public void clear() {
-		
 		inputPanel.clear();
 	}
 	
-	
 	public void close() {
-		
 		clear();
 		setVisible(false);
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
+	
+   protected void handleCancel() {
+      clear();
+      setVisible(false);
+   }
+   
+   protected void handleClear() {
+      clear();
+   }
+   
+	//------------------------------------------------------------
+   // Getters and setters
+   //
 	
 	public final JComponent getInput(String input) {
-		
 		return inputPanel.getInput(input);
 	}
 	
-	
 	public final Object getItemFrom(String input) {
-		
 		return inputPanel.getItemFrom(input);
 	}
 	
-	
 	public final String getTextFrom(String input) {
-		
 		return inputPanel.getTextFrom(input);
 	}
 	
-	
 	public final Timestamp getTimestampFrom(String input) {
-		
 		return inputPanel.getTimestampFrom(input);
 	}
 	
-	
-	protected void handleCancel() {
-		
-		clear();
-		setVisible(false);
-	}
-	
-	
-	protected void handleClear() {
-		
-		clear();
-	}
-	
-	
-	public final void setItemIn(String input,
-	                            Object item) {
-		
+	public final void setItemIn(String input, Object item) {
 		inputPanel.setItemIn(input, item);
 	}
 	
-	
-	public final void setTextIn(String input,
-	                            String text) {
-		
+	public final void setTextIn(String input, String text) {
 		inputPanel.setTextIn(input, text);
 	}
-	
 	
 	public final void setTimestampIn(String input,
 	                                 Timestamp timestamp)
 	                                 throws SQLException {
-		
 		inputPanel.setTimestampIn(input, timestamp);
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
 	public static void main(String[] args) {
 		

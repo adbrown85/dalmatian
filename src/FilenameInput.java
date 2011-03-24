@@ -5,21 +5,17 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 
 
 /**
@@ -28,63 +24,47 @@ import javax.swing.JTextField;
 public class FilenameInput extends JPanel
                            implements ActionListener {
 	
+   private static final String BUTTON_NAME="Browse";
+   
 	private Component dialogParent;
 	private JButton button;
 	private JFileChooser fileChooser;
 	private JTextField textField;
-	private static final String buttonName="Browse";
 	
-	
-	public FilenameInput(int size,
-	                     Component dialogParent) {
-		
-		// Initialize
+	public FilenameInput(int size, Component dialogParent) {
 		super(new GridBagLayout());
 		init(size, dialogParent, true);
 		setMaximumSize(GUI.getInfiniteSize());
 	}
 	
-	
-	public FilenameInput(int size,
-	                     boolean editable) {
-		
-		// Initialize
+	public FilenameInput(int size, boolean editable) {
 		super(new GridBagLayout());
 		init(size, null, editable);
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
-		
 		if (event.getSource() == button) {
-			handleButton();
+			onButton();
 		}
 	}
 	
-	
-	public String getText() {
-		
-		return textField.getText();
-	}
-	
-	
-	private void handleButton() {
+	private void onButton() {
 		
 		File file;
-		int option;
+		int option = fileChooser.showOpenDialog(dialogParent);
 		
 		// Get file from file chooser
-		option = fileChooser.showOpenDialog(dialogParent);
 		if (option == JFileChooser.APPROVE_OPTION) {
 			file = fileChooser.getSelectedFile();
 			setText(file.getPath());
 		}
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
-	private void init(int size,
-	                  Component dialogParent,
-	                  boolean editable) {
+	private void init(int size, Component dialogParent, boolean editable) {
 		
 		// Store parent
 		this.dialogParent = dialogParent;
@@ -96,7 +76,6 @@ public class FilenameInput extends JPanel
 			initFileChooser();
 		}
 	}
-	
 	
 	private void initButton() {
 		
@@ -110,17 +89,14 @@ public class FilenameInput extends JPanel
 		gbc.insets = new Insets(0, 4, 0, 0);
 		
 		// Add it
-		button = new JButton(buttonName);
+		button = new JButton(BUTTON_NAME);
 		button.addActionListener(this);
 		add(button, gbc);
 	}
 	
-	
 	private void initFileChooser() {
-		
 		fileChooser = new JFileChooser();
 	}
-	
 	
 	private void initTextField(int size) {
 		
@@ -139,13 +115,21 @@ public class FilenameInput extends JPanel
 		add(textField, gbc);
 	}
 	
+	//------------------------------------------------------------
+   // Getters and setters
+   //
+	
+   public String getText() {
+      return textField.getText();
+   }
 	
 	public void setText(String text) {
-		
 		textField.setText(text);
 	}
 	
-	
+	//------------------------------------------------------------
+   // Main
+   //
 	
 	public static void main(String[] args) {
 		

@@ -20,28 +20,22 @@ import org.xml.sax.SAXException;
  */
 public class Configuration {
 	
-	
-	private static String filename;
-	private static Document document=null;
-	
+	private static final String filename;
+	private static final Document document;
 	
 	/**
-	 * Initialize attributes.
+	 * Initializes static fields.
 	 */
 	static {
-		
-		initFilename();
-		initDocument();
+		filename = makeFilename();
+		document = makeDocument();
 	}
-	
 	
 	/**
 	 * Gets the value of an option.
 	 * 
-	 * @param category
-	 *     Category the option is located in.
-	 * @param option
-	 *     Option to retrieve.
+	 * @param category Category the option is located in.
+	 * @param option Option to retrieve.
 	 */
 	public static String getOption(String category,
 	                               String option)
@@ -64,47 +58,34 @@ public class Configuration {
 		return optionElement.getFirstChild().getNodeValue();
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
-	
-	/**
-	 * Initializes and parses the document.
-	 */
-	private static void initDocument() {
+	private static Document makeDocument() {
 		
 		DocumentBuilder builder;
 		DocumentBuilderFactory factory;
-		NodeList list;
-		String message;
 		
 		try {
-			
-			// Parse the document
 			factory = DocumentBuilderFactory.newInstance();
 			builder = factory.newDocumentBuilder();
-			document = builder.parse(filename);
-		}
-		catch (ParserConfigurationException pce) {
-			message = "[Configuration] Cannot create XML parser.";
-			throw new ExceptionInInitializerError(message);
+			return builder.parse(filename);
+		} catch (ParserConfigurationException pce) {
+			throw new ExceptionInInitializerError("Cannot make XML parser!");
 		} catch (SAXException se) {
-			message = "[Configuration] Cannot parse configuration file.";
-			throw new ExceptionInInitializerError(message);
+			throw new ExceptionInInitializerError("Cannot parse config file!");
 		} catch (IOException ie) {
-			message = "[Configuration] Cannot open configuration file.";
-			throw new ExceptionInInitializerError(message);
+			throw new ExceptionInInitializerError("Cannot open config file!");
 		}
 	}
 	
-	
-	private static void initFilename() {
+	private static String makeFilename() {
 		
-		String home;
+		String home = System.getProperty("user.home");
 		
-		home = System.getProperty("user.home");
-		filename = home + "/.config/dalmatian/configuration.xml";
+		return home + "/.config/dalmatian/configuration.xml";
 	}
-	
-	
 	
 	/**
 	 * Tests %Configuration.

@@ -7,9 +7,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.TreeMap;
 import javax.swing.*;
-
 
 
 /**
@@ -18,23 +16,18 @@ import javax.swing.*;
 public class BreakUpdateDialog extends BreakDialog
                                implements ActionListener {
 	
-	
-	public BreakUpdateDialog(Frame frame)
-	                         throws SQLException {
+	public BreakUpdateDialog(Frame frame) throws SQLException {
 		
 		super(frame, "Update Break");
 		
-		// Buttons
 		addButton("Cancel");
 		addButton("Update");
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();
 		
-		command = event.getActionCommand();
 		if (command.equals("Update")) {
 			handleUpdate();
 		} else if (command.equals("Cancel")) {
@@ -42,11 +35,7 @@ public class BreakUpdateDialog extends BreakDialog
 		}
 	}
 	
-	
 	private void handleUpdate() {
-		
-		String message;
-		
 		try {
 			
 			// Insert break and slots
@@ -63,7 +52,6 @@ public class BreakUpdateDialog extends BreakDialog
 		}
 	}
 	
-	
 	public void setBreak(Break _break)
 	                     throws SQLException {
 		
@@ -72,8 +60,6 @@ public class BreakUpdateDialog extends BreakDialog
 		slotManager.setBreak(_break);
 		slotManager.refresh();
 	}
-	
-	
 	
 	public static void main(String[] args) {
 		

@@ -4,6 +4,8 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package audio;
+
 import java.awt.event.*;
 import java.io.File;
 import javax.sound.sampled.*;

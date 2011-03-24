@@ -11,100 +11,70 @@ import javax.swing.border.*;
 import java.sql.SQLException;
 
 
-
 /**
  * Manages a database table.
  */
 public class DatabaseTableManager extends JPanel
                                   implements ActionListener {
 	
-	private final int HEIGHT=480, WIDTH=640;
 	protected ButtonPanel buttonPanel;
 	protected DatabaseTable table;
 	protected JFrame frame;
 	protected JScrollPane scrollPane;
 	
-	
 	public DatabaseTableManager(DatabaseTable table)
 	                            throws SQLException {
-		
 		super();
 		init(table);
 	}
 	
-	
 	public DatabaseTableManager(String sql)
 	                            throws SQLException {
-		
 		super();
 		init(new DatabaseTable(sql));
 	}
 	
-	
 	public DatabaseTableManager(String sql,
 	                            String[] hiddenColumns)
 	                            throws SQLException {
-		
 		super();
 		init(new DatabaseTable(sql, hiddenColumns));
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
-		int row;
-		String command;
+		int row = table.getSelectedRow();
+		String command = event.getActionCommand();
 		
-		// Get row and key
-		row = table.getSelectedRow();
 		System.out.printf("[DatabaseTableManager] Row %d selected.\n", row);
-		
-		// Handle command
-		command = event.getActionCommand();
 		System.out.println("[DatabaseTableManager] " + command);
 	}
 	
-	
 	public void addButton(String name) {
-		
 		buttonPanel.addButton(name);
 	}
 	
-	
 	public Frame getFrame() {
-		
 		return JOptionPane.getFrameForComponent(this);
 	}
 	
-	
 	public int getSelectedRow() {
-		
 		return table.getSelectedRow();
 	}
 	
-	
-	public Object getValueAt(int row,
-	                         int column) {
-		
+	public Object getValueAt(int row, int column) {
 		return table.getValueAt(row, column);
 	}
 	
-	
-	public Object getValueAt(int row,
-	                         String columnName) {
-		
+	public Object getValueAt(int row, String columnName) {
 		return table.getValueAt(row, columnName);
 	}
 	
-	
 	public boolean hasSelected() {
-		
 		return getSelectedRow() != -1;
 	}
 	
-	
-	private void init(DatabaseTable table)
-	                  throws SQLException {
+	private void init(DatabaseTable table) throws SQLException {
 		
 		// Appearance
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -122,10 +92,7 @@ public class DatabaseTableManager extends JPanel
 		add(buttonPanel);
 	}
 	
-	
 	protected void refresh() {
-		
-		// Refresh data
 		try {
 			table.refresh();
 		} catch (SQLException e) {
@@ -133,12 +100,10 @@ public class DatabaseTableManager extends JPanel
 		}
 	}
 	
-	
 	protected void setTableBorder(Border border) {
 		
 		GUI.setScrollPaneBorder(scrollPane, border);
 	}
-	
 	
 	protected boolean showConfirmDelete(String item) {
 		
@@ -153,7 +118,6 @@ public class DatabaseTableManager extends JPanel
 		return option == JOptionPane.YES_OPTION;
 	}
 	
-	
 	protected void showSuccessfulDelete(String item) {
 		
 		int type;
@@ -166,7 +130,6 @@ public class DatabaseTableManager extends JPanel
 		JOptionPane.showMessageDialog(this, message, title, type);
 	}
 	
-	
 	protected void showUnsuccessfulDelete(String item) {
 		
 		int type;
@@ -178,7 +141,6 @@ public class DatabaseTableManager extends JPanel
 		type = JOptionPane.ERROR_MESSAGE;
 		JOptionPane.showMessageDialog(this, message, title, type);
 	}
-	
 	
 	public static void main(String[] args) {
 		

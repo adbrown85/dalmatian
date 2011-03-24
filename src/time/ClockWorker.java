@@ -1,10 +1,11 @@
-package time;
 /*
  * ClockWorker.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package time;
+
 import java.util.ArrayList;
 import java.util.List;
 

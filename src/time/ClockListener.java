@@ -1,10 +1,10 @@
-package time;
 /*
  * ClockListener.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package time;
 
 
 /**

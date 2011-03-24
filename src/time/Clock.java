@@ -1,10 +1,11 @@
-package time;
 /*
  * Clock.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package time;
+
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;

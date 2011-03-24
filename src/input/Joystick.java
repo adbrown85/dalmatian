@@ -4,6 +4,8 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
+package input;
+
 import java.io.IOException;
 import java.util.Vector;
 import net.java.games.input.*;

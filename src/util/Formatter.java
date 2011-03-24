@@ -1,11 +1,10 @@
-package util;
 /*
  * Formatter.java
  * 
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-
+package util;
 
 
 /**

@@ -12,29 +12,25 @@
  */
 public class Formatter {
 	
-	
 	/**
 	 * Formats a string for a SQL statement;
 	 */
 	public static String formatSQL(String string) {
-		
-		// Enclose non-null values in single quotes
-		if (string != null)
+		if (string != null) {
 			return String.format("'%s'", string);
-		else
+		} else {
 			return "NULL";
+		}
 	}
-	
 	
 	/**
 	 * Converts a string to title case.
 	 */
 	public static String toTitleCase(String string) {
 		
-		char[] chars;
+		char[] chars = string.toCharArray();
 		
 		// Capitalize first and characters after spaces
-		chars = string.toCharArray();
 		chars[0] = Character.toUpperCase(chars[0]);
 		for (int i=1; i<chars.length-1; ++i) {
 			if (chars[i] == ' ') {
@@ -44,7 +40,6 @@ public class Formatter {
 		}
 		return new String(chars);
 	}
-	
 	
 	/**
 	 * Test for SQL.

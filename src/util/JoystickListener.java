@@ -4,7 +4,7 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-package input;
+package util;
 
 import net.java.games.input.*;
 

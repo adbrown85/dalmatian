@@ -13,8 +13,8 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.*;
-import audio.AudioPlayer;
-import time.Clock;
+import util.AudioPlayer;
+import util.Clock;
 import data.Break;
 import data.Retriever;
 

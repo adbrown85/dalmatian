@@ -4,7 +4,7 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-package time;
+package util;
 
 
 /**

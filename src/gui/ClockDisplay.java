@@ -8,9 +8,9 @@ package gui;
 
 import java.text.DateFormat;
 import javax.swing.*;
-import time.Clock;
-import time.ClockEvent;
-import time.ClockListener;
+import util.Clock;
+import util.ClockEvent;
+import util.ClockListener;
 
 
 /**

@@ -6,12 +6,12 @@
  */
 package gui;
 
-import audio.AudioPlayer;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.*;
+import util.AudioPlayer;
 import data.Retriever;
 import data.Spot;
 

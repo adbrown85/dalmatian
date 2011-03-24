@@ -4,7 +4,7 @@
  * Author
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
-package audio;
+package util;
 
 import java.awt.event.*;
 import java.io.File;

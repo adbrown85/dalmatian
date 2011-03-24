@@ -5,13 +5,8 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
 import java.sql.SQLException;
-import java.util.TreeMap;
-import java.util.Vector;
 import javax.swing.*;
-
 
 
 /**
@@ -21,14 +16,12 @@ public class SpotDialog extends InputDialog {
 	
 	private Spot original=null;
 	
-	
 	public SpotDialog(Frame frame,
 	                  String title)
 	                  throws SQLException {
 		
 		super(frame, title, "Input");
 		
-		// Inputs
 		addInput("Sponsor", new JComboBox(Sponsor.getAllNames()));
 		addInput("Title", new JTextField(20));
 		addInput("Year", new JComboBox(Year.getAllYears()));
@@ -36,19 +29,26 @@ public class SpotDialog extends InputDialog {
 		addInput("Description", new JTextArea(4,30));
 	}
 	
+	//------------------------------------------------------------
+   // Helpers
+   //
 	
+   protected void handleReset() {
+      setSpot(original);
+   }
+	
+   //------------------------------------------------------------
+   // Getters and setters
+   //
+   
 	public Spot getOriginal() {
-		
 		return original;
 	}
 	
-	
 	public Spot getSpot() {
 		
-		Spot spot;
+		Spot spot = new Spot();
 		
-		// Get inputs
-		spot = new Spot();
 		spot.setSponsor((String)getItemFrom("Sponsor"));
 		spot.setTitle(getTextFrom("Title"));
 		spot.setYear((Integer)getItemFrom("Year"));
@@ -56,7 +56,6 @@ public class SpotDialog extends InputDialog {
 		spot.setDescription(getTextFrom("Description"));
 		return spot;
 	}
-	
 	
 	public void setSpot(Spot spot) {
 		
@@ -68,50 +67,25 @@ public class SpotDialog extends InputDialog {
 		setTextIn("Description", spot.getDescription());
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	protected void handleReset() {
+	public static void main(String[] args) throws Exception {
 		
-		setSpot(original);
-	}
-	
-	
-	public static void main(String[] args) {
+		JFrame frame = new JFrame("SpotDialog Frame");
+		SpotDialog sd = new SpotDialog(frame, "New Spot");
 		
-		JFrame frame;
-		SpotDialog dialog;
+		// Create frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(640, 480));
+		frame.pack();
+		frame.setVisible(true);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotDialog");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		try {
-			
-			// Create frame
-			frame = new JFrame("SpotDialog Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setPreferredSize(new Dimension(640, 480));
-			frame.pack();
-			frame.setVisible(true);
-			
-			// Create dialog
-			dialog = new SpotDialog(frame, "New Spot");
-			dialog.pack();
-			dialog.setLocationRelativeTo(frame);
-			dialog.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotDialog");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create dialog
+		sd.pack();
+		sd.setLocationRelativeTo(frame);
+		sd.setVisible(true);
 	}
 }
 

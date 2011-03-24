@@ -6,10 +6,8 @@
  */
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.sql.SQLException;
 import javax.swing.*;
-
 
 
 /**
@@ -17,24 +15,19 @@ import javax.swing.*;
  */
 public class SpotUpdateDialog extends SpotDialog {
 	
-	
-	public SpotUpdateDialog(Frame frame)
-	                        throws SQLException {
+	public SpotUpdateDialog(Frame frame) throws SQLException {
 		
 		super(frame, "Update Spot");
 		
-		// Inputs
 		addButton("Update");
 		addButton("Cancel");
 		addButton("Reset");
 	}
 	
-	
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();
 		
-		command = event.getActionCommand();
 		if (command.equals("Update")) {
 			handleUpdate();
 		} else if (command.equals("Cancel")) {
@@ -44,10 +37,7 @@ public class SpotUpdateDialog extends SpotDialog {
 		}
 	}
 	
-	
 	private void handleUpdate() {
-		
-		// Get and update
 		try {
 			Spot.update(getOriginal(), getSpot());
 			fireActionEvent("Refresh");
@@ -58,45 +48,26 @@ public class SpotUpdateDialog extends SpotDialog {
 		}
 	}
 	
+	//------------------------------------------------------------
+   // Main
+   //
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
-		SpotUpdateDialog dialog;
+		JFrame frame = new JFrame("Frame");
+		SpotUpdateDialog sud = new SpotUpdateDialog(frame);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotUpdateDialog");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create frame
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(640, 480));
+		frame.pack();
+		frame.setVisible(true);
 		
-		try {
-			
-			// Create frame
-			frame = new JFrame("Frame");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setPreferredSize(new Dimension(640, 480));
-			frame.pack();
-			frame.setVisible(true);
-			
-			// Create dialog
-			dialog = new SpotUpdateDialog(frame);
-			dialog.setSpot(new Spot(1));
-			dialog.pack();
-			dialog.setLocationRelativeTo(frame);
-			dialog.setVisible(true);
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotUpdateDialog");
-		System.out.println("****************************************");
-		System.out.println();
+		// Create dialog
+		sud.setSpot(new Spot(1));
+		sud.pack();
+		sud.setLocationRelativeTo(frame);
+		sud.setVisible(true);
 	}
 }
 

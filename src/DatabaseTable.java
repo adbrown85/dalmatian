@@ -127,34 +127,19 @@ public class DatabaseTable extends JTable {
 		tableModel.setSQL(sql);
 	}
 	
-	public static void main(String[] args) {
+	//------------------------------------------------------------
+   // Main
+   //
+	
+	public static void main(String[] args) throws Exception {
 		
 		JFrame frame = new JFrame("DatabaseTable");
 		String sql = "SELECT id,sponsor,title,year FROM spot";
 		String[] hiddenColumns = {"year"};
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("DatabaseTable");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		// Test
-		try {
-			frame.setContentPane(new DatabaseTable(sql, hiddenColumns));
-			frame.pack();
-			frame.setVisible(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("DatabaseTable");
-		System.out.println("****************************************");
-		System.out.println();
+		frame.setContentPane(new DatabaseTable(sql, hiddenColumns));
+		frame.pack();
+		frame.setVisible(true);
 	}
 }
 

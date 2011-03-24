@@ -5,31 +5,29 @@
  *     Andrew Brown <andrew@andrewdbrown.com>
  */
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-
 
 
 /**
  * Dialog with buttons at the bottom.
  * 
- * Uses a BorderLayout with a ButtonPanel taking up the bottom space.  Calling 
- * addButton() will automatically add a JButton with that name to the panel.  
- * The button's action command will be set to its name and the dialog will be 
- * registered with the button so that its actionPerformed() method will 
- * receive ActionEvents from the button.
+ * <p>Uses a BorderLayout with a ButtonPanel taking up the bottom
+ * space.  Calling addButton() will automatically add a JButton with
+ * that name to the panel.  The button's action command will be set to
+ * its name and the dialog will be registered with the button so that
+ * its actionPerformed() method will receive ActionEvents from the
+ * button.
  * 
- * Also, ButtonDialog overrides add() so that any components will 
+ * <p>Also, ButtonDialog overrides add() so that any components will
  * automatically be added to the center of the BorderLayout.
  */
 public class ButtonDialog extends ActionDialog {
 	
 	protected final ButtonPanel buttonPanel;
-	protected final JPanel centerPanel, contentPane;
+	protected final JPanel centerPanel;
+	protected final JPanel contentPane;
 	
-	
-	public ButtonDialog(Frame frame,
-	                    String title) {
+	public ButtonDialog(Frame frame, String title) {
 		
 		super(frame, title);
 		
@@ -49,19 +47,14 @@ public class ButtonDialog extends ActionDialog {
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 	}
 	
-	
 	public Component add(Component component) {
-		
 		centerPanel.add(component);
 		return component;
 	}
 	
-	
 	protected void addButton(String name) {
-		
 		buttonPanel.addButton(name);
 	}
-	
 	
 	public static void main(String[] args) {
 		

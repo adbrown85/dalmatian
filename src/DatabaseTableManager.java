@@ -146,7 +146,7 @@ public class DatabaseTableManager extends JPanel
    // Main
    //
 	
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws Exception {
 		
 	   JFrame frame = new JFrame("DatabaseTableManager");
 	   String sql = "SELECT * FROM sponsor ORDER BY name";

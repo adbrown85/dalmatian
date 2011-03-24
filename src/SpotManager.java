@@ -10,31 +10,23 @@ import javax.swing.*;
 import java.sql.SQLException;
 
 
-
 /**
  * Manages sponsors.
  */
 public class SpotManager extends DatabaseTableManager  {
 	
-	private static final String sql;
-	private Retriever retriever;
-	private SpotDialog spotInsertDialog;
-	private SpotDialog spotUpdateDialog;
-	
-	
-	static {
-		sql = "SELECT sponsor,title,year,filename FROM spot " + 
-		      "ORDER BY sponsor, title, year";
-	}
-	
+	private final Retriever retriever;
+	private final SpotDialog spotInsertDialog;
+	private final SpotDialog spotUpdateDialog;
 	
 	/**
 	 * Creates a new %SponsorsManager.
 	 */
-	public SpotManager(Frame frame)
-	                   throws SQLException {
+	public SpotManager(Frame frame) throws SQLException {
 		
-		super(sql);
+		super("SELECT sponsor,title,year,filename" +
+				"FROM spot " + 
+            "ORDER BY sponsor, title, year");
 		
 		// Retriever
 		retriever = new Retriever();
@@ -54,16 +46,14 @@ public class SpotManager extends DatabaseTableManager  {
 		spotUpdateDialog.pack();
 	}
 	
-	
 	/**
 	 * Triggered when an action is fired.
 	 */
 	public void actionPerformed(ActionEvent event) {
 		
-		String command;
+		String command = event.getActionCommand();
 		
 		// Handle command
-		command = event.getActionCommand();
 		if (command.equals("Delete")) {
 			handleDelete();
 		} else if (command.equals("Insert")) {
@@ -74,47 +64,6 @@ public class SpotManager extends DatabaseTableManager  {
 			refresh();
 		}
 	}
-	
-	
-	public int getKey() {
-		
-		if (hasSelected()) {
-			try {
-				return retriever.getSpotIdFor(getSponsor(),
-				                              getTitle(),
-				                              getYear());
-			} catch (SQLException e) {
-			}
-		}
-		return -1;
-	}
-	
-	
-	public String getDescriptor() {
-		
-		if (hasSelected())
-			return getSponsor() + ", " + getTitle() + ", " + getYear();
-		return null;
-	}
-	
-	
-	public String getSponsor() {
-		
-		return (String)getValueAt(getSelectedRow(), 0);
-	}
-	
-	
-	public String getTitle() {
-		
-		return (String)getValueAt(getSelectedRow(), 1);
-	}
-	
-	
-	public int getYear() {
-		
-		return (Integer)getValueAt(getSelectedRow(), 2);
-	}
-	
 	
 	private void handleDelete() {
 		
@@ -168,38 +117,56 @@ public class SpotManager extends DatabaseTableManager  {
 		spotInsertDialog.setVisible(true);
 	}
 	
+	//------------------------------------------------------------
+   // Getters
+   //
 	
+   public int getKey() {
+      if (hasSelected()) {
+         try {
+            return retriever.getSpotIdFor(getSponsor(),
+                                          getTitle(),
+                                          getYear());
+         } catch (SQLException e) {
+         }
+      }
+      return -1;
+   }
+   
+   public String getDescriptor() {
+      if (hasSelected())
+         return getSponsor() + ", " + getTitle() + ", " + getYear();
+      return null;
+   }
+   
+   public String getSponsor() {
+      return (String)getValueAt(getSelectedRow(), 0);
+   }
+   
+   public String getTitle() {
+      return (String)getValueAt(getSelectedRow(), 1);
+   }
+   
+   public int getYear() {
+      return (Integer)getValueAt(getSelectedRow(), 2);
+   }
+   
+   //------------------------------------------------------------
+   // Main
+   //
+   
 	/**
 	 * Test for %SponsorManager.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		JFrame frame;
+		JFrame frame = new JFrame("Spot Manager");
+		SpotManager sm = new SpotManager(frame);
 		
-		// Start
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotManager");
-		System.out.println("****************************************");
-		System.out.println();
-		
-		// Create frame
-		try {
-			frame = new JFrame("Spot Manager");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setContentPane(new SpotManager(frame));
-			frame.pack();
-			frame.setVisible(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		// Finish
-		System.out.println();
-		System.out.println("****************************************");
-		System.out.println("SpotManager");
-		System.out.println("****************************************");
-		System.out.println();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(sm);
+		frame.pack();
+		frame.setVisible(true);
 	}
 }
 

@@ -6,36 +6,31 @@
  */
 import java.awt.event.*;
 import java.io.File;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.*;
-import java.util.Vector;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AudioPlayer extends Thread {
 	
-	boolean shouldStop=false;
-	byte buffer[];
-	String filename;
-	Vector<ActionListener> listeners;
-	
+   private final List<ActionListener> listeners;
+   private final String filename;
+	private final byte buffer[];
+	private boolean shouldStop;
 	
 	/**
-	 * Creates a new %AudioPlayer.
+	 * Creates a new AudioPlayer.
 	 */
 	public AudioPlayer(String filename) {
-		
-		buffer = new byte[256];
-		this.filename = filename;
-		listeners = new Vector<ActionListener>();
+	   this.listeners = new ArrayList<ActionListener>();
+	   this.filename = filename;
+		this.buffer = new byte[256];
+		this.shouldStop = false;
 	}
-	
 	
 	public void addActionListener(ActionListener listener) {
-		
 		listeners.add(listener);
 	}
-	
 	
 	public void fireActionEvent(String command) {
 		
@@ -50,12 +45,10 @@ public class AudioPlayer extends Thread {
 		}
 	}
 	
-	
 	/**
 	 * Plays a file.
 	 */
 	public void run() {
-		
 		try {
 			fireActionEvent("AUDIOPLAYER_PLAYING");
 			play(filename);
@@ -65,9 +58,7 @@ public class AudioPlayer extends Thread {
 		}
 	}
 	
-	
-	private void play(String filename) 
-	                  throws Exception {
+	private void play(String filename) throws Exception {
 		
 		AudioFormat format;
 		AudioInputStream stream;
@@ -104,12 +95,9 @@ public class AudioPlayer extends Thread {
 		line.close();
 	}
 	
-	
 	public void stopPlaying() {
-		
 		shouldStop = true;
 	}
-	
 	
 	/**
 	 * Test for %AudioPlayer.
